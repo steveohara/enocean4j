@@ -18,8 +18,8 @@
 package com._4ng.enocean.examples;
 
 import com._4ng.enocean.enj.communication.EnJConnection;
-import com._4ng.enocean.enj.eep.eep26.D2.D201.D20109;
-import com._4ng.enocean.enj.eep.eep26.D2.D201.D201UnitOfMeasure;
+import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D20109;
+import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D201UnitOfMeasure;
 import com._4ng.enocean.enj.link.EnJLink;
 import com._4ng.enocean.enj.model.EnOceanDevice;
 import com._4ng.enocean.examples.util.Options;

@@ -18,7 +18,7 @@
 package com._4ng.enocean.enj.eep.eep26.attributes;
 
 import com._4ng.enocean.enj.eep.EEPAttribute;
-import com._4ng.enocean.enj.eep.eep26.D2.D201.D201DefaultStateValue;
+import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D201DefaultStateValue;
 
 /**
  * A class representing the default state of a switching actuator.
