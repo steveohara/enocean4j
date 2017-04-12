@@ -1,5 +1,5 @@
 # EnOcean4J Java Library
-enocean4j is a fork of the EnJ-Library that takes a more generalised view of EnOcean protocol and how to work with it.
+enocean4j is a fork of the [EnJ-Library](https://github.com/dog-gateway/enj-library) that takes a more generalised view of EnOcean protocol and how to work with it.
 The codebase has been re-factored considerably to bring it into line with common patterns.
 
 Some of the changes are listed below;
@@ -14,7 +14,7 @@ The main driver for taking this on is the same as that for j2mod - we at 4NG hav
 although EnJ-Library gets you a very long way forward, it doesn't meet our requirements.
 
 ## Note
-One of things that this library does not support at this point in time is OSGi bundling. This is for two reasons; 
+One of the things that this library does not support at this point in time is OSGi bundling. This is for two reasons; 
 
 1. JSerialComm is not packaged for OSGi
 2. enocean4j uses package scanning to find all EEPs
@@ -22,4 +22,4 @@ One of things that this library does not support at this point in time is OSGi b
 When we've worked with the library a bit more, we will fix these issues.
 
 ## Acknowledgements
-Thanks to Dario Bonino and Andrea Biasi for all of their work on the original library.
+Thanks to Dario Bonino and Andrea Biasi for all of their work on the original library at [e-lite](https://elite.polito.it/).
