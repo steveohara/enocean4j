@@ -36,6 +36,9 @@ try {
     // create a device listener for handling device updates
     DeviceManager.addDeviceListener(new SimpleDeviceListener());
     
+    // register a rocker switch
+    DeviceManager.registerDevice("2BD5EE", "F60201");
+    
     // create the connection layer
     Connection connection = new Connection(linkLayer);
     
@@ -55,17 +58,17 @@ public class SimpleDeviceListener implements DeviceListener {
 
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Added device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override
     public void modifiedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Modified device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override
     public void removedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Removed device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override

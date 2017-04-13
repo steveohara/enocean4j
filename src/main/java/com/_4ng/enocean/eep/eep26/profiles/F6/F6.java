@@ -22,7 +22,7 @@ import com._4ng.enocean.eep.Rorg;
  * Top level EEP
  */
 public abstract class F6 extends EEP {
-    public static final Rorg RORG = new Rorg((byte) 0xd6);
+    public static final Rorg RORG = new Rorg((byte) 0xf6);
 
     public F6(String version) {
         super(version);

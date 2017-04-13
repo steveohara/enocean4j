@@ -123,11 +123,12 @@ public class EEPIdentifier implements Serializable {
     }
 
     /**
-     * Returns the EEPIdentifier in for of an EEP identifier string with the dash notation
+     * Returns the EEPIdentifier in form of an EEP identifier string with the dash notation
      *
      * @return Returns the EEP as the '-' notation
      */
-    public String asEEPString() {
+    @Override
+    public String toString() {
         return EnOceanUtils.toHexString(rorg.getRorgValue()).substring(2) + "-" + EnOceanUtils.toHexString(function).substring(2) + "-" + EnOceanUtils.toHexString(type).substring(2);
     }
 

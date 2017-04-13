@@ -231,7 +231,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * profile class
      */
     public boolean handleUpdate(EEP26Telegram telegram, EnOceanDevice device) {
-        logger.debug("Handling telegram: {} for device: {}", getEEPIdentifier().asEEPString(), device);
+        logger.debug("Handling telegram: {} for device: {}", getEEPIdentifier(), device);
         return handleProfileUpdate(telegram, device);
     }
 

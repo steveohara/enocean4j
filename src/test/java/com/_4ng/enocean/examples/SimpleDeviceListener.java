@@ -33,17 +33,17 @@ public class SimpleDeviceListener implements DeviceListener {
 
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Added device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override
     public void modifiedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Modified device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override
     public void removedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());
+        logger.info("Removed device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
     }
 
     @Override

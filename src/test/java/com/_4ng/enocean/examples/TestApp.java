@@ -58,6 +58,7 @@ public class TestApp {
 
                 // create a device listener for handling device updates
                 DeviceManager.addDeviceListener(new SimpleDeviceListener());
+                DeviceManager.registerDevice("2BD5EE", "F60201");
 
                 // create the connection layer
                 Connection connection = new Connection(linkLayer);
