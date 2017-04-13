@@ -17,13 +17,13 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.F6.F610;
 
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26HandleRotation;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.RPSTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 /**
  * @author bonino
@@ -31,7 +31,7 @@ import com._4ng.enocean.enj.model.EnOceanDevice;
 public class F61000 extends F610 {
 
     // the type definition
-    public static final byte type = (byte) 0x00;
+    public static final byte TYPE = (byte) 0x00;
 
     public static final int CHANNEL = 0;
 
@@ -52,7 +52,7 @@ public class F61000 extends F610 {
      */
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(F610.rorg, F610.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     /*
@@ -88,7 +88,7 @@ public class F61000 extends F610 {
                 rotationAttribute.setValue(message.getPosition());
 
                 // build the dispatching task
-                EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(rotationAttribute, CHANNEL, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(rotationAttribute, CHANNEL, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

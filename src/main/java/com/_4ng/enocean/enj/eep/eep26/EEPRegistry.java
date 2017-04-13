@@ -7,8 +7,9 @@ import com._4ng.enocean.enj.util.EnOceanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 public class EEPRegistry {
@@ -17,13 +18,13 @@ public class EEPRegistry {
     private static EEPRegistry theInstance;
 
     // the set of supported profiles
-    private Hashtable<EEPIdentifier, Class<? extends EEP>> supportedProfiles;
+    private Map<EEPIdentifier, Class<? extends EEP>> supportedProfiles;
 
     // singleton pattern
     private EEPRegistry() {
 
         // build the profiles hashtable
-        supportedProfiles = new Hashtable<>();
+        supportedProfiles = new HashMap<>();
         Set<Class<? extends EEP>> allEEPs = getStaticEEPs();
         for (Class<? extends EEP> eep : allEEPs) {
             try {
@@ -75,8 +76,8 @@ public class EEPRegistry {
         try {
             for (Class clazz : EnOceanUtils.getClasses(EEPRegistry.class.getPackage().getName())) {
                 if (EEP.class.isAssignableFrom(clazz) && clazz.getSimpleName().matches("[A-Z][0-9A-Z]{5}")) {
-                    logger.info("Found equipment profile {}", clazz.getSimpleName());
-                    eeps.add((Class<? extends EEP>)clazz);
+                    logger.debug("Found equipment profile: {}", clazz.getSimpleName());
+                    eeps.add((Class<? extends EEP>) clazz);
                 }
             }
         }
@@ -85,4 +86,14 @@ public class EEPRegistry {
         }
         return eeps;
     }
+
+    /**
+     * Returna a reference to all the supported profiles
+     *
+     * @return Map of supported EEP profiles
+     */
+    public Map<EEPIdentifier, Class<? extends EEP>> getProfiles() {
+        return supportedProfiles;
+    }
+
 }

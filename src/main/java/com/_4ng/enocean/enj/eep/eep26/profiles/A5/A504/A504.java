@@ -17,15 +17,14 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.A5.A504;
 
-import com._4ng.enocean.enj.eep.EEP;
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
-import com._4ng.enocean.enj.eep.Rorg;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26HumidityLinear;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26TemperatureLinear;
+import com._4ng.enocean.enj.eep.eep26.profiles.A5.A5;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.FourBSTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,10 +35,9 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class A504 extends EEP {
+public abstract class A504 extends A5 {
     // the EEP26 definition, according to the EEP26 specification
-    public static final Rorg rorg = new Rorg((byte) 0xa5);
-    public static final byte func = (byte) 0x04;
+    public static final byte FUNC = (byte) 0x04;
 
     // func must be defined by extending classes
 
@@ -103,7 +101,7 @@ public abstract class A504 extends EEP {
                     tLinear.setRawValue(rawT);
 
                     // build the dispatching task
-                    EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(tLinear, 1, telegram, device);
+                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
 
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);
@@ -128,7 +126,7 @@ public abstract class A504 extends EEP {
                     hLinear.setRawValue(rawH);
 
                     // build the dispatching task
-                    EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(hLinear, 1, telegram, device);
+                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(hLinear, 1, telegram, device);
 
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);
@@ -137,9 +135,7 @@ public abstract class A504 extends EEP {
                     success = true;
                 }
             }
-
         }
-
         return success;
     }
 

@@ -31,8 +31,6 @@ import com._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
 public abstract class EEP26Telegram {
-    // the raw (link layer) packet wrapped by this instance
-    ESP3Packet rawPacket;
     // the data payload
     protected byte payload[];
     // the device address
@@ -41,6 +39,8 @@ public abstract class EEP26Telegram {
     protected byte status;
     // the packet Rorg
     protected Rorg rorg;
+    // the raw (link layer) packet wrapped by this instance
+    ESP3Packet rawPacket;
     // the telegram type
     private EEP26TelegramType type;
 

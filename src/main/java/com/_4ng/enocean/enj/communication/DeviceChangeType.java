@@ -15,19 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  */
-package com._4ng.enocean.enj.application;
-
+package com._4ng.enocean.enj.communication;
 
 /**
- * The EnOcean for Java application layer, takes care of device tracking,
- * persistence and offers means for registering to device status updates and to
- * send messages without knowing any network-specific detail.
- *
- * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
+ * @author bonino
  */
-public class EnJApplication {
-    public EnJApplication() {
-        // TODO Auto-generated constructor stub
-    }
-
+public enum DeviceChangeType {
+    CREATED, MODIFIED, DELETED
 }

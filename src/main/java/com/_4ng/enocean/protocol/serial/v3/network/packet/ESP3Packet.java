@@ -36,25 +36,18 @@ public class ESP3Packet {
     public static final byte RADIO_ADVANCED = 10;
     // serial synchronization byte
     protected byte syncByte; // Il problema e che byte e signed
-
-    // number of bytes in the data part of the packet (DATA_LENGTH)
-    private byte dataLength[] = new byte[2]; // 2 byte
-
-    // number of bytes of optional data (OPTIONAL_LENGTH)
-    private byte optLength;
-
     // identifies the packet type
     protected byte packetType;
-
-    // checksum for bytes DATA_LENGTH, OPTIONAL_LENGTH and TYPE
-    private byte crc8h;
-
     // data payload (DATA)
     protected byte[] data;
-
     // additional data extending the data payload (OPTIONAL_DATA)
     protected byte[] optData;
-
+    // number of bytes in the data part of the packet (DATA_LENGTH)
+    private byte dataLength[] = new byte[2]; // 2 byte
+    // number of bytes of optional data (OPTIONAL_LENGTH)
+    private byte optLength;
+    // checksum for bytes DATA_LENGTH, OPTIONAL_LENGTH and TYPE
+    private byte crc8h;
     // checksum for DATA and OPTIONAL_DATA
     private byte crc8d;
 

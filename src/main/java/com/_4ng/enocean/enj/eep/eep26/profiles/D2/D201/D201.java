@@ -17,16 +17,15 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.D2.D201;
 
-import com._4ng.enocean.enj.communication.EnJConnection;
-import com._4ng.enocean.enj.eep.EEP;
+import com._4ng.enocean.enj.communication.Connection;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.EEPAttribute;
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
-import com._4ng.enocean.enj.eep.Rorg;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.eep26.attributes.*;
+import com._4ng.enocean.enj.eep.eep26.profiles.D2.D2;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.VLDTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -39,10 +38,9 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class D201 extends EEP {
+public abstract class D201 extends D2 {
     // the EEP26 definition, according to the EEP26 specification
-    public static final Rorg rorg = new Rorg((byte) 0xd2);
-    public static final byte func = (byte) 0x01;
+    public static final byte FUNC = (byte) 0x01;
 
     // func must be defined by extending classes
 
@@ -81,12 +79,12 @@ public abstract class D201 extends EEP {
      * @param outputValue The required ouput value. A byte representing a percentage
      *                    between 0 (0x00) and 100 (0x64).
      */
-    public void actuatorSetOutput(EnJConnection connection, byte[] deviceAddress, byte dimValue, byte ioChannel, byte outputValue) {
+    public void actuatorSetOutput(Connection connection, byte[] deviceAddress, byte dimValue, byte ioChannel, byte outputValue) {
         // prepare the data payload to host "desired" values
         byte dataByte[] = new byte[4];
 
         // add the packet rorg
-        dataByte[0] = rorg.getRorgValue();
+        dataByte[0] = RORG.getRorgValue();
 
         // CMD code (0x01), the first 4 bits are not used
         dataByte[1] = (byte) 0x01;
@@ -130,12 +128,12 @@ public abstract class D201 extends EEP {
      * @param dimTime2                 The dim timer 2.
      * @param dimTime3                 The dim timer 3.
      */
-    public void actuatorSetLocal(EnJConnection connection, byte[] deviceAddress, byte channelId, byte localControl, byte overCurrentShutDown, byte resetOverCurrentShutDown, byte userInterfaceIndication, byte powerFailure, byte defaultState, D201DimTime dimTime1, D201DimTime dimTime2, D201DimTime dimTime3) {
+    public void actuatorSetLocal(Connection connection, byte[] deviceAddress, byte channelId, byte localControl, byte overCurrentShutDown, byte resetOverCurrentShutDown, byte userInterfaceIndication, byte powerFailure, byte defaultState, D201DimTime dimTime1, D201DimTime dimTime2, D201DimTime dimTime3) {
         // prepare the data payload to host received configuration values
         byte dataByte[] = new byte[5];
 
         // add the packet rorg
-        dataByte[0] = rorg.getRorgValue();
+        dataByte[0] = RORG.getRorgValue();
 
         // CMD code (0x02), the first bit relates to taught-in devices, not
         // handled at the moment, the other 3 bits are not used, in binary
@@ -183,11 +181,11 @@ public abstract class D201 extends EEP {
      * @param deviceAddress
      * @param channelId
      */
-    public void actuatorStatusQuery(EnJConnection connection, byte[] deviceAddress, byte channelId) {
+    public void actuatorStatusQuery(Connection connection, byte[] deviceAddress, byte channelId) {
         byte dataByte[] = new byte[3];
 
         // add the packet rorg
-        dataByte[0] = rorg.getRorgValue();
+        dataByte[0] = RORG.getRorgValue();
 
         // first byte
         // bit 0-3 -> command id
@@ -206,7 +204,7 @@ public abstract class D201 extends EEP {
      * Profile. It configures the energy and power measurement of one or all
      * channels of an actuator.
      *
-     * @param connection          The {@link EnJConnection object which enables command
+     * @param connection          The {@link Connection object which enables command
      *                            transmission over the physical network.}
      * @param deviceAddress       The address of the destination device.
      * @param reportMeasurement   0b0 query only, 0b1 auto reporting and query.
@@ -222,12 +220,12 @@ public abstract class D201 extends EEP {
      *                            (10-2550s).
      * @param mit                 Minimum time between to subsequent actuator messages (0-255s).
      */
-    public void actuatorSetMeasurement(EnJConnection connection, byte deviceAddress[], byte reportMeasurement, byte resetMeasurement, byte measurementMode, byte channelId, byte measurementDeltaLSB, byte unit, byte measurementDeltaMSB, byte mat, byte mit) {
+    public void actuatorSetMeasurement(Connection connection, byte deviceAddress[], byte reportMeasurement, byte resetMeasurement, byte measurementMode, byte channelId, byte measurementDeltaLSB, byte unit, byte measurementDeltaMSB, byte mat, byte mit) {
         // the array of bytes containing the data payload
         byte dataByte[] = new byte[7];
 
         // add the packet rorg
-        dataByte[0] = rorg.getRorgValue();
+        dataByte[0] = RORG.getRorgValue();
 
         // first byte -> lower 4 bits for the command code
         dataByte[1] = 0x05;
@@ -267,18 +265,18 @@ public abstract class D201 extends EEP {
      * Profile. Asks for specific measurement values (energy or power) on a
      * given channel of an EnOcean actuator.
      *
-     * @param connection    The {@link EnJConnection} object for sending the radio packet
+     * @param connection    The {@link Connection} object for sending the radio packet
      *                      on the physical network.
      * @param deviceAddress The address of the device to which the message must be sent.
      * @param queryType     The query type (0b0 Energy, 0b1 Power).
      * @param channelId     The id of the actuator channel to be queried.
      */
-    public void actuatorMeasurementQuery(EnJConnection connection, byte deviceAddress[], byte queryType, byte channelId) {
+    public void actuatorMeasurementQuery(Connection connection, byte deviceAddress[], byte queryType, byte channelId) {
         // the array of bytes containing the data payload
         byte dataByte[] = new byte[3];
 
         // add the packet rorg
-        dataByte[0] = rorg.getRorgValue();
+        dataByte[0] = RORG.getRorgValue();
 
         // first byte -> lower 4 bits for the command code
         dataByte[1] = 0x06;
@@ -443,7 +441,7 @@ public abstract class D201 extends EEP {
 
             if (!changedAttributes.isEmpty() && channelId >= 0) {
                 // build the dispatching task
-                EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(changedAttributes, channelId, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(changedAttributes, channelId, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

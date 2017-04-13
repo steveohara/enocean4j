@@ -17,7 +17,7 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.D2.D201;
 
-import com._4ng.enocean.enj.communication.EnJConnection;
+import com._4ng.enocean.enj.communication.Connection;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
 import com._4ng.enocean.enj.eep.eep26.attributes.*;
 
@@ -27,25 +27,19 @@ import com._4ng.enocean.enj.eep.eep26.attributes.*;
 public class D20108 extends D20109 {
 
     // the type definition
-    public static final byte type = (byte) 0x08;
-
-    // the ON state / command
-    public static boolean ON = true;
-
+    public static final byte TYPE = (byte) 0x08;
     // the ON command byte
     public static final byte ON_BYTE = (byte) 0x64;
-
-    // the OFF state / command
-    public static boolean OFF = false;
-
     // the OFF command byte
     public static final byte OFF_BYTE = (byte) 0x00;
-
     // the byte identifier for all output channels
     public static final byte ALL_OUTPUT_CHANNEL = 0x1E;
-
     // the used channel
     public static final int CHANNEL = 0;
+    // the ON state / command
+    public static boolean ON = true;
+    // the OFF state / command
+    public static boolean OFF = false;
 
     // the "data" fields accessible through this eep (and updated upon network
     // data reception)
@@ -70,12 +64,12 @@ public class D20108 extends D20109 {
     }
 
     // execution commands
-    public void actuatorSetOuput(EnJConnection connection, byte[] deviceAddress, boolean command) {
+    public void actuatorSetOuput(Connection connection, byte[] deviceAddress, boolean command) {
         // exec the command by using the D201 general purpose implementation
         actuatorSetOutput(connection, deviceAddress, D201DimMode.SWITCH_TO_NEW_OUTPUT_VALUE.getCode(), ALL_OUTPUT_CHANNEL, command ? ON_BYTE : OFF_BYTE);
     }
 
-    public void actuatorSetOuput(EnJConnection connection, byte[] deviceAddress, int dimValue, D201DimMode dimMode) {
+    public void actuatorSetOuput(Connection connection, byte[] deviceAddress, int dimValue, D201DimMode dimMode) {
         // check limits
         if (dimValue < 0) {
             dimValue = 0;
@@ -97,7 +91,7 @@ public class D20108 extends D20109 {
      * @param powerMode
      * @param channelId
      */
-    public void actuatorMeasurementQuery(EnJConnection connection, byte[] deviceAddress, boolean powerMode, int channelId) {
+    public void actuatorMeasurementQuery(Connection connection, byte[] deviceAddress, boolean powerMode, int channelId) {
         // get the measurement mode as a byte value
         byte powerModeAsByte = powerMode ? (byte) 0x01 : (byte) 0x00;
 
@@ -107,6 +101,6 @@ public class D20108 extends D20109 {
 
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(D201.rorg, D201.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 }

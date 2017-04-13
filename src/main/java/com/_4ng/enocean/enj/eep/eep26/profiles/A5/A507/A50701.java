@@ -17,8 +17,9 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.A5.A507;
 
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.EEPAttribute;
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26PIRStatus;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26SupplyVoltage;
@@ -26,7 +27,6 @@ import com._4ng.enocean.enj.eep.eep26.attributes.EEP26SupplyVoltageAvailability;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.FourBSTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class A50701 extends A507 {
 
     // the type definition
-    public static final byte type = (byte) 0x01;
+    public static final byte TYPE = (byte) 0x01;
     public static final int CHANNEL = 0;
 
     /**
@@ -56,7 +56,7 @@ public class A50701 extends A507 {
      */
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(A507.rorg, A507.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     /*
@@ -128,7 +128,7 @@ public class A50701 extends A507 {
                 // if some attribute changed, notify it to listeners
                 if (!changedAttributes.isEmpty()) {
                     // build the dispatching task
-                    EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(changedAttributes, CHANNEL, telegram, device);
+                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(changedAttributes, CHANNEL, telegram, device);
 
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);

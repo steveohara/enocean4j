@@ -17,8 +17,7 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.F6.F610;
 
-import com._4ng.enocean.enj.eep.EEP;
-import com._4ng.enocean.enj.eep.Rorg;
+import com._4ng.enocean.enj.eep.eep26.profiles.F6.F6;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,10 +25,9 @@ import java.util.concurrent.Executors;
 /**
  * @author bonino
  */
-public abstract class F610 extends EEP {
+public abstract class F610 extends F6 {
     // the EEP26 definition, according to the EEP26 specification
-    public static final Rorg rorg = new Rorg((byte) 0xf6);
-    public static final byte func = (byte) 0x10;
+    public static final byte FUNC = (byte) 0x10;
 
     // func must be defined by extending classes
 

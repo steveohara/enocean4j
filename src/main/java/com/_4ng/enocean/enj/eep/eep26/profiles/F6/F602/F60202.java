@@ -28,7 +28,7 @@ import com._4ng.enocean.enj.eep.EEPIdentifier;
  */
 public class F60202 extends F60201 {
     // the type definition
-    public static final byte type = (byte) 0x02;
+    public static final byte TYPE = (byte) 0x02;
 
     // register the type in the EEPProfile even if no instance of this class is
     // created.
@@ -48,7 +48,7 @@ public class F60202 extends F60201 {
      */
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(F602.rorg, F602.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
 }

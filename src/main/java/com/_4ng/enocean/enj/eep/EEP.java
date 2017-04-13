@@ -17,8 +17,8 @@
  */
 package com._4ng.enocean.enj.eep;
 
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +138,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     }
 
     /**
-     * Returns the a channel specific attribute having the given name, or null
+     * Returns the channel specific attribute having the given name, or null
      * if no attribute with the given name is available.
      *
      * @param channelId     The channel id.
@@ -245,7 +245,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * profile class
      */
     public boolean handleUpdate(EEP26Telegram telegram, EnOceanDevice device) {
-        logger.info("Handling telegram: {} for device: {}", getEEPIdentifier().asEEPString(), device);
+        logger.debug("Handling telegram: {} for device: {}", getEEPIdentifier().asEEPString(), device);
         return handleProfileUpdate(telegram, device);
     }
 

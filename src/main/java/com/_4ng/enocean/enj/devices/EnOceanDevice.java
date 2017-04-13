@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  */
-package com._4ng.enocean.enj.model;
+package com._4ng.enocean.enj.devices;
 
 import com._4ng.enocean.enj.eep.EEP;
 import com._4ng.enocean.enj.util.EnOceanUtils;
@@ -85,34 +85,21 @@ public class EnOceanDevice implements Serializable {
      * @return
      */
     public static byte[] parseAddress(String hexDeviceAddress) {
-        // to lower case
-        hexDeviceAddress = hexDeviceAddress.toLowerCase();
 
         // allowed format for Device address is with or without dashes
-        if (hexDeviceAddress.contains("-")) {
-            hexDeviceAddress = hexDeviceAddress.replaceAll("-", "");
-        }
-        if (hexDeviceAddress.contains("0x")) {
-            hexDeviceAddress = hexDeviceAddress.replaceAll("0x", "");
-        }
 
-        // trim leading and trailing spaces around the device address
-        hexDeviceAddress = hexDeviceAddress.trim();
+        hexDeviceAddress = hexDeviceAddress.replaceAll("-|(0x)", "").trim().toLowerCase();
+        hexDeviceAddress = "00000000".substring(hexDeviceAddress.length() > 8 ? 8 : hexDeviceAddress.length()) + hexDeviceAddress;
 
         // prepare the byte[] for hosting the address
         byte address[] = new byte[4];
 
         // parse the address
         if (hexDeviceAddress.length() == 8) {
-
             for (int i = 0; i < hexDeviceAddress.length(); i += 2) {
                 address[i / 2] = (byte) Integer.parseInt(hexDeviceAddress.substring(i, i + 2), 16);
             }
         }
-        else {
-            address = null;
-        }
-
         return address;
     }
 
@@ -123,6 +110,14 @@ public class EnOceanDevice implements Serializable {
      */
     public byte[] getAddress() {
         return address;
+    }
+
+    /**
+     * Returns the Hex representation of the address
+     * @return Hex string
+     */
+    public String getAddressHex() {
+        return EnOceanUtils.toHexString(address);
     }
 
     /**
@@ -155,10 +150,9 @@ public class EnOceanDevice implements Serializable {
         // store the entry by building the corresponding instances
         try {
             // get the profile instance
-            EEP eep = eepClass.newInstance();
 
             // add the instance to the set of supported instances
-            profile = eep;
+            profile = eepClass.newInstance();
         }
         catch (InstantiationException | IllegalAccessException e) {
             logger.error("Problem", e);
@@ -172,7 +166,7 @@ public class EnOceanDevice implements Serializable {
      *
      * @return The device address as an integer number.
      */
-    public int getDeviceUID() {
+    public int getAddressInt() {
         return ByteBuffer.wrap(address).getInt();
     }
 

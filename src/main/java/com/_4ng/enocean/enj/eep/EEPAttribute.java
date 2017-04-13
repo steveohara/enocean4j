@@ -17,8 +17,8 @@
  */
 package com._4ng.enocean.enj.eep;
 
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 import java.util.HashSet;
 import java.util.Set;

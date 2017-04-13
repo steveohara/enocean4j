@@ -4,10 +4,6 @@ import java.io.Serializable;
 
 public class Rorg implements Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
     public static final byte RPS = (byte) 0xF6;
     public static final byte BS1 = (byte) 0xD5;
     public static final byte BS4 = (byte) 0xA5;
@@ -21,6 +17,10 @@ public class Rorg implements Serializable {
     public static final byte SEC = (byte) 0x30;
     public static final byte SEC_ENCAPS = (byte) 0x31;
     public static final byte UTE = (byte) 0xD4;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     byte rorgValue;
 
     /**

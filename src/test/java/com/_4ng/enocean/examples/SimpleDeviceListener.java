@@ -17,18 +17,17 @@
  */
 package com._4ng.enocean.examples;
 
-import com._4ng.enocean.enj.communication.EnJDeviceListener;
-import com._4ng.enocean.enj.eep.EEPAttributeChangeListener;
-import com._4ng.enocean.enj.eep.eep26.attributes.*;
-import com._4ng.enocean.enj.model.EnOceanDevice;
-import com._4ng.enocean.enj.util.EnOceanUtils;
+import com._4ng.enocean.enj.communication.DeviceListener;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
+import com._4ng.enocean.enj.eep.EEPAttribute;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author bonino
  */
-public class SimpleDeviceListener implements EnJDeviceListener {
+public class SimpleDeviceListener implements DeviceListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
 
@@ -39,67 +38,40 @@ public class SimpleDeviceListener implements EnJDeviceListener {
     /*
      * (non-Javadoc)
      *
-     * @see com._4ng.enocean.enj.communication.EnJDeviceListener#
+     * @see com._4ng.enocean.enj.communication.DeviceListener#
      * addedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
      */
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Added device: {} ({})", device.getDeviceUID(), EnOceanUtils.toHexString(device.getAddress()));
-
-        SimpleMovementListener movementListener = new SimpleMovementListener();
-
-        // handle device types
-        if (device.getEEP().getChannelAttribute(0, EEP26RockerSwitch2RockerAction.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26RockerSwitch2RockerAction.NAME, new SimpleRockerSwitchListener());
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26TemperatureInverseLinear.NAME, new SimpleTemperatureListener());
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26Switching.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26Switching.NAME, new SimpleContactSwitchListener());
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26PIRStatus.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26PIRStatus.NAME, movementListener);
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26SupplyVoltage.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26SupplyVoltage.NAME, movementListener);
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26SupplyVoltageAvailability.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26SupplyVoltageAvailability.NAME, movementListener);
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26PowerMeasurement.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26PowerMeasurement.NAME, new SimplePowerListener());
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26TemperatureLinear.NAME) != null && device.getEEP().getChannelAttribute(0, EEP26HumidityLinear.NAME) != null) {
-            EEPAttributeChangeListener listener = new SimpleTemperatureAndHumidityListener();
-            device.getEEP().addEEP26AttributeListener(0, EEP26TemperatureLinear.NAME, listener);
-            device.getEEP().addEEP26AttributeListener(0, EEP26HumidityLinear.NAME, listener);
-        }
-        if (device.getEEP().getChannelAttribute(0, EEP26HandleRotation.NAME) != null) {
-            device.getEEP().addEEP26AttributeListener(0, EEP26HandleRotation.NAME, new SimpleWindowHandleListener());
-        }
+        logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com._4ng.enocean.enj.communication.EnJDeviceListener#
+     * @see com._4ng.enocean.enj.communication.DeviceListener#
      * modifiedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
      */
     @Override
     public void modifiedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Modified device: {} ({})", device.getDeviceUID(), EnOceanUtils.toHexString(device.getAddress()));
+        logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com._4ng.enocean.enj.communication.EnJDeviceListener#
+     * @see com._4ng.enocean.enj.communication.DeviceListener#
      * removedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
      */
     @Override
     public void removedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Removed device: {} ({})", device.getDeviceUID(), EnOceanUtils.toHexString(device.getAddress()));
+        logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());
     }
 
+    @Override
+    public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
+        for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
+            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
+        }
+    }
 }

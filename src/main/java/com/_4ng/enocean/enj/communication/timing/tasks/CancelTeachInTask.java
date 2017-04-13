@@ -17,28 +17,28 @@
  */
 package com._4ng.enocean.enj.communication.timing.tasks;
 
-import com._4ng.enocean.enj.communication.EnJConnection;
+import com._4ng.enocean.enj.communication.Connection;
 
 import java.util.TimerTask;
 
 /**
  * A TimerTask subclass which disables the teach in procedure on the given
- * EnJConnection instance.
+ * Connection instance.
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
 public class CancelTeachInTask extends TimerTask {
 
-    // the EnJConnection layer reference
-    private EnJConnection theConnection;
+    // the Connection layer reference
+    private Connection theConnection;
 
     /**
      * Builds a task which disables the teach in procedure on the given
-     * EnJConnection instance.
+     * Connection instance.
      *
      * @param theConnection
      */
-    public CancelTeachInTask(EnJConnection theConnection) {
+    public CancelTeachInTask(Connection theConnection) {
         // store a reference to the connection layer for which teach in must be
         // disabled
         this.theConnection = theConnection;

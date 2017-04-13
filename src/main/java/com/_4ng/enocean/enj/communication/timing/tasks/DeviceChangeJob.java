@@ -17,30 +17,30 @@
  */
 package com._4ng.enocean.enj.communication.timing.tasks;
 
-import com._4ng.enocean.enj.communication.EnJDeviceChangeType;
-import com._4ng.enocean.enj.communication.EnJDeviceListener;
-import com._4ng.enocean.enj.model.EnOceanDevice;
+import com._4ng.enocean.enj.communication.DeviceChangeType;
+import com._4ng.enocean.enj.communication.DeviceListener;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 
 import java.util.Set;
 
 /**
  * @author bonino
  */
-public class EnJDeviceChangeDeliveryTask implements Runnable {
+public class DeviceChangeJob implements Runnable {
     private EnOceanDevice changedDevice;
-    private EnJDeviceChangeType typeOfChange;
-    private Set<EnJDeviceListener> listeners;
+    private DeviceChangeType typeOfChange;
+    private Set<DeviceListener> listeners;
 
     /**
      * Builds a device update delivery task having as subject the given
      * {@link EnOceanDevice} instance and as type of change the given
-     * {@link EnJDeviceChangeType} value.
+     * {@link DeviceChangeType} value.
      *
      * @param changedDevice The changed device.
      * @param typeOfChange  The type of change (CREATED, MODIFIED or DELETED)
-     * @param listeners     The {@link EnJDeviceListener}s to be notified.
+     * @param listeners     The {@link DeviceListener}s to be notified.
      */
-    public EnJDeviceChangeDeliveryTask(EnOceanDevice changedDevice, EnJDeviceChangeType typeOfChange, Set<EnJDeviceListener> listeners) {
+    public DeviceChangeJob(EnOceanDevice changedDevice, DeviceChangeType typeOfChange, Set<DeviceListener> listeners) {
         this.changedDevice = changedDevice;
         this.typeOfChange = typeOfChange;
         this.listeners = listeners;
@@ -54,9 +54,8 @@ public class EnJDeviceChangeDeliveryTask implements Runnable {
     @Override
     public void run() {
         // deliver to all listeners
-        for (EnJDeviceListener listener : listeners) {
-            // deliver the device update notification according to the change
-            // type
+        for (DeviceListener listener : listeners) {
+            // deliver the device update notification according to the change type
             switch (typeOfChange) {
                 case CREATED: {
                     listener.addedEnOceanDevice(changedDevice);
@@ -72,7 +71,5 @@ public class EnJDeviceChangeDeliveryTask implements Runnable {
                 }
             }
         }
-
     }
-
 }

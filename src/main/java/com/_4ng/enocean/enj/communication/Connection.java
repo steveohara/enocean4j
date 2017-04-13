@@ -17,20 +17,16 @@
  */
 package com._4ng.enocean.enj.communication;
 
-import com._4ng.enocean.enj.application.devices.EnJPersistentDeviceSet;
 import com._4ng.enocean.enj.communication.timing.tasks.CancelTeachInTask;
-import com._4ng.enocean.enj.communication.timing.tasks.EnJDeviceChangeDeliveryTask;
+import com._4ng.enocean.enj.devices.DeviceManager;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.EEP;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
-import com._4ng.enocean.enj.eep.eep26.EEPRegistry;
-import com._4ng.enocean.enj.eep.eep26.profiles.D5.D500.D500;
 import com._4ng.enocean.enj.eep.eep26.profiles.D5.D500.D50001;
-import com._4ng.enocean.enj.eep.eep26.profiles.F6.F602.F602;
 import com._4ng.enocean.enj.eep.eep26.profiles.F6.F602.F60201;
 import com._4ng.enocean.enj.eep.eep26.telegram.*;
-import com._4ng.enocean.enj.link.EnJLink;
+import com._4ng.enocean.enj.link.LinkLayer;
 import com._4ng.enocean.enj.link.PacketListener;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 import com._4ng.enocean.enj.util.EnOceanUtils;
 import com._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
 import com._4ng.enocean.protocol.serial.v3.network.packet.event.Event;
@@ -39,7 +35,10 @@ import com._4ng.enocean.protocol.serial.v3.network.packet.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,29 +48,28 @@ import java.util.concurrent.Executors;
  * Defines standard and "easy to use" methods for writing / reading data from an
  * EnOcean network.
  * <p>
- * It is typically built on top of an EnJLink instance, e.g.:
+ * It is typically built on top of an LinkLayer instance, e.g.:
  * <p>
  * <pre>
  * String serialId = &quot;/dev/tty0&quot;;
  *
- * EnJLink link = new EnJLink(serialId);
+ * LinkLayer link = new LinkLayer(serialId);
  *
- * EnJConnection connection = new EnJConnection(link);
+ * Connection connection = new Connection(link);
  * </pre>
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  * @author <a href="mailto:biasiandrea04@gmail.com">Andrea Biasi</a>
  */
-public class EnJConnection implements PacketListener {
+public class Connection implements PacketListener {
 
     // the default teach-in timeout in milliseconds
     public static final int TEACH_IN_TIME = 20000;
-    private static final Logger logger = LoggerFactory.getLogger(EnJConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(Connection.class);
     // the wrapped link layer
-    private EnJLink linkLayer;
+    private LinkLayer linkLayer;
     // the set of device listeners to keep updated about device events
-    private Set<EnJDeviceListener> deviceListeners;
-    private Set<EnJTeachInListener> teachInListeners;
+    private Set<TeachInListener> teachInListeners;
 
     // ------------- TEACH IN -----------------
     // the executor service to run device update tasks
@@ -85,12 +83,6 @@ public class EnJConnection implements PacketListener {
     // the device to teach-in
     private EnOceanDevice deviceToTeachIn;
 
-    // The set of known devices
-    private EnJPersistentDeviceSet knownDevices;
-
-    // The EEP registry
-    private EEPRegistry registry;
-
     // a flag for enabling / disabling smart (non-standard) teach-in for a
     // selected subset of telegrams (RPS and 1BS)
     private boolean smartTeachIn;
@@ -99,33 +91,10 @@ public class EnJConnection implements PacketListener {
      * Build a connection layer instance on top of the given link layer
      * instance.
      *
-     * @param linkLayer                      The {@link EnJLink} instance upon which basing the connection
-     *                                       layer.
-     * @param peristentDeviceStorageFilename The name of the persistent storage to use (path on the file
-     *                                       system), can be null for in-memory storage.
+     * @param linkLayer The {@link LinkLayer} instance upon which basing the connection
+     *                  layer.
      */
-    public EnJConnection(EnJLink linkLayer, String peristentDeviceStorageFilename) {
-        initCommon(linkLayer, peristentDeviceStorageFilename, null);
-    }
-
-    /**
-     * @param linkLayer                      The {@link EnJLink} instance upon which basing the connection
-     *                                       layer.
-     * @param peristentDeviceStorageFilename The name of the persistent storage to use (path on the file
-     *                                       system), can be null for in-memory storage.
-     * @param listener                       The device listener to notify when devices are added,
-     *                                       modified, removed. This is the only listener "able" to listen
-     *                                       to device notifications stemming from the restoring of a
-     *                                       peristent storage.
-     */
-    public EnJConnection(EnJLink linkLayer, String peristentDeviceStorageFilename, EnJDeviceListener listener) {
-        initCommon(linkLayer, peristentDeviceStorageFilename, listener);
-    }
-
-    private void initCommon(EnJLink linkLayer, String peristentDeviceStorageFilename, EnJDeviceListener listener) {
-
-        // initialize the set of device listeners
-        deviceListeners = new HashSet<>();
+    public Connection(LinkLayer linkLayer) {
 
         //initialize the set of teach-in listeners
         teachInListeners = new HashSet<>();
@@ -146,59 +115,17 @@ public class EnJConnection implements PacketListener {
         // store a reference to the link layer
         this.linkLayer = linkLayer;
 
-        // store a reference to the EEPRegistry, this call also triggers dynamic
-        // discovery of supported EEPs
-        registry = EEPRegistry.getInstance();
-
-        // initialize the persistent device store and sets autosave at on
-        // TODO: check how to pass the filename here...
-        knownDevices = new EnJPersistentDeviceSet(peristentDeviceStorageFilename, true);
-
-        // notify device listeners if any
-        if (listener != null) {
-            // add the listener
-            deviceListeners.add(listener);
-
-            // notify the listener
-            for (EnOceanDevice device : knownDevices.listAll()) {
-                notifyEnJDeviceListeners(device, EnJDeviceChangeType.CREATED);
-            }
-        }
-
         // add this connection layer as listener for incoming events
         this.linkLayer.addPacketListener(this);
-
-    }
-
-    /**
-     * Adds a device listener to the set of listeners to be notified about
-     * device events: creation, modification, deletion.
-     *
-     * @param listener filename * The {@link EnJDeviceListener} to notify to.
-     */
-    public void addEnJDeviceListener(EnJDeviceListener listener) {
-        // store the listener in the set of currently active listeners
-        deviceListeners.add(listener);
-    }
-
-    /**
-     * Removes a device listener from the ste of listeners to be notified about
-     * filename * device events.
-     *
-     * @param listener The {@link EnJDeviceListener} to remove.
-     * @return true if removal was successful, false, otherwise.
-     */
-    public boolean removeEnJDeviceListener(EnJDeviceListener listener) {
-        return deviceListeners.remove(listener);
     }
 
     /**
      * Adds a teach in listener to the set of listeners to be notified about
      * teach-in status
      *
-     * @param listener filename * The {@link EnJDeviceListener} to notify to.
+     * @param listener filename * The {@link DeviceListener} to notify to.
      */
-    public void addEnJTeachInListener(EnJTeachInListener listener) {
+    public void addTeachInListener(TeachInListener listener) {
         // store the listener in the set of currently active listeners
         teachInListeners.add(listener);
     }
@@ -207,10 +134,10 @@ public class EnJConnection implements PacketListener {
      * Removes a teach-in listener from the set of listeners to be notified about
      * teach-in events.
      *
-     * @param listener The {@link EnJDeviceListener} to remove.
+     * @param listener The {@link DeviceListener} to remove.
      * @return true if removal was successful, false, otherwise.
      */
-    public boolean removeEnJDeviceListener(EnJTeachInListener listener) {
+    public boolean removeTeachInListener(TeachInListener listener) {
         return teachInListeners.remove(listener);
     }
 
@@ -224,7 +151,7 @@ public class EnJConnection implements PacketListener {
      * mechanism.
      * <p>
      * The teach in procedure lasts for a time equal to the default
-     * <code>EnJConnection.TEACH_IN_TIME</code>
+     * <code>Connection.TEACH_IN_TIME</code>
      */
     public void enableTeachIn() {
         // start reset timer
@@ -240,12 +167,10 @@ public class EnJConnection implements PacketListener {
             // convert - parse strings to corresponding data
 
             // parse the identifier
-            EEPIdentifier eepIdentifier = EEPIdentifier.parse(eepIdentifierAsString);
-
+            EEPIdentifier eep = EEPIdentifier.parse(eepIdentifierAsString);
             byte address[] = EnOceanDevice.parseAddress(hexDeviceAddress);
-
             EnOceanDevice device = new EnOceanDevice(address, null);
-            device.setEEP(registry.getEEP(eepIdentifier));
+            device.setEEP(DeviceManager.getEEP(eep));
 
             // store the device to learn
             deviceToTeachIn = device;
@@ -269,15 +194,14 @@ public class EnJConnection implements PacketListener {
      */
     public void enableTeachIn(int teachInTime) {
         if (!teachIn) {
-            // enable teach in
             teachIn = true;
 
             // start the teach in reset timer
             teachInTimer.schedule(new CancelTeachInTask(this), teachInTime);
-            logger.info("Teach-in enabled");
+            logger.info("Teach-in enabled for {} milliseconds", teachInTime);
 
             //notify listeners
-            for (EnJTeachInListener listener : teachInListeners) {
+            for (TeachInListener listener : teachInListeners) {
                 listener.teachInEnabled(isSmartTeachInEnabled());
             }
         }
@@ -308,7 +232,7 @@ public class EnJConnection implements PacketListener {
         logger.info("Teach-in disabled");
 
         //notify listeners
-        for (EnJTeachInListener listener : teachInListeners) {
+        for (TeachInListener listener : teachInListeners) {
             listener.teachInDisabled();
         }
     }
@@ -330,7 +254,6 @@ public class EnJConnection implements PacketListener {
         System.arraycopy(payload, 0, actualPayload, 0, payload.length);
 
         // sender address
-        // TODO: remove hardcoding if possible!!!
         actualPayload[payload.length] = (byte) 0x00;
         actualPayload[payload.length + 1] = (byte) 0xFF;
         actualPayload[payload.length + 2] = (byte) 0xFF;
@@ -358,63 +281,6 @@ public class EnJConnection implements PacketListener {
      */
     public void setSmartTeachIn(boolean smartTeachIn) {
         this.smartTeachIn = smartTeachIn;
-    }
-
-    /**
-     * @param hexDeviceAddress
-     * @param eepIdentifier
-     */
-    public void addNewDevice(String hexDeviceAddress, String eepIdentifier) {
-        byte deviceAddress[] = EnOceanDevice.parseAddress(hexDeviceAddress);
-        EEPIdentifier eepId = EEPIdentifier.parse(eepIdentifier);
-
-        // check if the device is already known
-        if (knownDevices.getByLowAddress(deviceAddress) == null && eepId != null) {
-            addNewDevice(deviceAddress, null, eepId);
-        }
-    }
-
-
-    /**
-     * Returns the set of currently known devices
-     *
-     * @return the knownDevices
-     */
-    public Collection<EnOceanDevice> getKnownDevices() {
-        return knownDevices.listAll();
-    }
-
-    /**
-     * @param address
-     * @param manufacturerId
-     * @param eepId
-     */
-    private EnOceanDevice addNewDevice(byte address[], byte manufacturerId[], EEPIdentifier eepId) {
-        EnOceanDevice device = new EnOceanDevice(address, manufacturerId);
-        Class<? extends EEP> deviceEEP = registry.getEEP(eepId);
-
-        if (deviceEEP != null) {
-            device.setEEP(deviceEEP);
-
-            // notify listeners
-            notifyEnJDeviceListeners(device, EnJDeviceChangeType.CREATED);
-
-            // store the device
-            knownDevices.add(device);
-            return device;
-        }
-        return null;
-    }
-
-    /**
-     * adds sender address and status to the given payload, thus completing the
-     * Returns the EnOcean device having the given UID
-     *
-     * @param deviceUID
-     * @return
-     */
-    public EnOceanDevice getDevice(int deviceUID) {
-        return knownDevices.getByUID(deviceUID);
     }
 
     @Override
@@ -456,7 +322,7 @@ public class EnJConnection implements PacketListener {
                 byte address[] = telegram.getAddress();
 
                 // get the corresponding device...
-                EnOceanDevice device = knownDevices.getByLowAddress(address);
+                EnOceanDevice device = DeviceManager.getDevice(address);
 
                 // check null
                 if (device == null) {
@@ -465,35 +331,29 @@ public class EnJConnection implements PacketListener {
                     // therefore the device must be learned, either
                     // implicitly or explicitly
 
-                    // check if the packet is an RPS one
+                    // handle RPS teach-in, can either be done
+                    // implicitly, an F60201 EEP will be used, or explicitly if teachIn
+                    // is true and the device to teach in has been completely
+                    // specified.
                     if (RPSTelegram.isRPSPacket(pkt)) {
+                        handleRPSTeachIn(pkt);
+                    }
 
-                        // handle RPS teach-in, can either be done
-                        // implicitly, an
-                        // F60201 EEP will be used, or explicitly if teachIn
-                        // is
-                        // true
-                        // and the device to teach in has been completely
-                        // specified.
-                        device = handleRPSTeachIn(pkt);
-                    }
+                    // handle 1BS telegrams (much similar to RPS)
                     else if (OneBSTelegram.is1BSPacket(pkt)) {
-                        // handle 1BS telegrams (much similar to RPS)
-                        device = handle1BSTeachIn(pkt);
+                        handle1BSTeachIn(pkt);
                     }
+
+                    // handle 3 variations of 4BS teach in: explicit
+                    // with application-specified EEP, explicit with
+                    // device-specified EEP or bi-directional.
                     else if (FourBSTelegram.is4BSPacket(pkt)) {
-                        // handle 3 variations of 4BS teach in: explicit
-                        // with
-                        // application-specified EEP, explicit with
-                        // device-specified
-                        // EEP or bi-directional.
-                        device = handle4BSTeachIn(pkt);
+                        handle4BSTeachIn(pkt);
                     }
-                    if (device == null) {
-                        logger.info("Unknown packet type or teach-in disabled: {}", pkt);
-                    }
+
+                    // Unknown packet type
                     else {
-                        logger.info("Unregistered device: {}", device);
+                        logger.info("Unknown packet type: {}", pkt);
                     }
                 }
                 else {
@@ -515,7 +375,6 @@ public class EnJConnection implements PacketListener {
                 }
             }
         }
-
     }
 
     /**
@@ -532,16 +391,15 @@ public class EnJConnection implements PacketListener {
         // check the packet type
         if (pkt.isTeachInRequest()) {
             // check the eep
-            if (registry.isEEPSupported(pkt.getEEP())) {
+            if (DeviceManager.isEEPSupported(pkt.getEEP())) {
                 // build the response packet
                 response = pkt.buildResponse(UTETeachInTelegram.BIDIRECTIONAL_TEACH_IN_SUCCESSFUL);
 
                 // build the device
-                addNewDevice(pkt.getAddress(), pkt.getManId(), pkt.getEEP());
+                DeviceManager.registerDevice(pkt.getAddress(), pkt.getManId(), pkt.getEEP());
             }
-            else
             // build the response packet
-            {
+            else {
                 response = pkt.buildResponse(UTETeachInTelegram.BIDIRECTIONAL_TEACH_IN_REFUSED);
             }
         }
@@ -589,8 +447,11 @@ public class EnJConnection implements PacketListener {
             }
             else if (smartTeachIn) {
                 // build a new RPS device
-                device = addNewDevice(rpsTelegram.getAddress(), null, new EEPIdentifier(F602.rorg, F602.func, F60201.type));
+                device = DeviceManager.registerDevice(rpsTelegram.getAddress(), null, new EEPIdentifier(F60201.RORG, F60201.FUNC, F60201.TYPE));
             }
+        }
+        else {
+            logger.debug("Teach-in is disabled so telegram ignored: {}", pkt);
         }
         return device;
     }
@@ -607,7 +468,7 @@ public class EnJConnection implements PacketListener {
         if (teachIn) {
 
             // the only teach-in procedure supported by the EEP2.6 specification
-            // is direct and esplicit tech-in, mening that the device to
+            // is direct and explicit tech-in, meaning that the device to
             // teach-in and the corresponding profile are known in advance.
             // Since this assumption may sometimes be a little bit limiting, a
             // mechanism for enabling implicit teach-in is also provided. This
@@ -619,12 +480,13 @@ public class EnJConnection implements PacketListener {
             else if (smartTeachIn) {
 
                 // build a new RPS device,
-                device = addNewDevice(oneBSTelegram.getAddress(), null, new EEPIdentifier(D500.rorg, D500.func, D50001.type));
+                device = DeviceManager.registerDevice(oneBSTelegram.getAddress(), null, new EEPIdentifier(D50001.RORG, D50001.FUNC, D50001.TYPE));
             }
         }
-
+        else {
+            logger.debug("Teach-in is disabled so telegram ignored: {}", pkt);
+        }
         return device;
-
     }
 
     private EnOceanDevice handle4BSTeachIn(ESP3Packet pkt) {
@@ -645,7 +507,7 @@ public class EnJConnection implements PacketListener {
                 // --------- Teach-in variation 2 ------
                 if (bs4TeachInTelegram.isWithEEP()) {
                     // build a new 4BS device,
-                    device = addNewDevice(bs4TeachInTelegram.getAddress(), bs4TeachInTelegram.getManId(), new EEPIdentifier(bs4TeachInTelegram.getRorg(), bs4TeachInTelegram.getEEPFunc(), bs4TeachInTelegram.getEEPType()));
+                    device = DeviceManager.registerDevice(bs4TeachInTelegram.getAddress(), bs4TeachInTelegram.getManId(), new EEPIdentifier(bs4TeachInTelegram.getRorg(), bs4TeachInTelegram.getEEPFunc(), bs4TeachInTelegram.getEEPType()));
                 }
                 else if (deviceToTeachIn != null) {
                     device = explicitTeachIn(bs4TeachInTelegram);
@@ -663,22 +525,10 @@ public class EnJConnection implements PacketListener {
                 }
             }
         }
-
+        else {
+            logger.debug("Teach-in is disabled so telegram ignored: {}", pkt);
+        }
         return device;
-    }
-
-    private void notifyEnJDeviceListeners(EnOceanDevice device, EnJDeviceChangeType changeType) {
-        // use asynchronous delivery here, to avoid blocking / delaying the
-        // messaging procedure
-        deviceUpdateDeliveryExecutor.execute(new EnJDeviceChangeDeliveryTask(device, changeType, deviceListeners));
-    }
-
-    private void handleResponse(Response pkt) {
-        logger.info("Received response: {}", pkt.toString());
-    }
-
-    private void handleEvent(Event pkt) {
-        logger.debug("Received event: {}", pkt.toString());
     }
 
     private EnOceanDevice explicitTeachIn(EEP26Telegram telegram) {
@@ -707,13 +557,8 @@ public class EnJConnection implements PacketListener {
         // of the telegram match
         if (Arrays.equals(deviceToTeachIn.getAddress(), telegram.getAddress())) {
 
-            // use the device to teach in
-
-            // notify listeners
-            notifyEnJDeviceListeners(deviceToTeachIn, EnJDeviceChangeType.CREATED);
-
             // store the device
-            knownDevices.add(deviceToTeachIn);
+            DeviceManager.registerDevice(deviceToTeachIn);
 
             // set the device learnt
             device = deviceToTeachIn;
@@ -724,4 +569,13 @@ public class EnJConnection implements PacketListener {
 
         return device;
     }
+
+    private void handleResponse(Response pkt) {
+        logger.info("Received response: {}", pkt.toString());
+    }
+
+    private void handleEvent(Event pkt) {
+        logger.debug("Received event: {}", pkt.toString());
+    }
+
 }

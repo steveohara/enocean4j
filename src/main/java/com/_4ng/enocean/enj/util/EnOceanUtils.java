@@ -42,7 +42,7 @@ public class EnOceanUtils {
      * @return The {@link String} representation of the given byte array.
      */
     public static String toHexString(byte byteArray[]) {
-        if (byteArray == null || byteArray.length==0) {
+        if (byteArray == null || byteArray.length == 0) {
             return "<empty>";
         }
 

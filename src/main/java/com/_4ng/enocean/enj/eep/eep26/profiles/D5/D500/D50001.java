@@ -18,13 +18,13 @@
 package com._4ng.enocean.enj.eep.eep26.profiles.D5.D500;
 
 
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26Switching;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.OneBSTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 /**
  * @author bonino
@@ -32,7 +32,7 @@ import com._4ng.enocean.enj.model.EnOceanDevice;
 public class D50001 extends D500 {
 
     // the type definition
-    public static final byte type = (byte) 0x01;
+    public static final byte TYPE = (byte) 0x01;
     public static final int CHANNEL = 0;
 
     /**
@@ -50,7 +50,7 @@ public class D50001 extends D500 {
      */
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(D500.rorg, D500.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     /*
@@ -84,7 +84,7 @@ public class D50001 extends D500 {
                 switchingAttribute.setValue(message.isContactClosed());
 
                 // build the dispatching task
-                EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(switchingAttribute, CHANNEL, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(switchingAttribute, CHANNEL, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

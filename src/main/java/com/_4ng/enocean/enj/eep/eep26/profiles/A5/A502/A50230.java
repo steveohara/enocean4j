@@ -17,13 +17,13 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.A5.A502;
 
-import com._4ng.enocean.enj.eep.EEPAttributeChangeDispatcher;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
+import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.enj.eep.EEPIdentifier;
 import com._4ng.enocean.enj.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.enj.eep.eep26.telegram.FourBSTelegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 /**
  * @author bonino
@@ -31,7 +31,7 @@ import com._4ng.enocean.enj.model.EnOceanDevice;
 public class A50230 extends A502 {
 
     // the type definition
-    public static final byte type = (byte) 0x30;
+    public static final byte TYPE = (byte) 0x30;
 
     // the used channel
     public static final int CHANNEL = 0;
@@ -53,7 +53,7 @@ public class A50230 extends A502 {
     @Override
     public EEPIdentifier getEEPIdentifier() {
         // return the EEPIdentifier for this profile
-        return new EEPIdentifier(A502.rorg, A502.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
 
     }
 
@@ -92,7 +92,7 @@ public class A50230 extends A502 {
                     tLinear.setRawValue(rawT);
 
                     // build the dispatching task
-                    EEPAttributeChangeDispatcher dispatcherTask = new EEPAttributeChangeDispatcher(tLinear, 1, telegram, device);
+                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
 
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);

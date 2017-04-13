@@ -17,11 +17,12 @@
  */
 package com._4ng.enocean.examples;
 
-import com._4ng.enocean.enj.communication.EnJConnection;
+import com._4ng.enocean.enj.communication.Connection;
+import com._4ng.enocean.enj.devices.DeviceManager;
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D20109;
 import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D201UnitOfMeasure;
-import com._4ng.enocean.enj.link.EnJLink;
-import com._4ng.enocean.enj.model.EnOceanDevice;
+import com._4ng.enocean.enj.link.LinkLayer;
 import com._4ng.enocean.examples.util.Options;
 
 import java.io.BufferedReader;
@@ -39,11 +40,11 @@ public class TestApp {
 
     /**
      * @param args Commandline arguments
-     * @throws InterruptedException If the process is inerrupted
+     * @throws InterruptedException If the process is interrupted
      */
     public static void main(String[] args) throws InterruptedException {
         // a utility object for managing command line arguments...
-        Options opt = new Options(new String[]{"-p port", "The serial port to which the EnOcean dongle / adapter is connected", "-f persistent-device-file", "The file on which persisting devices", "-m mode", "the testmode, either [interactive,demo], default is demo"}, "java TestApp", args);
+        Options opt = new Options(new String[]{"-p port", "The serial port to which the EnOcean dongle / adapter is connected", "-m mode", "the testmode, either [interactive,demo], default is demo"}, "java TestApp", args);
 
         // create an instance of TestApp
         TestApp app = new TestApp();
@@ -53,16 +54,13 @@ public class TestApp {
             // The EnOcean link layer
             try {
                 // create the lowest link layer
-                EnJLink linkLayer = new EnJLink(opt.getValue('p'));
+                LinkLayer linkLayer = new LinkLayer(opt.getValue('p'));
 
                 // create a device listener for handling device updates
-                SimpleDeviceListener listener = new SimpleDeviceListener();
-
-                // get the persistent file name
-                String persistentFileName = opt.getValue('f');
+                DeviceManager.addDeviceListener(new SimpleDeviceListener());
 
                 // create the connection layer
-                EnJConnection connection = new EnJConnection(linkLayer, persistentFileName != null && !persistentFileName.isEmpty() ? persistentFileName : null, listener);
+                Connection connection = new Connection(linkLayer);
 
                 // connect the link
                 linkLayer.connect();
@@ -107,7 +105,7 @@ public class TestApp {
         }
     }
 
-    private void performDemo(EnJConnection connection) throws InterruptedException {
+    private void performDemo(Connection connection) throws InterruptedException {
         // ---------- Explicit teach-in ---------
         // the device to learn
         // System.out.println("Enabling explicit teach-in for 018a781f");
@@ -124,20 +122,17 @@ public class TestApp {
         // ---------- Smart teach-in -------------
 
         // teach-in for 2s
-        System.out.println("Enabling smart teach-in for 2s");
         connection.setSmartTeachIn(true);
-        System.out.println("SmartTeachIn: " + connection.isSmartTeachInEnabled());
         connection.enableTeachIn(5000);
         Thread.sleep(5500);
 
         connection.setSmartTeachIn(false);
-        System.out.println("SmartTeachIn: " + connection.isSmartTeachInEnabled());
         Thread.sleep(2000);
 
         // ----------- actuation test ------------
 
         // get the device by high-level uid
-        EnOceanDevice device = connection.getDevice(25673502);
+        EnOceanDevice device = DeviceManager.getDevice(25673502);
 
         // check not null
         if (device != null) {
@@ -158,7 +153,7 @@ public class TestApp {
         }
     }
 
-    private void interactiveDemo(EnJConnection connection) throws IOException, InterruptedException {
+    private void interactiveDemo(Connection connection) throws IOException, InterruptedException {
         // handle interactive mode
 
         // prompt:
@@ -171,7 +166,7 @@ public class TestApp {
         BufferedReader bfr = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
 
         // the commaand cycle
-        while (cmdLine!=null && !cmdLine.equalsIgnoreCase("exit")) {
+        while (cmdLine != null && !cmdLine.equalsIgnoreCase("exit")) {
 
             // print the first prompt
             System.out.print(prompt);

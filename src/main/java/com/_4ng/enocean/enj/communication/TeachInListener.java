@@ -20,6 +20,16 @@ package com._4ng.enocean.enj.communication;
 /**
  * @author bonino
  */
-public enum EnJDeviceChangeType {
-    CREATED, MODIFIED, DELETED
+public interface TeachInListener {
+    /**
+     * Notifies when teach in is enabled and if teach-in is in smart mode
+     *
+     * @param smart
+     */
+    void teachInEnabled(boolean smart);
+
+    /**
+     * Notifies when teach-in is disabled
+     */
+    void teachInDisabled();
 }

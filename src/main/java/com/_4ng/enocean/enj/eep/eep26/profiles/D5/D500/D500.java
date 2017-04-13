@@ -17,8 +17,7 @@
  */
 package com._4ng.enocean.enj.eep.eep26.profiles.D5.D500;
 
-import com._4ng.enocean.enj.eep.EEP;
-import com._4ng.enocean.enj.eep.Rorg;
+import com._4ng.enocean.enj.eep.eep26.profiles.D5.D5;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,10 +29,9 @@ import java.util.concurrent.Executors;
  *
  * @author bonino
  */
-public abstract class D500 extends EEP {
+public abstract class D500 extends D5 {
     // the EEP26 definition, according to the EEP26 specification
-    public static final Rorg rorg = new Rorg((byte) 0xd5);
-    public static final byte func = (byte) 0x00;
+    public static final byte FUNC = (byte) 0x00;
 
     // func must be defined by extending classes
 

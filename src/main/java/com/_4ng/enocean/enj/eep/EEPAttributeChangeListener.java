@@ -18,8 +18,8 @@
 package com._4ng.enocean.enj.eep;
 
 
+import com._4ng.enocean.enj.devices.EnOceanDevice;
 import com._4ng.enocean.enj.eep.eep26.telegram.EEP26Telegram;
-import com._4ng.enocean.enj.model.EnOceanDevice;
 
 /**
  * Define the set of methods by which a software entity (class) can be notified

@@ -26,7 +26,7 @@ import com._4ng.enocean.enj.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 public class A50204 extends A502 {
 
     // the type definition
-    public static final byte type = (byte) 0x04;
+    public static final byte TYPE = (byte) 0x04;
 
     // the used channel
     public static final int CHANNEL = 0;
@@ -48,7 +48,7 @@ public class A50204 extends A502 {
     @Override
     public EEPIdentifier getEEPIdentifier() {
         // return the EEPIdentifier for this profile
-        return new EEPIdentifier(A502.rorg, A502.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
 
     }
 

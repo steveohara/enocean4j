@@ -29,7 +29,7 @@ import com._4ng.enocean.enj.eep.EEPIdentifier;
 public class F61001 extends F61000 {
 
     // the type definition
-    public static final byte type = (byte) 0x01;
+    public static final byte TYPE = (byte) 0x01;
 
     public F61001() {
     }
@@ -42,6 +42,6 @@ public class F61001 extends F61000 {
      */
     @Override
     public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(F610.rorg, F610.func, type);
+        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 }

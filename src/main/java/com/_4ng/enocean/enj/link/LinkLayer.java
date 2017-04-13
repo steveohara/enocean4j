@@ -32,9 +32,9 @@ import java.util.concurrent.Semaphore;
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  * @author <a href="mailto:biasiandrea04@gmail.com">Andrea Biasi </a>
  */
-public class EnJLink {
+public class LinkLayer {
 
-    private static final Logger logger = LoggerFactory.getLogger(EnJLink.class);
+    private static final Logger logger = LoggerFactory.getLogger(LinkLayer.class);
 
     // The default serial port timeout
     private static final int SERIAL_TIMEOUT = 1000;
@@ -64,7 +64,7 @@ public class EnJLink {
      * communication with any physical transceiver connected to the serial port
      * identified by given serial port id.
      */
-    public EnJLink(String serialPortId) throws Exception {
+    public LinkLayer(String serialPortId) throws Exception {
 
         // build transmission and reception queues
         // TODO: check if it is better to adopt circular buffers in order to
