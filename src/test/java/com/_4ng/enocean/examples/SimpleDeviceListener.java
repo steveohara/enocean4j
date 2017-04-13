@@ -17,10 +17,10 @@
  */
 package com._4ng.enocean.examples;
 
-import com._4ng.enocean.enj.communication.DeviceListener;
-import com._4ng.enocean.enj.devices.EnOceanDevice;
-import com._4ng.enocean.enj.eep.EEPAttribute;
-import com._4ng.enocean.enj.eep.EEPAttributeChangeJob;
+import com._4ng.enocean.communication.DeviceListener;
+import com._4ng.enocean.devices.EnOceanDevice;
+import com._4ng.enocean.eep.EEPAttribute;
+import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,34 +35,16 @@ public class SimpleDeviceListener implements DeviceListener {
         // do nothing
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com._4ng.enocean.enj.communication.DeviceListener#
-     * addedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
-     */
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
         logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com._4ng.enocean.enj.communication.DeviceListener#
-     * modifiedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
-     */
     @Override
     public void modifiedEnOceanDevice(EnOceanDevice device) {
         logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com._4ng.enocean.enj.communication.DeviceListener#
-     * removedEnOceanDevice(com._4ng.enocean.enj.model.EnOceanDevice)
-     */
     @Override
     public void removedEnOceanDevice(EnOceanDevice device) {
         logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());

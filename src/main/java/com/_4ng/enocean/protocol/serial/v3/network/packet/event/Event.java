@@ -1,10 +1,23 @@
-/**
+/*
+ * Copyright $DateInfo.year enocean4j development teams
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com._4ng.enocean.protocol.serial.v3.network.packet.event;
 
-import com._4ng.enocean.enj.util.EnOceanUtils;
 import com._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import com._4ng.enocean.util.EnOceanUtils;
 
 /**
  * PACKET TYPE 4 : EVENT
@@ -81,12 +94,9 @@ public class Event extends ESP3Packet {
         return data[0] == 0x05;
     }
 
-    /**
-     * Provides a readable string representation of this object
-     */
     @Override
     public String toString() {
-        StringBuffer stringThis = new StringBuffer();
+        StringBuilder stringThis = new StringBuilder();
         stringThis.append("Event[");
         stringThis.append(" 'value' :");
         if (retSaReclaimNotSuccessful()) {

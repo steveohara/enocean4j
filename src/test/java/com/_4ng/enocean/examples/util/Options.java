@@ -278,7 +278,7 @@ public class Options {
             if (descr[i] == null || descr[i].length() == 0) {
                 continue;
             }
-            StringBuffer b = new StringBuffer("  ");
+            StringBuilder b = new StringBuilder("  ");
             b.append(key[i]);
             if (var[i] != null) {
                 b.append(' ').append(var[i]);

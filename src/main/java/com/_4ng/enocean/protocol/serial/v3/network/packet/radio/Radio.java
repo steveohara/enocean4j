@@ -1,7 +1,23 @@
+/*
+ * Copyright $DateInfo.year enocean4j development teams
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com._4ng.enocean.protocol.serial.v3.network.packet.radio;
 
-import com._4ng.enocean.enj.util.EnOceanUtils;
 import com._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import com._4ng.enocean.util.EnOceanUtils;
 
 /**
  * @author Andrea Biasi <biasiandrea04@gmail.com>
@@ -80,9 +96,9 @@ public class Radio extends ESP3Packet {
      * Gets a Radio packet to be sent to the transceiver, and then to the device
      * with the given address
      *
-     * @param address
-     * @param payload
-     * @return
+     * @param address Address to send to
+     * @param payload Payload to send
+     * @return A radio packet
      */
     public static Radio getRadio(byte[] address, byte[] payload, boolean send) {
         // prepare the radio packet

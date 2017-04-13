@@ -17,13 +17,13 @@
  */
 package com._4ng.enocean.examples;
 
-import com._4ng.enocean.enj.communication.Connection;
-import com._4ng.enocean.enj.devices.DeviceManager;
-import com._4ng.enocean.enj.devices.EnOceanDevice;
-import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D20109;
-import com._4ng.enocean.enj.eep.eep26.profiles.D2.D201.D201UnitOfMeasure;
-import com._4ng.enocean.enj.link.LinkLayer;
+import com._4ng.enocean.communication.Connection;
+import com._4ng.enocean.devices.DeviceManager;
+import com._4ng.enocean.devices.EnOceanDevice;
+import com._4ng.enocean.eep.eep26.profiles.D2.D201.D20109;
+import com._4ng.enocean.eep.eep26.profiles.D2.D201.D201UnitOfMeasure;
 import com._4ng.enocean.examples.util.Options;
+import com._4ng.enocean.link.LinkLayer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
