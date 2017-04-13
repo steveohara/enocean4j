@@ -28,48 +28,51 @@ When we've worked with the library a bit more, we will fix these issues.
 Thanks to Dario Bonino and Andrea Biasi for all of their hard work on the original library at [e-lite](https://elite.polito.it/).
 
 ## For the impatient
-    try {
-        // create the lowest link layer
-        LinkLayer linkLayer = new LinkLayer("com3");
-        
-        // create a device listener for handling device updates
-        DeviceManager.addDeviceListener(new SimpleDeviceListener());
-        
-        // create the connection layer
-        Connection connection = new Connection(linkLayer);
-        
-        // connect the link
-        linkLayer.connect();        
-    }
-    catch (Exception e) {
-        System.err.println("The given port does not exist or no device is plugged in" + e);
-    }
+```java
+try {
+    // create the lowest link layer
+    LinkLayer linkLayer = new LinkLayer("com3");
+    
+    // create a device listener for handling device updates
+    DeviceManager.addDeviceListener(new SimpleDeviceListener());
+    
+    // create the connection layer
+    Connection connection = new Connection(linkLayer);
+    
+    // connect the link
+    linkLayer.connect();        
+}
+catch (Exception e) {
+    System.err.println("The given port does not exist or no device is plugged in" + e);
+}
+```
 
 The device event listener
+```java
+public class SimpleDeviceListener implements DeviceListener {
 
-    public class SimpleDeviceListener implements DeviceListener {
-    
-        private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
-    
-        @Override
-        public void addedEnOceanDevice(EnOceanDevice device) {
-            logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
-        }
-    
-        @Override
-        public void modifiedEnOceanDevice(EnOceanDevice device) {
-            logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
-        }
-    
-        @Override
-        public void removedEnOceanDevice(EnOceanDevice device) {
-            logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());
-        }
-    
-        @Override
-        public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
-            for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
-                logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
-            }
+    private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
+
+    @Override
+    public void addedEnOceanDevice(EnOceanDevice device) {
+        logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
+    }
+
+    @Override
+    public void modifiedEnOceanDevice(EnOceanDevice device) {
+        logger.info("Modified device: {} ({})", device.getAddressInt(), device.getAddressHex());
+    }
+
+    @Override
+    public void removedEnOceanDevice(EnOceanDevice device) {
+        logger.info("Removed device: {} ({})", device.getAddressInt(), device.getAddressHex());
+    }
+
+    @Override
+    public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
+        for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
+            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
         }
     }
+}
+```    
