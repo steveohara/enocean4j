@@ -74,7 +74,8 @@ public class SimpleDeviceListener implements DeviceListener {
     @Override
     public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
         for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
-            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
+            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", 
+            eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
         }
     }
 }
