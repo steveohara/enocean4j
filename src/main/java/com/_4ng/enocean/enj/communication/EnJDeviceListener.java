@@ -33,7 +33,7 @@ public interface EnJDeviceListener {
      *
      * @param device The just added device;
      */
-    public void addedEnOceanDevice(EnOceanDevice device);
+    void addedEnOceanDevice(EnOceanDevice device);
 
     /**
      * Called when a {@link EnOceanDevice} definition has changed, e.g., because
@@ -41,7 +41,7 @@ public interface EnJDeviceListener {
      *
      * @param changedDevice The changed device.
      */
-    public void modifiedEnOceanDevice(EnOceanDevice changedDevice);
+    void modifiedEnOceanDevice(EnOceanDevice changedDevice);
 
     /**
      * Called when a {@link EnOceanDevice} has been remove from the physical
@@ -50,5 +50,6 @@ public interface EnJDeviceListener {
      *
      * @param changedDevice
      */
-    public void removedEnOceanDevice(EnOceanDevice changedDevice);
+    void removedEnOceanDevice(EnOceanDevice changedDevice);
+
 }

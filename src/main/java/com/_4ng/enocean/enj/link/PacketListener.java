@@ -31,5 +31,5 @@ public interface PacketListener {
      *
      * @param pkt
      */
-    public void handlePacket(ESP3Packet pkt);
+    void handlePacket(ESP3Packet pkt);
 }

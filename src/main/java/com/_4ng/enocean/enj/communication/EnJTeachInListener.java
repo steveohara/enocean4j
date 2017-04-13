@@ -26,10 +26,10 @@ public interface EnJTeachInListener {
      *
      * @param smart
      */
-    public void teachInEnabled(boolean smart);
+    void teachInEnabled(boolean smart);
 
     /**
      * Notifies when teach-in is disabled
      */
-    public void teachInDisabled();
+    void teachInDisabled();
 }

@@ -67,5 +67,7 @@ public class EEPAttributeChangeDispatcher implements Runnable {
         for (EEPAttribute<?> attribute : attributesToDispatch) {
             attribute.notifyAttributeListeners(channelId, telegram, device);
         }
+
+
     }
 }
