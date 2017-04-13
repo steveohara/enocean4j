@@ -31,10 +31,6 @@ public class SimpleDeviceListener implements DeviceListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
 
-    public SimpleDeviceListener() {
-        // do nothing
-    }
-
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
         logger.info("Added device: {} ({})", device.getAddressInt(), device.getAddressHex());
