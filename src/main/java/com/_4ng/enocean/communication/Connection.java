@@ -258,11 +258,8 @@ public class Connection implements PacketListener {
         // status
         actualPayload[payload.length + 4] = (byte) 0x00;
 
-        // build the link-layer packet
-        Radio enjLinkPacket = Radio.getRadio(address, actualPayload, true);
-
-        // send the packet
-        linkLayer.send(enjLinkPacket);
+        // build the link-layer packet and it
+        linkLayer.send(Radio.getRadio(address, actualPayload, true));
     }
 
     /**

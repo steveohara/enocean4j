@@ -159,7 +159,7 @@ public class TestApp {
         // handle interactive mode
 
         // prompt:
-        String prompt = "enj-interactive cmd > ";
+        String prompt = "cmd > ";
 
         // the string holding the command line
         String cmdLine = "";
