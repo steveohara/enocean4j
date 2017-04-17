@@ -21,13 +21,12 @@ import com._4ng.enocean.communication.timing.tasks.DeviceChangeJob;
 import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.eep.EEPIdentifier;
+import com._4ng.enocean.eep.Rorg;
 import com._4ng.enocean.eep.eep26.EEPRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -234,9 +233,45 @@ public class DeviceManager {
         return eepRegistry.getEEP(eep);
     }
 
+
     public static void notifyDeviceListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
         for (DeviceListener listener : deviceListeners) {
             listener.deviceAttributeChange(eepAttributeChangeJob);
         }
     }
+
+    /**
+     * Returns a reference to all the supported profiles for the given RORG
+     *
+     * @param rorg Rorg to get profiles for
+     * @return Map of supported EEP profiles
+     */
+    public Map<EEPIdentifier, EEP> getProfiles(Rorg rorg) {
+        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
+        for (EEP eep : eepRegistry.getProfiles().values()) {
+            if (eep.getRorg().equals(rorg)) {
+                returnValue.put(eep.getEEPIdentifier(), eep);
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * Returns a reference to all the supported profiles for the given RORG and function
+     *
+     * @param rorg Rorg to get profiles for
+     * @param function Function to match
+     * @return Map of supported EEP profiles
+     */
+    public Map<EEPIdentifier, EEP> getProfiles(Rorg rorg, byte function) {
+        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
+        for (EEP eep : eepRegistry.getProfiles().values()) {
+            if (eep.getRorg().equals(rorg) && eep.getFunction() == function) {
+                returnValue.put(eep.getEEPIdentifier(), eep);
+            }
+        }
+        return returnValue;
+    }
+
+
 }
