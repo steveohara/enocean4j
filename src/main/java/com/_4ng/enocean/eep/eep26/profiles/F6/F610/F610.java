@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.F6.F610;
 
-import com._4ng.enocean.eep.EEP;
+import com._4ng.enocean.eep.eep26.profiles.InternalEEP;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 /**
  * @author bonino
  */
-public abstract class F610 extends EEP {
+public abstract class F610 extends InternalEEP {
 
     // func must be defined by extending classes
 

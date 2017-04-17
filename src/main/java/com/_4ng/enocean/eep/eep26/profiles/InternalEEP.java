@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com._4ng.enocean.eep.eep26.profiles;
 
-package com._4ng.enocean.protocol.serial.v3.network.packet.commoncommand;
-
-import com._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import com._4ng.enocean.eep.EEP;
 
 /**
- * Reset the system log from device databank
- *
- * @author Andrea Biasi <biasiandrea04@gmail.com>
+ * A holder for all internal EEP profiles
  */
-
-public class CoWrSysLog extends ESP3Packet {
-    public CoWrSysLog() {
-        packetType = COMMON_COMMAND;
-        // Command code
-        data[0] = 0x01;
-        buildPacket();
-    }
+public abstract class InternalEEP extends EEP {
 }

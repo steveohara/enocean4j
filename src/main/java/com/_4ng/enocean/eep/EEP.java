@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,12 @@ public abstract class EEP implements EEPAttributeChangePublisher {
         // initialize the channel specific attributes
         channelAttributes = new HashMap<>();
 
-        // initializa the eep wide attributes
+        // initialise the eep wide attributes
         eepAttributes = new HashMap<>();
+
+        // Assuming we came from a local instantiation, lets work out the signature from the class name
+
+        if (getClass().getSimpleName().matches("[A-Z][0-9][A-Z0-9]+"))
         rorg = new Rorg((byte) (Integer.parseInt(getClass().getSimpleName().substring(0, 2), 16) & 0xff));
         function = (byte) (Integer.parseInt(getClass().getSimpleName().substring(2, 4), 16) & 0xff);
         type = (byte) (Integer.parseInt(getClass().getSimpleName().substring(4, 6), 16) & 0xff);

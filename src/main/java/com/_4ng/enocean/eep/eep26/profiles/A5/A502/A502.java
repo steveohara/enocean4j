@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package com._4ng.enocean.eep.eep26.profiles.A5.A502;
 
 import com._4ng.enocean.devices.EnOceanDevice;
-import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
+import com._4ng.enocean.eep.eep26.profiles.InternalEEP;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.eep.eep26.telegram.FourBSTelegram;
@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class A502 extends EEP {
+public abstract class A502 extends InternalEEP {
 
     // Executor Thread Pool for handling attribute updates
     volatile ExecutorService attributeNotificationWorker;
