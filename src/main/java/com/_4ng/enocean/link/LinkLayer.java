@@ -21,6 +21,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
@@ -216,5 +218,21 @@ public class LinkLayer {
 
         // return the read packet or null;
         return pkt;
+    }
+
+    /**
+     * Convenience method for getting a list of all the local comms ports
+     *
+     * @return List of comms ports
+     */
+    public static List<String> getCommsPorts() {
+        List<String> returnValue = new ArrayList<>();
+        SerialPort[] ports = SerialPort.getCommPorts();
+        if (ports != null && ports.length > 0) {
+            for (SerialPort port : ports) {
+                returnValue.add(port.getSystemPortName());
+            }
+        }
+        return returnValue;
     }
 }

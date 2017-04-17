@@ -61,6 +61,11 @@ public class TestApp {
                 DeviceManager.registerDevice("2BD5EE", "F60201");
                 DeviceManager.registerDevice("1A4829C", "A50205");
 
+                // available comms ports
+                for (String port : LinkLayer.getCommsPorts()) {
+                    System.out.printf("Available comms port: %s\n", port);
+                }
+
                 // create the connection layer
                 Connection connection = new Connection(linkLayer);
 
@@ -81,8 +86,6 @@ public class TestApp {
                 }
 
                 // handle plain old demo mode
-                // TODO: generalize the demo mode to work in generic usage
-                // scenarios
                 if (mode.equals(DEMO_MODE)) {
                     app.performDemo(connection);
                 }

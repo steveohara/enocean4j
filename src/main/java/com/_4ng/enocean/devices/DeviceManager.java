@@ -259,7 +259,7 @@ public class DeviceManager {
     /**
      * Returns a reference to all the supported profiles for the given RORG and function
      *
-     * @param rorg Rorg to get profiles for
+     * @param rorg     Rorg to get profiles for
      * @param function Function to match
      * @return Map of supported EEP profiles
      */
