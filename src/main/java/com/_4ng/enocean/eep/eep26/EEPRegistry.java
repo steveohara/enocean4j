@@ -36,7 +36,7 @@ public class EEPRegistry {
     // singleton pattern
     public EEPRegistry() {
 
-        // build the profiles hashtable
+        // build the profiles cache
         supportedProfiles = new HashMap<>();
         try {
             for (Class clazz : EnOceanUtils.getClasses(EEPRegistry.class.getPackage().getName())) {
@@ -58,6 +58,12 @@ public class EEPRegistry {
         return supportedProfiles.containsKey(eep);
     }
 
+    /**
+     * Add a custom prfile to the library
+     *
+     * @param profileId EEP identity of the profile
+     * @param profile   Class of the profile
+     */
     public void addProfile(EEPIdentifier profileId, Class<? extends EEP> profile) {
         if (profileId != null && profile != null) {
             try {

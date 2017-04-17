@@ -72,6 +72,7 @@ public class D20109 extends D2010A {
         }
         actuatorSetOutput(connection, deviceAddress, dimMode.getCode(), ALL_OUTPUT_CHANNEL, (byte) dimValue);
     }
+
     public void actuatorSetMeasurement(Connection connection, byte[] deviceAddress, boolean autoReportMesurement, boolean signalResetMeasurement, boolean powerMode, int channelId, int measurementDeltaToBeReported, D201UnitOfMeasure unitOfMeasure, int maximumTimeBetweenActuatorMessages, int minimumTimeBetweenActuatorMessages) {
         if (maximumTimeBetweenActuatorMessages >= 0 && minimumTimeBetweenActuatorMessages >= 0) {
             byte reportMeasurementAsByte = autoReportMesurement ? (byte) 0x01 : (byte) 0x00;

@@ -26,18 +26,29 @@ public class EEPIdentifier implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     // Identify the Radio-Telegram organization
-    Rorg rorg;
+    private Rorg rorg;
     // Funcion of the device
-    byte function;
+    private byte function;
     // Type of device
-    byte type;
+    private byte type;
 
     /**
      * Constructor
      *
-     * @param rorg
-     * @param function
-     * @param type
+     * @param rorg     RORG value
+     * @param function Function code
+     * @param type     Type coe
+     */
+    public EEPIdentifier(int rorg, int function, int type) {
+        this(new Rorg((byte) rorg), (byte) (function & 0xff), (byte) (type & 0xff));
+    }
+
+    /**
+     * Constructor
+     *
+     * @param rorg     RORG value
+     * @param function Function code
+     * @param type     Type coe
      */
     public EEPIdentifier(Rorg rorg, byte function, byte type) {
         this.rorg = rorg;

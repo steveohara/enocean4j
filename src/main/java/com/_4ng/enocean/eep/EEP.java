@@ -63,8 +63,9 @@ public abstract class EEP implements EEPAttributeChangePublisher {
 
         // Assuming we came from a local instantiation, lets work out the signature from the class name
 
-        if (getClass().getSimpleName().matches("[A-Z][0-9][A-Z0-9]+"))
-        rorg = new Rorg((byte) (Integer.parseInt(getClass().getSimpleName().substring(0, 2), 16) & 0xff));
+        if (getClass().getSimpleName().matches("[A-Z][0-9][A-Z0-9]+")) {
+            rorg = new Rorg((byte) (Integer.parseInt(getClass().getSimpleName().substring(0, 2), 16) & 0xff));
+        }
         function = (byte) (Integer.parseInt(getClass().getSimpleName().substring(2, 4), 16) & 0xff);
         type = (byte) (Integer.parseInt(getClass().getSimpleName().substring(4, 6), 16) & 0xff);
     }

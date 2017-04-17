@@ -42,6 +42,7 @@ public class A50701 extends A507 {
         addChannelAttribute(CHANNEL, new EEP26SupplyVoltageAvailability());
         addChannelAttribute(CHANNEL, new EEP26PIRStatus());
     }
+
     @Override
     public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;

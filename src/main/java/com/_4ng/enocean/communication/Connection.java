@@ -20,7 +20,6 @@ import com._4ng.enocean.devices.DeviceManager;
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPIdentifier;
-import com._4ng.enocean.eep.Rorg;
 import com._4ng.enocean.eep.eep26.telegram.*;
 import com._4ng.enocean.link.LinkLayer;
 import com._4ng.enocean.link.PacketListener;
@@ -444,7 +443,7 @@ public class Connection implements PacketListener {
             }
             else if (smartTeachIn) {
                 // build a new RPS device
-                device = DeviceManager.registerDevice(rpsTelegram.getAddress(), null, new EEPIdentifier(new Rorg((byte) 0xf6), (byte) 2, (byte) 1));
+                device = DeviceManager.registerDevice(rpsTelegram.getAddress(), null, new EEPIdentifier(0xf6, 2, 1));
             }
         }
         else {
@@ -477,7 +476,7 @@ public class Connection implements PacketListener {
             else if (smartTeachIn) {
 
                 // build a new RPS device,
-                device = DeviceManager.registerDevice(oneBSTelegram.getAddress(), null, new EEPIdentifier(new Rorg((byte) 0xd5), (byte) 0, (byte) 1));
+                device = DeviceManager.registerDevice(oneBSTelegram.getAddress(), null, new EEPIdentifier(0xd5, 0, 1));
             }
         }
         else {
