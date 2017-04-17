@@ -16,10 +16,10 @@
 package com._4ng.enocean.eep.eep26.profiles.A5.A504;
 
 import com._4ng.enocean.devices.EnOceanDevice;
+import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.eep.eep26.attributes.EEP26HumidityLinear;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureLinear;
-import com._4ng.enocean.eep.eep26.profiles.A5.A5;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.eep.eep26.telegram.FourBSTelegram;
@@ -33,14 +33,9 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class A504 extends A5 {
-    // the EEP26 definition, according to the EEP26 specification
-    public static final byte FUNC = (byte) 0x04;
-
-    // func must be defined by extending classes
-
+public abstract class A504 extends EEP {
     // Executor Thread Pool for handling attribute updates
-    protected volatile ExecutorService attributeNotificationWorker;
+    private volatile ExecutorService attributeNotificationWorker;
 
     // -------------------------------------------------
     // Parameters defined by this EEP, which

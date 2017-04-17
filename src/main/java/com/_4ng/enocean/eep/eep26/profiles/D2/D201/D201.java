@@ -17,10 +17,10 @@ package com._4ng.enocean.eep.eep26.profiles.D2.D201;
 
 import com._4ng.enocean.communication.Connection;
 import com._4ng.enocean.devices.EnOceanDevice;
+import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPAttribute;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.eep.eep26.attributes.*;
-import com._4ng.enocean.eep.eep26.profiles.D2.D2;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import com._4ng.enocean.eep.eep26.telegram.VLDTelegram;
@@ -36,9 +36,7 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class D201 extends D2 {
-    // the EEP26 definition, according to the EEP26 specification
-    public static final byte FUNC = (byte) 0x01;
+public abstract class D201 extends EEP {
 
     // func must be defined by extending classes
 
@@ -55,9 +53,6 @@ public abstract class D201 extends D2 {
 
     // the class constructor
     public D201() {
-        // call the superclass constructor
-        super("2.6");
-
         // build the attribute dispatching worker
         attributeNotificationWorker = Executors.newFixedThreadPool(1);
     }
@@ -82,7 +77,7 @@ public abstract class D201 extends D2 {
         byte dataByte[] = new byte[4];
 
         // add the packet rorg
-        dataByte[0] = RORG.getRorgValue();
+        dataByte[0] = rorg.getRorgValue();
 
         // CMD code (0x01), the first 4 bits are not used
         dataByte[1] = (byte) 0x01;
@@ -131,7 +126,7 @@ public abstract class D201 extends D2 {
         byte dataByte[] = new byte[5];
 
         // add the packet rorg
-        dataByte[0] = RORG.getRorgValue();
+        dataByte[0] = rorg.getRorgValue();
 
         // CMD code (0x02), the first bit relates to taught-in devices, not
         // handled at the moment, the other 3 bits are not used, in binary
@@ -180,7 +175,7 @@ public abstract class D201 extends D2 {
         byte dataByte[] = new byte[3];
 
         // add the packet rorg
-        dataByte[0] = RORG.getRorgValue();
+        dataByte[0] = rorg.getRorgValue();
 
         // first byte
         // bit 0-3 -> command id
@@ -220,7 +215,7 @@ public abstract class D201 extends D2 {
         byte dataByte[] = new byte[7];
 
         // add the packet rorg
-        dataByte[0] = RORG.getRorgValue();
+        dataByte[0] = rorg.getRorgValue();
 
         // first byte -> lower 4 bits for the command code
         dataByte[1] = 0x05;
@@ -271,7 +266,7 @@ public abstract class D201 extends D2 {
         byte dataByte[] = new byte[3];
 
         // add the packet rorg
-        dataByte[0] = RORG.getRorgValue();
+        dataByte[0] = rorg.getRorgValue();
 
         // first byte -> lower 4 bits for the command code
         dataByte[1] = 0x06;

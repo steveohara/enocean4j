@@ -15,16 +15,12 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.A5.A502;
 
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 
 /**
  * @author bonino
  */
 public class A50214 extends A502 {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x14;
     // the used channel
     public static final int CHANNEL = 0;
 
@@ -35,12 +31,5 @@ public class A50214 extends A502 {
         // add attributes A50214 has operative range between -20.0 and 60.0
         // Celsius
         addChannelAttribute(CHANNEL, new EEP26TemperatureInverseLinear(-20.0, 60.0));
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        // return the EEPIdentifier for this profile
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-
     }
 }

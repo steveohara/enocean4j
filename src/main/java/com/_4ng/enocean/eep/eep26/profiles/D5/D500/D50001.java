@@ -18,7 +18,6 @@ package com._4ng.enocean.eep.eep26.profiles.D5.D500;
 
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26Switching;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
@@ -29,8 +28,6 @@ import com._4ng.enocean.eep.eep26.telegram.OneBSTelegram;
  */
 public class D50001 extends D500 {
 
-    // the type definition
-    public static final byte TYPE = (byte) 0x01;
     public static final int CHANNEL = 0;
 
     /**
@@ -39,11 +36,6 @@ public class D50001 extends D500 {
 
         // add attributes, basically a switching one
         addChannelAttribute(CHANNEL, new EEP26Switching(false));
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     @Override

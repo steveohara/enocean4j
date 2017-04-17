@@ -46,7 +46,7 @@ public class DeviceManager {
     private static Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
 
     // The EEP eepRegistry
-    private static EEPRegistry eepRegistry = EEPRegistry.getInstance();
+    private static EEPRegistry eepRegistry = new EEPRegistry();
 
     // Initialize the update delivery executor thread pool
     private static ExecutorService deviceUpdateDeliveryExecutor = Executors.newCachedThreadPool();
@@ -135,7 +135,7 @@ public class DeviceManager {
      */
     public static EnOceanDevice registerDevice(byte address[], byte manufacturerId[], EEPIdentifier eep) {
         EnOceanDevice device = new EnOceanDevice(address, manufacturerId);
-        Class<? extends EEP> deviceEEP = eepRegistry.getEEP(eep);
+        EEP deviceEEP = eepRegistry.getEEP(eep);
         if (deviceEEP != null) {
             device.setEEP(deviceEEP);
             return registerDevice(device);
@@ -230,7 +230,7 @@ public class DeviceManager {
      * @param eep EEP identifier
      * @return EEP profile or null if not supported
      */
-    public static Class<? extends EEP> getEEP(EEPIdentifier eep) {
+    public static EEP getEEP(EEPIdentifier eep) {
         return eepRegistry.getEEP(eep);
     }
 

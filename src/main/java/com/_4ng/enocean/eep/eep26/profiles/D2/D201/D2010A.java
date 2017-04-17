@@ -17,15 +17,12 @@ package com._4ng.enocean.eep.eep26.profiles.D2.D201;
 
 import com._4ng.enocean.communication.Connection;
 import com._4ng.enocean.eep.EEPAttribute;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.*;
 
 /**
  * @author bonino
  */
 public class D2010A extends D201 {
-    // the type definition
-    public static final byte TYPE = (byte) 0x0A;
     // the ON command byte
     public static final byte ON_BYTE = (byte) 0x64;
     // the OFF command byte
@@ -134,11 +131,5 @@ public class D2010A extends D201 {
         // call the superclass method for setting the device configuration
         actuatorSetLocal(connection, deviceAddress, (byte) channelId, localControl, overCurrentShutDown, resetOverCurrentShutDown, userInterfaceIndication, powerFailure, defaultState, dimTime1, dimTime2, dimTime3);
     }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-    }
-
 
 }

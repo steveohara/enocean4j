@@ -16,16 +16,12 @@
 package com._4ng.enocean.eep.eep26.profiles.D2.D201;
 
 import com._4ng.enocean.communication.Connection;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.*;
 
 /**
  * @author Andrea Biasi <biasiandrea04@gmail.com>
  */
 public class D20108 extends D20109 {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x08;
     // the ON command byte
     public static final byte ON_BYTE = (byte) 0x64;
     // the OFF command byte
@@ -95,10 +91,5 @@ public class D20108 extends D20109 {
 
         // call the superclass method
         actuatorMeasurementQuery(connection, deviceAddress, powerModeAsByte, (byte) channelId);
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 }

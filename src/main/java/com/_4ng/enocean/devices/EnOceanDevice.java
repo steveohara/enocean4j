@@ -140,19 +140,10 @@ public class EnOceanDevice implements Serializable {
      * Associates this device instance with a newly created instance of EnOcean
      * Equipment Profile, of the given class.
      *
-     * @param eepClass The corresponding class, which must extend {@link EEP}
+     * @param eep The corresponding EEP, which must extend {@link EEP}
      */
-    public void setEEP(Class<? extends EEP> eepClass) {
-        // store the entry by building the corresponding instances
-        try {
-            // get the profile instance
-
-            // add the instance to the set of supported instances
-            profile = eepClass.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e) {
-            logger.error("Problem", e);
-        }
+    public void setEEP(EEP eep) {
+        profile = eep;
     }
 
     /**

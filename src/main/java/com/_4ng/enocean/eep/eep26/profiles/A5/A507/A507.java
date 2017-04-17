@@ -15,7 +15,7 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.A5.A507;
 
-import com._4ng.enocean.eep.eep26.profiles.A5.A5;
+import com._4ng.enocean.eep.EEP;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,14 +25,9 @@ import java.util.concurrent.Executors;
 /**
  * @author bonino
  */
-public abstract class A507 extends A5 {
-    // the EEP26 definition, according to the EEP26 specification
-    public static final byte FUNC = (byte) 0x07;
-
-    // func must be defined by extending classes
-
+public abstract class A507 extends EEP {
     // Executor Thread Pool for handling attribute updates
-    protected volatile ExecutorService attributeNotificationWorker;
+    volatile ExecutorService attributeNotificationWorker;
 
     // -------------------------------------------------
     // Parameters defined by this EEP, which
@@ -46,9 +41,6 @@ public abstract class A507 extends A5 {
      * The class constructor
      */
     public A507() {
-        // call the superclass constructor
-        super("2.6");
-
         // build the attribute dispatching worker
         attributeNotificationWorker = Executors.newFixedThreadPool(1);
     }

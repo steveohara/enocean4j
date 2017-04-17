@@ -18,7 +18,6 @@ package com._4ng.enocean.eep.eep26.profiles.F6.F602;
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttribute;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26RockerSwitch2RockerAction;
 import com._4ng.enocean.eep.eep26.attributes.EEP26RockerSwitch2RockerButtonCount;
 import com._4ng.enocean.eep.eep26.attributes.EEP26RockerSwitch2RockerEnergyBow;
@@ -36,9 +35,6 @@ import java.util.Map;
  */
 public class F60201 extends F602 {
 
-    // the type definition
-    public static final byte TYPE = (byte) 0x01;
-
     private static final int CHANNEL_1 = 0;
     private static final int CHANNEL_2 = 1;
 
@@ -52,11 +48,6 @@ public class F60201 extends F602 {
         addChannelAttribute(CHANNEL_2, new EEP26RockerSwitch2RockerAction());
         addChannelAttribute(CHANNEL_1, new EEP26RockerSwitch2RockerButtonCount());
         addChannelAttribute(CHANNEL_1, new EEP26RockerSwitch2RockerEnergyBow());
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     @Override

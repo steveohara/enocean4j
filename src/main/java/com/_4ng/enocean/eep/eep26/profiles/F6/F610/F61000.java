@@ -17,7 +17,6 @@ package com._4ng.enocean.eep.eep26.profiles.F6.F610;
 
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26HandleRotation;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
@@ -27,9 +26,6 @@ import com._4ng.enocean.eep.eep26.telegram.RPSTelegram;
  * @author bonino
  */
 public class F61000 extends F610 {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x00;
 
     public static final int CHANNEL = 0;
 
@@ -41,11 +37,6 @@ public class F61000 extends F610 {
 
         // define the "active" attributes
         addChannelAttribute(CHANNEL, new EEP26HandleRotation());
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
     @Override

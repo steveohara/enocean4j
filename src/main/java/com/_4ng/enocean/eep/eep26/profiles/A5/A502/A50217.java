@@ -15,7 +15,6 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.A5.A502;
 
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 
 /**
@@ -36,12 +35,4 @@ public class A50217 extends A502 {
         // Celsius
         addChannelAttribute(CHANNEL, new EEP26TemperatureInverseLinear(10.0, 90.0));
     }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        // return the EEPIdentifier for this profile
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-
-    }
-
 }

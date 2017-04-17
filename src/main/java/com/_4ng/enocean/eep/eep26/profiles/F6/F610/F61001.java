@@ -15,8 +15,6 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.F6.F610;
 
-import com._4ng.enocean.eep.EEPIdentifier;
-
 /**
  * A class representing devices belonging to the F6-10-01 profile, it is exactly
  * the same as the {@link F61000} class except for the type which changes from
@@ -26,14 +24,4 @@ import com._4ng.enocean.eep.EEPIdentifier;
  */
 public class F61001 extends F61000 {
 
-    // the type definition
-    public static final byte TYPE = (byte) 0x01;
-
-    public F61001() {
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-    }
 }

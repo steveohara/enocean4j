@@ -39,6 +39,15 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     // the EnOcean Equipment Profile version
     private String version;
 
+    // Convenience storage for the EEP identifier components
+    protected Rorg rorg;
+    protected byte type;
+    protected byte function;
+
+    public EEP() {
+        this("2.6");
+    }
+
     /**
      *
      */
@@ -51,6 +60,9 @@ public abstract class EEP implements EEPAttributeChangePublisher {
 
         // initializa the eep wide attributes
         eepAttributes = new HashMap<>();
+        rorg = new Rorg((byte) (Integer.parseInt(getClass().getSimpleName().substring(0, 2), 16) & 0xff));
+        function = (byte) (Integer.parseInt(getClass().getSimpleName().substring(2, 4), 16) & 0xff);
+        type = (byte) (Integer.parseInt(getClass().getSimpleName().substring(4, 6), 16) & 0xff);
     }
 
     /**
@@ -240,7 +252,22 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      *
      * @return Returns an EEP identifier object
      */
-    public abstract EEPIdentifier getEEPIdentifier();
+    public EEPIdentifier getEEPIdentifier() {
+        // return the EEPIdentifier for this profile
+        return new EEPIdentifier(rorg, function, type);
+    }
+
+    public Rorg getRorg() {
+        return rorg;
+    }
+
+    public byte getType() {
+        return type;
+    }
+
+    public byte getFunction() {
+        return function;
+    }
 
     /**
      * Handles the profile data update, must be specifically implemented by each

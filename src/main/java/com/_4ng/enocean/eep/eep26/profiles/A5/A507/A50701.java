@@ -18,7 +18,6 @@ package com._4ng.enocean.eep.eep26.profiles.A5.A507;
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttribute;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26PIRStatus;
 import com._4ng.enocean.eep.eep26.attributes.EEP26SupplyVoltage;
 import com._4ng.enocean.eep.eep26.attributes.EEP26SupplyVoltageAvailability;
@@ -32,9 +31,6 @@ import java.util.ArrayList;
  * @author bonino
  */
 public class A50701 extends A507 {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x01;
     public static final int CHANNEL = 0;
 
     /**
@@ -46,12 +42,6 @@ public class A50701 extends A507 {
         addChannelAttribute(CHANNEL, new EEP26SupplyVoltageAvailability());
         addChannelAttribute(CHANNEL, new EEP26PIRStatus());
     }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-    }
-
     @Override
     public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;

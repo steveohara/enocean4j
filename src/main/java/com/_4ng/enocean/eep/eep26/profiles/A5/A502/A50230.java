@@ -17,7 +17,6 @@ package com._4ng.enocean.eep.eep26.profiles.A5.A502;
 
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
@@ -27,10 +26,6 @@ import com._4ng.enocean.eep.eep26.telegram.FourBSTelegram;
  * @author bonino
  */
 public class A50230 extends A502 {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x30;
-
     // the used channel
     public static final int CHANNEL = 0;
 
@@ -41,13 +36,6 @@ public class A50230 extends A502 {
         // add attributes A50230 has operative range between -40.0 and 62.3
         // Celsius
         addChannelAttribute(CHANNEL, new EEP26TemperatureInverseLinear(-40.0, 62.3));
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        // return the EEPIdentifier for this profile
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-
     }
 
     @Override

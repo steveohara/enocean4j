@@ -16,16 +16,12 @@
 package com._4ng.enocean.eep.eep26.profiles.D2.D201;
 
 import com._4ng.enocean.communication.Connection;
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.*;
 
 /**
  * @author Andrea Biasi <biasiandrea04@gmail.com>
  */
 public class D20109 extends D2010A {
-
-    // the type definition
-    public static final byte TYPE = (byte) 0x09;
     // the ON command byte
     public static final byte ON_BYTE = (byte) 0x64;
     // the OFF command byte
@@ -76,12 +72,6 @@ public class D20109 extends D2010A {
         }
         actuatorSetOutput(connection, deviceAddress, dimMode.getCode(), ALL_OUTPUT_CHANNEL, (byte) dimValue);
     }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-    }
-
     public void actuatorSetMeasurement(Connection connection, byte[] deviceAddress, boolean autoReportMesurement, boolean signalResetMeasurement, boolean powerMode, int channelId, int measurementDeltaToBeReported, D201UnitOfMeasure unitOfMeasure, int maximumTimeBetweenActuatorMessages, int minimumTimeBetweenActuatorMessages) {
         if (maximumTimeBetweenActuatorMessages >= 0 && minimumTimeBetweenActuatorMessages >= 0) {
             byte reportMeasurementAsByte = autoReportMesurement ? (byte) 0x01 : (byte) 0x00;

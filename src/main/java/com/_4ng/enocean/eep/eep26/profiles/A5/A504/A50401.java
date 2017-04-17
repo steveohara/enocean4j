@@ -15,7 +15,6 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.A5.A504;
 
-import com._4ng.enocean.eep.EEPIdentifier;
 import com._4ng.enocean.eep.eep26.attributes.EEP26HumidityLinear;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureLinear;
 
@@ -23,9 +22,6 @@ import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureLinear;
  * @author bonino
  */
 public class A50401 extends A504 {
-    // the type definition
-    public static final byte TYPE = (byte) 0x01;
-
     // the used channel
     public static final int CHANNEL = 0;
 
@@ -39,11 +35,4 @@ public class A50401 extends A504 {
         // and between 0 and 100% humidity
         addChannelAttribute(CHANNEL, new EEP26HumidityLinear(0.0, 100.0));
     }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        // return the EEPIdentifier for this profile
-        return new EEPIdentifier(RORG, FUNC, TYPE);
-    }
-
 }

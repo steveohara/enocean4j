@@ -15,7 +15,7 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.D5.D500;
 
-import com._4ng.enocean.eep.eep26.profiles.D5.D5;
+import com._4ng.enocean.eep.EEP;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,14 +27,10 @@ import java.util.concurrent.Executors;
  *
  * @author bonino
  */
-public abstract class D500 extends D5 {
-    // the EEP26 definition, according to the EEP26 specification
-    public static final byte FUNC = (byte) 0x00;
-
-    // func must be defined by extending classes
+public abstract class D500 extends EEP {
 
     // Executor Thread Pool for handling attribute updates
-    protected volatile ExecutorService attributeNotificationWorker;
+    volatile ExecutorService attributeNotificationWorker;
 
     // -------------------------------------------------
     // Parameters defined by this EEP, which
@@ -47,8 +43,6 @@ public abstract class D500 extends D5 {
     /**
      */
     public D500() {
-        super("2.6");
-
         // build the attribute dispatching worker
         attributeNotificationWorker = Executors.newFixedThreadPool(1);
     }

@@ -15,7 +15,7 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.F6.F602;
 
-import com._4ng.enocean.eep.eep26.profiles.F6.F6;
+import com._4ng.enocean.eep.EEP;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,9 +26,7 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class F602 extends F6 {
-    // the EEP26 definition, according to the EEP26 specification
-    public static final byte FUNC = (byte) 0x02;
+public abstract class F602 extends EEP {
 
     // func must be defined by extending classes
 
@@ -45,8 +43,6 @@ public abstract class F602 extends F6 {
 
     // the class constructor
     public F602() {
-        // call the superclass constructor
-        super("2.6");
 
         // build the attribute dispatching worker
         attributeNotificationWorker = Executors.newFixedThreadPool(1);

@@ -15,8 +15,6 @@
  */
 package com._4ng.enocean.eep.eep26.profiles.F6.F602;
 
-import com._4ng.enocean.eep.EEPIdentifier;
-
 /**
  * A class representing devices belonging to the F6-02-02 profile, it is exactly
  * the same as the {@link F60201} class except for the type which changes from
@@ -25,9 +23,6 @@ import com._4ng.enocean.eep.EEPIdentifier;
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
 public class F60202 extends F60201 {
-    // the type definition
-    public static final byte TYPE = (byte) 0x02;
-
     // register the type in the EEPProfile even if no instance of this class is
     // created.
     /*
@@ -36,11 +31,6 @@ public class F60202 extends F60201 {
 	 */
 
     public F60202() {
-    }
-
-    @Override
-    public EEPIdentifier getEEPIdentifier() {
-        return new EEPIdentifier(RORG, FUNC, TYPE);
     }
 
 }
