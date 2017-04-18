@@ -27,7 +27,7 @@ public class EEPIdentifier implements Serializable {
     private static final long serialVersionUID = 1L;
     // Identify the Radio-Telegram organization
     private Rorg rorg;
-    // Funcion of the device
+    // Function of the device
     private byte function;
     // Type of device
     private byte type;

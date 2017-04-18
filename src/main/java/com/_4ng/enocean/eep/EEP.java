@@ -114,7 +114,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * @return The {@link Set}<{@link String}> containing all the names of the
      * currently available {@link EEP}s.
      */
-    public Set<String> listEEPAttributes() {
+    public Set<String> getEEPAttributes() {
         return eepAttributes.keySet();
     }
 
@@ -179,7 +179,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * @return The {@link Set}<{@link String}> containing all the names of the
      * currently available {@link EEP}s.
      */
-    public Set<String> listChannelAttributes(Integer channelId) {
+    public Set<String> getChannelAttributes(Integer channelId) {
         // get the channel specific attributes
         HashMap<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
 

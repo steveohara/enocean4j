@@ -223,17 +223,6 @@ public class DeviceManager {
         deviceUpdateDeliveryExecutor.execute(new DeviceChangeJob(device, changeType, deviceListeners));
     }
 
-    /**
-     * Get the EEP profile for the given EEp identifier
-     *
-     * @param eep EEP identifier
-     * @return EEP profile or null if not supported
-     */
-    public static EEP getEEP(EEPIdentifier eep) {
-        return eepRegistry.getEEP(eep);
-    }
-
-
     public static void notifyDeviceListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
         for (DeviceListener listener : deviceListeners) {
             listener.deviceAttributeChange(eepAttributeChangeJob);
@@ -246,10 +235,10 @@ public class DeviceManager {
      * @param rorg Rorg to get profiles for
      * @return Map of supported EEP profiles
      */
-    public Map<EEPIdentifier, EEP> getProfiles(Rorg rorg) {
+    public Map<EEPIdentifier, EEP> getProfiles(int rorg) {
         Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
         for (EEP eep : eepRegistry.getProfiles().values()) {
-            if (eep.getRorg().equals(rorg)) {
+            if (eep.getRorg().getRorgValue() == rorg) {
                 returnValue.put(eep.getEEPIdentifier(), eep);
             }
         }
@@ -263,14 +252,36 @@ public class DeviceManager {
      * @param function Function to match
      * @return Map of supported EEP profiles
      */
-    public Map<EEPIdentifier, EEP> getProfiles(Rorg rorg, byte function) {
+    public Map<EEPIdentifier, EEP> getProfiles(int rorg, int function) {
         Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
         for (EEP eep : eepRegistry.getProfiles().values()) {
-            if (eep.getRorg().equals(rorg) && eep.getFunction() == function) {
+            if (eep.getRorg().getRorgValue() == rorg && eep.getFunction() == function) {
                 returnValue.put(eep.getEEPIdentifier(), eep);
             }
         }
         return returnValue;
+    }
+
+    /**
+     * Get the EEP profile for the given EEP identifier
+     *
+     * @param eep EEP identifier
+     * @return EEP profile or null if not supported
+     */
+    public static EEP getEEP(EEPIdentifier eep) {
+        return eepRegistry.getEEP(eep);
+    }
+
+    /**
+     * Get the EEP profile for the given EEP identifier
+     *
+     * @param rorg     Rorg to get profiles for
+     * @param function Function to match
+     * @param type Type to match
+     * @return EEP profile or null if not supported
+     */
+    public EEP getEEP(Rorg rorg, byte function, byte type) {
+        return getEEP(new EEPIdentifier(rorg, function, type));
     }
 
 
