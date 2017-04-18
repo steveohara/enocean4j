@@ -18,8 +18,18 @@ package com._4ng.enocean.eep.eep26;
 
 import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPIdentifier;
+import com._4ng.enocean.eep.eep26.profiles.A5.A502.*;
+import com._4ng.enocean.eep.eep26.profiles.A5.A504.A50401;
+import com._4ng.enocean.eep.eep26.profiles.A5.A507.A50701;
+import com._4ng.enocean.eep.eep26.profiles.D2.D201.D20108;
+import com._4ng.enocean.eep.eep26.profiles.D2.D201.D20109;
+import com._4ng.enocean.eep.eep26.profiles.D2.D201.D2010A;
+import com._4ng.enocean.eep.eep26.profiles.D5.D500.D50001;
+import com._4ng.enocean.eep.eep26.profiles.F6.F602.F60201;
+import com._4ng.enocean.eep.eep26.profiles.F6.F602.F60202;
+import com._4ng.enocean.eep.eep26.profiles.F6.F610.F61000;
+import com._4ng.enocean.eep.eep26.profiles.F6.F610.F61001;
 import com._4ng.enocean.link.PacketDelivery;
-import com._4ng.enocean.util.EnOceanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,18 +48,46 @@ public class EEPRegistry {
 
         // build the profiles cache
         supportedProfiles = new HashMap<>();
-        try {
-            for (Class clazz : EnOceanUtils.getClasses(EEPRegistry.class.getPackage().getName())) {
-                if (EEP.class.isAssignableFrom(clazz) && clazz.getSimpleName().matches("[A-Z][0-9A-Z]{5}")) {
-                    logger.debug("Found equipment profile: {}", clazz.getSimpleName());
-                    EEP eep = (EEP) clazz.newInstance();
-                    supportedProfiles.put(eep.getEEPIdentifier(), eep);
-                }
-            }
-        }
-        catch (Exception e) {
-            logger.error("Cannot find equipment profiles", e);
-        }
+        addProfile(A50201.class);
+        addProfile(A50202.class);
+        addProfile(A50203.class);
+        addProfile(A50204.class);
+        addProfile(A50205.class);
+        addProfile(A50206.class);
+        addProfile(A50207.class);
+        addProfile(A50208.class);
+        addProfile(A50209.class);
+        addProfile(A5020A.class);
+        addProfile(A5020B.class);
+        addProfile(A50210.class);
+        addProfile(A50211.class);
+        addProfile(A50212.class);
+        addProfile(A50213.class);
+        addProfile(A50214.class);
+        addProfile(A50215.class);
+        addProfile(A50216.class);
+        addProfile(A50217.class);
+        addProfile(A50218.class);
+        addProfile(A50219.class);
+        addProfile(A5021A.class);
+        addProfile(A5021B.class);
+        addProfile(A50220.class);
+        addProfile(A50230.class);
+
+        addProfile(A50401.class);
+
+        addProfile(A50701.class);
+
+        addProfile(D20108.class);
+        addProfile(D20109.class);
+        addProfile(D2010A.class);
+
+        addProfile(D50001.class);
+
+        addProfile(F60201.class);
+        addProfile(F60202.class);
+        addProfile(F61000.class);
+        addProfile(F61001.class);
     }
 
     // static method for checking if the given profile is supported by the
@@ -61,13 +99,13 @@ public class EEPRegistry {
     /**
      * Add a custom prfile to the library
      *
-     * @param profileId EEP identity of the profile
      * @param profile   Class of the profile
      */
-    public void addProfile(EEPIdentifier profileId, Class<? extends EEP> profile) {
-        if (profileId != null && profile != null) {
+    public void addProfile(Class<? extends EEP> profile) {
+        if (profile != null) {
             try {
-                supportedProfiles.put(profileId, profile.newInstance());
+                EEP eep = profile.newInstance();
+                supportedProfiles.put(eep.getEEPIdentifier(), eep);
             }
             catch (Exception e) {
                 logger.error("Cannot instantiate EEP profile {}", profile, e);
