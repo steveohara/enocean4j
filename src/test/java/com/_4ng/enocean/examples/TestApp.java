@@ -56,8 +56,12 @@ public class TestApp {
                 // create the lowest link layer
                 LinkLayer linkLayer = new LinkLayer(opt.getValue('p'));
 
-                // create a device listener for handling device updates
-                DeviceManager.addDeviceListener(new SimpleDeviceListener());
+                // create a device listener for handling device updates and value changes
+                SimpleDeviceListener listener = new SimpleDeviceListener();
+                DeviceManager.addDeviceListener(listener);
+                DeviceManager.addDeviceValueListener(listener);
+
+                // register a couple of known devices
                 DeviceManager.registerDevice("2BD5EE", "F60201");
                 DeviceManager.registerDevice("1A4829C", "A50205");
 

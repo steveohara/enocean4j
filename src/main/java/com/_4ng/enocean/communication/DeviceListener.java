@@ -16,7 +16,6 @@
 package com._4ng.enocean.communication;
 
 import com._4ng.enocean.devices.EnOceanDevice;
-import com._4ng.enocean.eep.EEPAttributeChangeJob;
 
 /**
  * EnOcean for Java Device Listener interface, allows to attach and handle all
@@ -47,14 +46,7 @@ public interface DeviceListener {
      * layer, e.g., moved in another place not reachable by the same EnOcean
      * network.
      *
-     * @param changedDevice
+     * @param changedDevice Device that has changed
      */
     void removedEnOceanDevice(EnOceanDevice changedDevice);
-
-    /**
-     * Called when any attribute on a {@link EnOceanDevice} has changed
-     *
-     * @param eepAttributeChangeJob Attribute change object
-     */
-    void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob);
 }

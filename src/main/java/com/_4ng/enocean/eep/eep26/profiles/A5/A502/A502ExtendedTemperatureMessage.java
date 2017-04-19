@@ -23,47 +23,26 @@ package com._4ng.enocean.eep.eep26.profiles.A5.A502;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public class A502ExtendedTemperatureMessage {
-    private int temperature;
-    private boolean teachIn;
+class A502ExtendedTemperatureMessage extends A502TemperatureMessage {
 
     /**
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    public A502ExtendedTemperatureMessage(byte data[]) {
+    A502ExtendedTemperatureMessage(byte data[]) {
         // temperature data takes 10bits and has offset 14 (2nd+3rd byte)
         byte temperatureHigh = (byte) (data[1] & (byte) 0x03);
         byte temperatureLow = data[2];
 
         // transform into a positive integer
-        // uses logic or as shitf towards left fills number with 0s
-        temperature = temperatureHigh << 8 | 0x00FF & temperatureLow; // TODO: check if the
-        // conversion is right
+        // uses logic or as shift towards left fills number with 0s
+        temperature = temperatureHigh << 8 | 0x00FF & temperatureLow; // TODO: check if the conversion is right
 
         // get the teach-in flag (offset 28, 4th bit of the 4th byte)
         byte teachIn = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
 
         // check the corresponding boolean value
         this.teachIn = teachIn == 0;
-    }
-
-    /**
-     * Get the temperature value "transferred" by means of this messageas an integer between 0 and 255.
-     *
-     * @return the temperature as an integer, between 0 and 255
-     */
-    public int getTemperature() {
-        return temperature;
-    }
-
-    /**
-     * Get the teach-in status
-     *
-     * @return the teachIn, true if teach-in is active, false otherwise.
-     */
-    public boolean isTeachIn() {
-        return teachIn;
     }
 
 }

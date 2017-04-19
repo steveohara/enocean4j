@@ -16,7 +16,6 @@
 package com._4ng.enocean.eep.eep26.profiles.A5.A502;
 
 import com._4ng.enocean.devices.EnOceanDevice;
-import com._4ng.enocean.eep.EEPAttributeChangeJob;
 import com._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 import com._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import com._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
@@ -51,33 +50,14 @@ public class A50230 extends A502 {
 
 
             //wrap the payload as a temperature message
-            A502ExtendedTemperatureMessage msg = new A502ExtendedTemperatureMessage(payload);
+            A502TemperatureMessage msg = new A502ExtendedTemperatureMessage(payload);
 
             //update the value of the attribute
             EEP26TemperatureInverseLinear tLinear = (EEP26TemperatureInverseLinear) getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME);
 
-            //check not null
-            if (tLinear != null) {
-                int rawT = msg.getTemperature();
-
-                //check range
-                if (rawT >= 0 && rawT <= 255) {
-                    //update the attribute value
-                    tLinear.setRawValue(rawT);
-
-                    // build the dispatching task
-                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
-
-                    // submit the task for execution
-                    attributeNotificationWorker.submit(dispatcherTask);
-
-                    //update the success flag
-                    success = true;
-                }
-            }
-
+            // Dispatch the change
+            success = dispatchUpdateTask(telegram, device, msg, tLinear);
         }
-
         return success;
     }
 

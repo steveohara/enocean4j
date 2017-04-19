@@ -84,6 +84,6 @@ public class EEPAttributeChangeJob implements Runnable {
         for (EEPAttribute<?> attribute : changedAttributes) {
             attribute.notifyAttributeListeners(channelId, telegram, device);
         }
-        DeviceManager.notifyDeviceListeners(this);
+        DeviceManager.notifyDeviceValueListeners(this);
     }
 }

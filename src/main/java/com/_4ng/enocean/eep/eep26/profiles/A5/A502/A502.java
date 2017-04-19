@@ -35,15 +35,7 @@ import java.util.concurrent.Executors;
 public abstract class A502 extends InternalEEP {
 
     // Executor Thread Pool for handling attribute updates
-    volatile ExecutorService attributeNotificationWorker;
-
-    // -------------------------------------------------
-    // Parameters defined by this EEP, which
-    // might change depending on the network
-    // activity.
-    // --------------------------------------------------
-
-    // --------------------------------------------------
+    private ExecutorService attributeNotificationWorker;
 
     /**
      * The class constructor
@@ -70,29 +62,42 @@ public abstract class A502 extends InternalEEP {
 
             //update the value of the attribute
             EEP26TemperatureInverseLinear tLinear = (EEP26TemperatureInverseLinear) getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME);
-
-            //check not null
-            if (tLinear != null) {
-                int rawT = msg.getTemperature();
-
-                //check range
-                if (rawT >= 0 && rawT <= 255) {
-                    //update the attribute value
-                    tLinear.setRawValue(rawT);
-
-                    // build the dispatching task
-                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
-
-                    // submit the task for execution
-                    attributeNotificationWorker.submit(dispatcherTask);
-
-                    //update the success flag
-                    success = true;
-                }
-            }
-
+            success = dispatchUpdateTask(telegram, device, msg, tLinear);
         }
 
+        return success;
+    }
+
+    /**
+     * Convenience routine for dispatching the value change to the lusteners
+     *
+     * @param telegram Telegram that this change came in on
+     * @param device The device associated with the value
+     * @param msg The temperature message
+     * @param tLinear The temperature value
+     * @return True if task updated OK
+     */
+    boolean dispatchUpdateTask(EEP26Telegram telegram, EnOceanDevice device, A502TemperatureMessage msg, EEP26TemperatureInverseLinear tLinear) {
+        //check not null
+        boolean success = false;
+        if (tLinear != null) {
+            int rawT = msg.getTemperature();
+
+            //check range
+            if (rawT >= 0 && rawT <= 255) {
+                //update the attribute value
+                tLinear.setRawValue(rawT);
+
+                // build the dispatching task
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
+
+                // submit the task for execution
+                attributeNotificationWorker.submit(dispatcherTask);
+
+                //update the success flag
+                success = true;
+            }
+        }
         return success;
     }
 

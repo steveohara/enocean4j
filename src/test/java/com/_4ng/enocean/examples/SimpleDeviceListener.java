@@ -18,6 +18,7 @@
 package com._4ng.enocean.examples;
 
 import com._4ng.enocean.communication.DeviceListener;
+import com._4ng.enocean.communication.DeviceValueListener;
 import com._4ng.enocean.devices.EnOceanDevice;
 import com._4ng.enocean.eep.EEPAttribute;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author bonino
  */
-public class SimpleDeviceListener implements DeviceListener {
+public class SimpleDeviceListener implements DeviceListener,DeviceValueListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
 

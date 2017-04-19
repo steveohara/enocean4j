@@ -24,14 +24,17 @@ package com._4ng.enocean.eep.eep26.profiles.A5.A502;
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
 public class A502TemperatureMessage {
-    private int temperature;
-    private boolean teachIn;
+    int temperature;
+    boolean teachIn;
+
+    A502TemperatureMessage() {
+    }
 
     /**
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    public A502TemperatureMessage(byte data[]) {
+    A502TemperatureMessage(byte data[]) {
         // temperature data has offset 16 (3rd byte)
         byte temperature = data[2];
 

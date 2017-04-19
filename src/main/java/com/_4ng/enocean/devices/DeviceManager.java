@@ -17,6 +17,7 @@ package com._4ng.enocean.devices;
 
 import com._4ng.enocean.communication.DeviceChangeType;
 import com._4ng.enocean.communication.DeviceListener;
+import com._4ng.enocean.communication.DeviceValueListener;
 import com._4ng.enocean.communication.timing.tasks.DeviceChangeJob;
 import com._4ng.enocean.eep.EEP;
 import com._4ng.enocean.eep.EEPAttributeChangeJob;
@@ -44,6 +45,9 @@ public class DeviceManager {
     // the set of device listeners to keep updated about device events
     private static Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
 
+    // the set of device listeners to keep updated about device value changes
+    private static Set<DeviceValueListener> deviceValueListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceValueListener, Boolean>());
+
     // The EEP eepRegistry
     private static EEPRegistry eepRegistry = new EEPRegistry();
 
@@ -65,6 +69,7 @@ public class DeviceManager {
         // Clear the listeners
 
         deviceListeners.clear();
+        deviceValueListeners.clear();
 
         // Stop all jobs and clear the thread pool
 
@@ -81,7 +86,7 @@ public class DeviceManager {
      * Adds a device listener to the set of listeners to be notified about
      * device events: creation, modification, deletion.
      *
-     * @param listener filename * The {@link DeviceListener} to notify to.
+     * @param listener The {@link DeviceListener} to notify to.
      */
     public static void addDeviceListener(DeviceListener listener) {
         // Store the listener in the set of currently active listeners
@@ -91,7 +96,7 @@ public class DeviceManager {
         // Immediately notify this listener of all the existing devices
 
         for (EnOceanDevice device : knownDevices.values()) {
-            notifyDeviceListeners(device, DeviceChangeType.CREATED);
+            notifyDeviceValueListeners(device, DeviceChangeType.CREATED);
         }
     }
 
@@ -104,6 +109,27 @@ public class DeviceManager {
      */
     public static boolean removeDeviceListener(DeviceListener listener) {
         return deviceListeners.remove(listener);
+    }
+
+    /**
+     * Adds a device listener to the set of listeners to be notified about
+     * device value changes
+     *
+     * @param listener The {@link DeviceListener} to notify to.
+     */
+    public static void addDeviceValueListener(DeviceValueListener listener) {
+        deviceValueListeners.add(listener);
+    }
+
+    /**
+     * Removes a device listener from the ste of listeners to be notified about
+     * device value changes
+     *
+     * @param listener The {@link DeviceListener} to remove.
+     * @return true if removal was successful, false, otherwise.
+     */
+    public static boolean removeDeviceValueListener(DeviceValueListener listener) {
+        return deviceValueListeners.remove(listener);
     }
 
     /**
@@ -150,7 +176,7 @@ public class DeviceManager {
      */
     public static EnOceanDevice registerDevice(EnOceanDevice device) {
         // notify listeners
-        notifyDeviceListeners(device, DeviceChangeType.CREATED);
+        notifyDeviceValueListeners(device, DeviceChangeType.CREATED);
 
         // store the device
         knownDevices.add(device);
@@ -166,7 +192,7 @@ public class DeviceManager {
         if (knownDevices.getByUID(device.getAddressInt()) != null) {
 
             // notify listeners
-            notifyDeviceListeners(device, DeviceChangeType.CREATED);
+            notifyDeviceValueListeners(device, DeviceChangeType.CREATED);
 
             // store the device
             knownDevices.remove(device);
@@ -219,12 +245,12 @@ public class DeviceManager {
      * @param device     Device being actioned
      * @param changeType Type of the change occurring
      */
-    public static void notifyDeviceListeners(EnOceanDevice device, DeviceChangeType changeType) {
+    public static void notifyDeviceValueListeners(EnOceanDevice device, DeviceChangeType changeType) {
         deviceUpdateDeliveryExecutor.execute(new DeviceChangeJob(device, changeType, deviceListeners));
     }
 
-    public static void notifyDeviceListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
-        for (DeviceListener listener : deviceListeners) {
+    public static void notifyDeviceValueListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
+        for (DeviceValueListener listener : deviceValueListeners) {
             listener.deviceAttributeChange(eepAttributeChangeJob);
         }
     }
