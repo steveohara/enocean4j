@@ -32,7 +32,7 @@ public interface EEPAttributeChangePublisher {
      *                      of the attribute class).
      * @param listener      The {@link EEPAttributeChangeListener} to add.
      */
-    boolean addEEP26AttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener);
+    boolean addAttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener);
 
     /**
      * Removes a listener associated to a given {@link EEPAttribute} on a
@@ -43,5 +43,5 @@ public interface EEPAttributeChangePublisher {
      *                      of the attribute class).
      * @param listener      The {@link EEPAttributeChangeListener} to remove.
      */
-    boolean removeEEP26AttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener);
+    boolean removeAttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener);
 }

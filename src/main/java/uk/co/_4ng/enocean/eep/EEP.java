@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author bonino
@@ -33,9 +32,9 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     // the set of attributes associated to single channels defined by this
     // profile: the key is the channel id. If the EEP has only one channel id
     // the implementing classes might encode all attributes as device-wide
-    private HashMap<Integer, HashMap<String, EEPAttribute<?>>> channelAttributes;
+    private Map<Integer, Map<String, EEPAttribute<?>>> channelAttributes;
     // the set of EEPWide attributes
-    private HashMap<String, EEPAttribute<?>> eepAttributes;
+    private Map<String, EEPAttribute<?>> eepAttributes;
     // the EnOcean Equipment Profile version
     private String version;
 
@@ -59,7 +58,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
         channelAttributes = new HashMap<>();
 
         // initialise the eep wide attributes
-        eepAttributes = new HashMap<>();
+        eepAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         // Assuming we came from a local instantiation, lets work out the signature from the class name
 
@@ -83,7 +82,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * @param attribute the attribute to add
      * @return true if successful, false otherwise.
      */
-    public boolean addEEPAttribute(EEPAttribute<?> attribute) {
+    public boolean addAttribute(EEPAttribute<?> attribute) {
         // the operation result, initially false
         boolean stored = false;
 
@@ -103,7 +102,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * @param attributeName The name of the attribute to retrieve.
      * @return The corresponding {@link EEPAttribute} instance
      */
-    public EEPAttribute<?> getEEPAttribute(String attributeName) {
+    public EEPAttribute<?> getAttribute(String attributeName) {
         return eepAttributes.get(attributeName);
     }
 
@@ -114,8 +113,33 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * @return The {@link Set}<{@link String}> containing all the names of the
      * currently available {@link EEP}s.
      */
-    public Set<String> getEEPAttributes() {
+    public Set<String> getAttributes() {
         return eepAttributes.keySet();
+    }
+
+    /**
+     * Returns the names of all the eep-wide and channel attributes defined for this {@link EEP}
+     * instance.
+     *
+     * @return The {@link Set}<{@link String}> containing all the names of the
+     * currently available {@link EEP}s.
+     */
+    public Set<String> getAllAttributes() {
+        Set<String> returnValue = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        returnValue.addAll(eepAttributes.keySet());
+        if (channelAttributes.size() < 2) {
+            for (Map<String, EEPAttribute<?>> set : channelAttributes.values()) {
+                returnValue.addAll(set.keySet());
+            }
+        }
+        else {
+            for (Integer channel : channelAttributes.keySet()) {
+                for (String key : channelAttributes.get(channel).keySet()) {
+                    returnValue.add(String.format("%s (channel %d)", key, channel));
+                }
+            }
+        }
+        return returnValue;
     }
 
     /**
@@ -128,13 +152,13 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     public void addChannelAttribute(Integer channelId, EEPAttribute<?> attribute) {
 
         // the channel-specific attribute map
-        HashMap<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
 
         // check not null, if null the channel does not exist and must be
         // created
         if (channelAttributes == null) {
             // create the channel attributes map
-            channelAttributes = new HashMap<>();
+            channelAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
             // store the map
             this.channelAttributes.put(channelId, channelAttributes);
@@ -157,7 +181,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
         EEPAttribute<?> attribute = null;
 
         // get the channel-specific attributes
-        HashMap<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
 
         // if channel-specific attributes are available
         if (channelAttributes != null)
@@ -181,7 +205,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      */
     public Set<String> getChannelAttributes(Integer channelId) {
         // get the channel specific attributes
-        HashMap<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
 
         // return the channel attribute names if the channel exist and there are
         // attributes associated to the channel, false otherwise.
@@ -198,12 +222,12 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     }
 
     @Override
-    public boolean addEEP26AttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener) {
+    public boolean addAttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener) {
         // the success flag, initially false
         boolean success = false;
 
         // the map of attributes associated to the given channel
-        HashMap<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
 
         // get the required attribute name
         EEPAttribute<?> attribute = attributes.get(attributeName);
@@ -219,12 +243,12 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     }
 
     @Override
-    public boolean removeEEP26AttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener) {
+    public boolean removeAttributeListener(int channelId, String attributeName, EEPAttributeChangeListener listener) {
         // the success flag, initially false
         boolean success = false;
 
         // the map of attributes associated to the given channel
-        HashMap<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> attributes = channelAttributes.get(channelId);
 
         // get the required attribute name
         EEPAttribute<?> attribute = attributes.get(attributeName);
@@ -248,7 +272,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * profile class
      */
     public boolean handleUpdate(EEP26Telegram telegram, EnOceanDevice device) {
-        logger.debug("Handling telegram: {} for device: {}", getEEPIdentifier(), device);
+        logger.debug("Handling telegram: {} for device: {}", getIdentifier(), device);
         return handleProfileUpdate(telegram, device);
     }
 
@@ -257,7 +281,7 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      *
      * @return Returns an EEP identifier object
      */
-    public EEPIdentifier getEEPIdentifier() {
+    public EEPIdentifier getIdentifier() {
         // return the EEPIdentifier for this profile
         return new EEPIdentifier(rorg, function, type);
     }

@@ -105,7 +105,7 @@ public class EEPRegistry {
         if (profile != null) {
             try {
                 EEP eep = profile.newInstance();
-                supportedProfiles.put(eep.getEEPIdentifier(), eep);
+                supportedProfiles.put(eep.getIdentifier(), eep);
             }
             catch (Exception e) {
                 logger.error("Cannot instantiate EEP profile {}", profile, e);

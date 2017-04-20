@@ -23,7 +23,7 @@ import uk.co._4ng.enocean.eep.EEPAttribute;
 public class EEP26RockerSwitch2RockerButtonCount extends EEPAttribute<Integer> {
 
     // the attribute name
-    public static final String NAME = "EEP26RockerSwitch2RockerButtonCount";
+    public static final String NAME = "RockerSwitch2RockerButtonCount";
 
     /**
      * 4 port rocker switch

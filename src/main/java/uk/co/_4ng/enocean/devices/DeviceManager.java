@@ -144,8 +144,13 @@ public class DeviceManager {
         EEPIdentifier eepId = EEPIdentifier.parse(eep);
 
         // check if the device is already known
-        if (knownDevices.getByAddress(deviceAddress) == null && eepId != null) {
-            return registerDevice(deviceAddress, null, eepId);
+        if (eepId != null) {
+            if (knownDevices.getByAddress(deviceAddress) == null) {
+                return registerDevice(deviceAddress, null, eepId);
+            }
+            else {
+                return knownDevices.getByAddress(deviceAddress);
+            }
         }
         return null;
     }
@@ -181,6 +186,13 @@ public class DeviceManager {
         // store the device
         knownDevices.add(device);
         return device;
+    }
+
+    /**
+     * Clear all the registered devices
+     */
+    public static void clearRegistry() {
+        knownDevices.clear();
     }
 
     /**
@@ -256,16 +268,25 @@ public class DeviceManager {
     }
 
     /**
+     * Returns a reference to all the supported profiles
+     *
+     * @return Map of supported EEP profiles
+     */
+    public static Map<EEPIdentifier, EEP> getProfiles() {
+        return new HashMap<>(eepRegistry.getProfiles());
+    }
+
+    /**
      * Returns a reference to all the supported profiles for the given RORG
      *
      * @param rorg Rorg to get profiles for
      * @return Map of supported EEP profiles
      */
-    public Map<EEPIdentifier, EEP> getProfiles(int rorg) {
+    public static Map<EEPIdentifier, EEP> getProfiles(int rorg) {
         Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
         for (EEP eep : eepRegistry.getProfiles().values()) {
             if (eep.getRorg().getRorgValue() == rorg) {
-                returnValue.put(eep.getEEPIdentifier(), eep);
+                returnValue.put(eep.getIdentifier(), eep);
             }
         }
         return returnValue;
@@ -278,11 +299,11 @@ public class DeviceManager {
      * @param function Function to match
      * @return Map of supported EEP profiles
      */
-    public Map<EEPIdentifier, EEP> getProfiles(int rorg, int function) {
+    public static Map<EEPIdentifier, EEP> getProfiles(int rorg, int function) {
         Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
         for (EEP eep : eepRegistry.getProfiles().values()) {
             if (eep.getRorg().getRorgValue() == rorg && eep.getFunction() == function) {
-                returnValue.put(eep.getEEPIdentifier(), eep);
+                returnValue.put(eep.getIdentifier(), eep);
             }
         }
         return returnValue;
@@ -306,7 +327,7 @@ public class DeviceManager {
      * @param type Type to match
      * @return EEP profile or null if not supported
      */
-    public EEP getEEP(Rorg rorg, byte function, byte type) {
+    public static EEP getEEP(Rorg rorg, byte function, byte type) {
         return getEEP(new EEPIdentifier(rorg, function, type));
     }
 

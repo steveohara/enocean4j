@@ -18,48 +18,57 @@ package uk.co._4ng.enocean.eep.eep26.attributes;
 import uk.co._4ng.enocean.eep.EEPAttribute;
 
 /**
+ * A class representing the switching function associated to some of the EEPs
+ * defined in the 2.6 specification.
+ *
  * @author bonino
  */
-public class EEP26OverCurrentSwitchOff extends EEPAttribute<Boolean> {
-    // the EEPFunction name
-    public static final String NAME = "OverCurrentSwitchOff";
+public class EEP26Switching extends EEPAttribute<Boolean> {
 
-    // the possible values
-    public static final boolean READY = false;
-    public static final boolean EXECUTED = true;
+    // the EEPFunction name
+    public static final String NAME = "Switching";
+
+    // the human readable values
+    public static final boolean ON = true;
+    public static final boolean OFF = false;
 
     /**
-     * Over current switch
+     * Basic constructor, builds a new {@link EEP26Switching} instance initialized
+     * at {@link EEPAttribute}.OFF.
      */
-    public EEP26OverCurrentSwitchOff() {
-
-        // call the superclass constructor
+    public EEP26Switching() {
+        // call the super class constructor
         super(NAME);
 
-        // set the default value at disabled
-        value = READY;
+        // by default the function starts at OFF
+        value = OFF;
     }
 
-    public EEP26OverCurrentSwitchOff(Boolean value) {
-        // call the superclass constructor
+    /**
+     * Constructor, builds a new {@link EEP26Switching} instance with the given
+     * value (true == on, false == off).
+     *
+     * @param value
+     */
+    public EEP26Switching(boolean value) {
+        // call the super class constructor
         super(NAME);
 
-        // set the given value
+        // by default the function starts at OFF
         this.value = value;
     }
 
     @Override
     public byte[] byteValue() {
-        // by default is not-used / not_detected
+        // by default is disabled
         byte value = 0x00;
 
-        // if value is true than a power failure has been detected and the value
+        // if value is true than the local control is enabled and the value
         // should be 0b1 == 0x01
-        if (this.value == EXECUTED) {
+        if (this.value == ON) {
             value = 0x01;
         }
 
         return new byte[]{value};
     }
-
 }
