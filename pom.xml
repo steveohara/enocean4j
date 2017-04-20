@@ -7,7 +7,7 @@
     <groupId>uk.co.4ng</groupId>
     <artifactId>enocean4j</artifactId>
     <name>EnOcean4J</name>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <description>A fork of the enj-library to interface Java with EnOcean serial hubs</description>
 
     <packaging>jar</packaging>

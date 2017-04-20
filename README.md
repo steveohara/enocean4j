@@ -16,6 +16,8 @@ Some of the changes are listed below;
 The main driver for taking this on is the same as that for j2mod - we at 4NG have a need for an industrial grade protocol library for our SMARTset product and 
 although EnJ-Library gets you a very long way forward, it doesn't meet our requirements.
 
+The library has been tested on Windows and Linux, Raspbian using a USB300 dongle.
+
 ## Note
 One of the things that this library does not support at the moment is OSGi bundling. This is for two reasons; 
 
@@ -34,8 +36,10 @@ try {
     LinkLayer linkLayer = new LinkLayer("com3");
     
     // create a device listener for handling device updates
-    DeviceManager.addDeviceListener(new SimpleDeviceListener());
-    
+    SimpleDeviceListener listener = new SimpleDeviceListener();
+    DeviceManager.addDeviceListener(listener);
+    DeviceManager.addDeviceValueListener(listener);    
+
     // register a rocker switch
     DeviceManager.registerDevice("2BD5EE", "F60201");
     
@@ -58,24 +62,23 @@ public class SimpleDeviceListener implements DeviceListener {
 
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Added device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
+        logger.info("Added device: {} ({})", device.getAddressHex(), device.getEEP().getIdentifier());
     }
 
     @Override
     public void modifiedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Modified device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
+        logger.info("Modified device: {} ({})", device.getAddressHex(), device.getEEP().getIdentifier());
     }
 
     @Override
     public void removedEnOceanDevice(EnOceanDevice device) {
-        logger.info("Removed device: {} ({})", device.getAddressHex(), device.getEEP().getEEPIdentifier());
+        logger.info("Removed device: {} ({})", device.getAddressHex(), device.getEEP().getIdentifier());
     }
 
     @Override
     public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
         for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
-            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", 
-            eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
+            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
         }
     }
 }
