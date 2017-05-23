@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.A5.A502;
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
@@ -34,29 +35,27 @@ public class A50230 extends A502 {
 
         // add attributes A50230 has operative range between -40.0 and 62.3
         // Celsius
-        addChannelAttribute(CHANNEL, new EEP26TemperatureInverseLinear(-40.0, 62.3));
+        addChannelAttribute(CHANNEL, new EEP26TemperatureInverseLinear(1023, -40.0, 62.3));
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;
+
         // handle the telegram, as first cast it at the right type (or fail)
         if (telegram.getTelegramType() == EEP26TelegramType.FourBS) {
+
             // cast the telegram to handle to its real type
             FourBSTelegram profileUpdate = (FourBSTelegram) telegram;
 
             // get the packet payload
             byte[] payload = profileUpdate.getPayload();
 
-
             //wrap the payload as a temperature message
             A502TemperatureMessage msg = new A502ExtendedTemperatureMessage(payload);
 
             //update the value of the attribute
-            EEP26TemperatureInverseLinear tLinear = (EEP26TemperatureInverseLinear) getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME);
-
-            // Dispatch the change
-            success = dispatchUpdateTask(telegram, device, msg, tLinear);
+            success = fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME), 0, telegram, device, msg.getTemperature());
         }
         return success;
     }

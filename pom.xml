@@ -7,7 +7,8 @@
     <groupId>uk.co.4ng</groupId>
     <artifactId>enocean4j</artifactId>
     <name>EnOcean4J</name>
-    <version>1.0.0</version>
+    <url>https://github.com/steveohara/enocean4j</url>
+    <version>1.1.0</version>
     <description>A fork of the enj-library to interface Java with EnOcean serial hubs</description>
 
     <packaging>jar</packaging>
@@ -55,6 +56,11 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
+    <scm>
+        <connection>https://github.com/steveohara/enocean4j.git</connection>
+        <url>https://github.com/steveohara/enocean4j</url>
+    </scm>
 
     <dependencies>
         <dependency>

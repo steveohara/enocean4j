@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co._4ng.enocean.eep.EEP;
 import uk.co._4ng.enocean.eep.EEPIdentifier;
+import uk.co._4ng.enocean.eep.Rorg;
 import uk.co._4ng.enocean.eep.eep26.profiles.A5.A502.*;
 import uk.co._4ng.enocean.eep.eep26.profiles.A5.A504.A50401;
+import uk.co._4ng.enocean.eep.eep26.profiles.A5.A504.A50402;
+import uk.co._4ng.enocean.eep.eep26.profiles.A5.A504.A50403;
 import uk.co._4ng.enocean.eep.eep26.profiles.A5.A507.A50701;
+import uk.co._4ng.enocean.eep.eep26.profiles.A5.A509.A50904;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D20108;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D20109;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D2010A;
@@ -35,19 +39,21 @@ import uk.co._4ng.enocean.link.PacketDelivery;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Static list of all supported EEP
+ */
 public class EEPRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(PacketDelivery.class);
 
     // the set of supported profiles
-    private Map<EEPIdentifier, EEP> supportedProfiles;
+    private static Map<EEPIdentifier, EEP> supportedProfiles = new ConcurrentHashMap<>();
 
-    // singleton pattern
-    public EEPRegistry() {
+    static {
 
         // build the profiles cache
-        supportedProfiles = new HashMap<>();
         addProfile(A50201.class);
         addProfile(A50202.class);
         addProfile(A50203.class);
@@ -75,8 +81,12 @@ public class EEPRegistry {
         addProfile(A50230.class);
 
         addProfile(A50401.class);
+        addProfile(A50402.class);
+        addProfile(A50403.class);
 
         addProfile(A50701.class);
+
+        addProfile(A50904.class);
 
         addProfile(D20108.class);
         addProfile(D20109.class);
@@ -90,9 +100,12 @@ public class EEPRegistry {
         addProfile(F61001.class);
     }
 
+    private EEPRegistry() {
+    }
+
     // static method for checking if the given profile is supported by the
     // current EnJ api.
-    public boolean isEEPSupported(EEPIdentifier eep) {
+    public static boolean isEEPSupported(EEPIdentifier eep) {
         return supportedProfiles.containsKey(eep);
     }
 
@@ -101,7 +114,7 @@ public class EEPRegistry {
      *
      * @param profile   Class of the profile
      */
-    public void addProfile(Class<? extends EEP> profile) {
+    public static void addProfile(Class<? extends EEP> profile) {
         if (profile != null) {
             try {
                 EEP eep = profile.newInstance();
@@ -119,7 +132,7 @@ public class EEPRegistry {
      * @param eepId The EEP identifier.
      * @return The EEP class.
      */
-    public EEP getEEP(EEPIdentifier eepId) {
+    public static EEP getEEP(EEPIdentifier eepId) {
         return supportedProfiles.get(eepId);
     }
 
@@ -128,8 +141,54 @@ public class EEPRegistry {
      *
      * @return Map of supported EEP profiles
      */
-    public Map<EEPIdentifier, EEP> getProfiles() {
+    public static Map<EEPIdentifier, EEP> getProfiles() {
         return supportedProfiles;
     }
+
+    /**
+     * Returns a reference to all the supported profiles for the given RORG
+     *
+     * @param rorg Rorg to get profiles for
+     * @return Map of supported EEP profiles
+     */
+    public static Map<EEPIdentifier, EEP> getProfiles(int rorg) {
+        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
+        for (EEP eep : getProfiles().values()) {
+            if (eep.getRorg().getRorgValue() == rorg) {
+                returnValue.put(eep.getIdentifier(), eep);
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * Returns a reference to all the supported profiles for the given RORG and function
+     *
+     * @param rorg     Rorg to get profiles for
+     * @param function Function to match
+     * @return Map of supported EEP profiles
+     */
+    public static Map<EEPIdentifier, EEP> getProfiles(int rorg, int function) {
+        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
+        for (EEP eep : getProfiles().values()) {
+            if (eep.getRorg().getRorgValue() == rorg && eep.getFunction() == function) {
+                returnValue.put(eep.getIdentifier(), eep);
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * Get the EEP profile for the given EEP identifier
+     *
+     * @param rorg     Rorg to get profiles for
+     * @param function Function to match
+     * @param type Type to match
+     * @return EEP profile or null if not supported
+     */
+    public static EEP getEEP(Rorg rorg, byte function, byte type) {
+        return getEEP(new EEPIdentifier(rorg, function, type));
+    }
+
 
 }

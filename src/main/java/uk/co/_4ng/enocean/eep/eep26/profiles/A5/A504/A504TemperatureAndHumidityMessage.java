@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.A5.A504;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public class A504TemperatureAndHumidityMessage {
+class A504TemperatureAndHumidityMessage {
     private int temperature;
     private int humidity;
     private boolean teachIn;
@@ -32,24 +32,22 @@ public class A504TemperatureAndHumidityMessage {
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    public A504TemperatureAndHumidityMessage(byte data[]) {
-        // humidity data has offset 8
-        byte humidity = data[1];
+    A504TemperatureAndHumidityMessage(byte data[], Class clazz) {
 
-        // temperature data has offset 16 (3rd byte)
-        byte temperature = data[2];
+        // humidity data has offset 0
+        humidity = 0x00FF & data[0];
 
-        // transform into a positive integer
-        this.humidity = 0x00FF & humidity;
+        if (clazz.equals(A50403.class)) {
+            // temperature data has offset 14 and is 10 bits
+            int temperature = ((data[1] & 0xc0) << 2) + data[2];
+            this.temperature = temperature & 0x3ff;
+        }
+        else {
+            // transform into a positive integer
+            temperature = 0x00FF & data[2];
+        }
 
-        // transform into a positive integer
-        this.temperature = 0x00FF & temperature;
-
-        // get the teach-in flag (offset 28, 4th bit of the 4th byte)
-        byte teachIn = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
-
-        // check the corresponding boolean value
-        this.teachIn = teachIn == 0;
+        teachIn = (data[3] & 0x8) == 0;
     }
 
     /**
@@ -58,7 +56,7 @@ public class A504TemperatureAndHumidityMessage {
      *
      * @return the temperature as an integer, between 0 and 255e
      */
-    public int getTemperature() {
+    int getTemperature() {
         return temperature;
     }
 
@@ -68,7 +66,7 @@ public class A504TemperatureAndHumidityMessage {
      *
      * @return the humidity as an integer, between 0 and 255
      */
-    public int getHumidity() {
+    int getHumidity() {
         return humidity;
     }
 
@@ -77,7 +75,7 @@ public class A504TemperatureAndHumidityMessage {
      *
      * @return the teachIn, true if teach-in is active, false otherwise.
      */
-    public boolean isTeachIn() {
+    boolean isTeachIn() {
         return teachIn;
     }
 

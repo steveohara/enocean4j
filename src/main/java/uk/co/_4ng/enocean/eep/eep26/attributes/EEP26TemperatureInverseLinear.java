@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,140 +15,27 @@
  */
 package uk.co._4ng.enocean.eep.eep26.attributes;
 
-import uk.co._4ng.enocean.eep.EEPAttribute;
-
-import java.nio.ByteBuffer;
-
 /**
- * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
+ * A variant of the standard temperature attribute but the scale is inverted
  */
-public class EEP26TemperatureInverseLinear extends EEPAttribute<Double> {
-    // the EEPFunction name
-    public static final String NAME = "Temperature";
-    public static final double MAX_VALID_RAW = 255.0;
+public class EEP26TemperatureInverseLinear extends EEP26TemperatureLinear {
 
-    // the allowed range
-    private double minT;
-    private double maxT;
-
-    /**
-     * Inverse linear temperature sensor
-     */
     public EEP26TemperatureInverseLinear() {
-        super(NAME);
-
-        // default value= -273 °C
-        value = -273.0;
-        unit = "Celsius";
-        minT = -273.0;
-        maxT = Double.MAX_VALUE;
     }
 
-    public EEP26TemperatureInverseLinear(Double value, String unit) {
-        super(NAME);
-
-        if (unit != null && value != null && !unit.isEmpty() && (unit.equalsIgnoreCase("Celsius") || unit.equalsIgnoreCase("°C") || unit.equalsIgnoreCase("C"))) {
-            // store the value
-            this.value = value;
-
-            // store the unit
-            this.unit = unit;
-
-            // set the maximum range
-            minT = -273.0;
-            maxT = Double.MAX_VALUE;
-        }
-
-        else {
-            throw new NumberFormatException("Wrong unit or null value for temperature in Celsius degrees");
-        }
-
+    public EEP26TemperatureInverseLinear(int maxRawValue, Double minT, Double maxT) {
+        super(maxRawValue, minT, maxT);
     }
 
     public EEP26TemperatureInverseLinear(Double minT, Double maxT) {
-        super(NAME);
-
-        // default value= -273 °C
-        value = -273.0;
-        unit = "Celsius";
-        this.minT = minT;
-        this.maxT = maxT;
-    }
-
-    /**
-     * @return the minT
-     */
-    public double getMinT() {
-        return minT;
-    }
-
-    /**
-     * @param minT the minT to set
-     */
-    public void setMinT(double minT) {
-        this.minT = minT;
-    }
-
-    /**
-     * @return the maxT
-     */
-    public double getMaxT() {
-        return maxT;
-    }
-
-    /**
-     * @param maxT the maxT to set
-     */
-    public void setMaxT(double maxT) {
-        this.maxT = maxT;
+        super(minT, maxT);
     }
 
     @Override
-    public void setValue(Double value) {
-        if (value != null) {
-            // store the current value
-            this.value = value;
-        }
-    }
-
-    @Override
-    public void setUnit(String unit) {
-        if (unit != null && !unit.isEmpty() && (unit.equalsIgnoreCase("Celsius") || unit.equalsIgnoreCase("°C") || unit.equalsIgnoreCase("C"))) {
-            // store the unit
-            this.unit = unit;
-        }
-    }
-
-    @Override
-    public byte[] byteValue() {
-        // it is likely to never be used...
-
-        // use byte buffers to ease double encoding / decoding
-
-        // a byte buffer wrapping an array of 4 bytes
-        ByteBuffer valueAsBytes = ByteBuffer.wrap(new byte[4]);
-
-        // store the current value
-        valueAsBytes.putDouble(value);
-
-        // return the value as byte array
-        return valueAsBytes.array();
-    }
-
     public void setRawValue(int value) {
         // perform the scaling
-        // TODO check conversion
-        this.value = (maxT - minT) * (MAX_VALID_RAW - value) / MAX_VALID_RAW + minT;
+        this.value = (max - min) * (maxRawValue - value) / maxRawValue + min;
     }
 
-    /**
-     * Checks if the current attribute represents a value in the declared valid
-     * range or not.
-     *
-     * @return True if the valus is within range
-     */
-    public boolean isValid() {
-        return value >= minT && value <= maxT;
-    }
 
 }

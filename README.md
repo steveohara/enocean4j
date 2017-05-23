@@ -34,17 +34,18 @@ Thanks to Dario Bonino and Andrea Biasi for all of their hard work on the origin
 try {
     // create the lowest link layer
     LinkLayer linkLayer = new LinkLayer("com3");
+    DeviceManager deviceManager = new DeviceManager();
     
     // create a device listener for handling device updates
     SimpleDeviceListener listener = new SimpleDeviceListener();
-    DeviceManager.addDeviceListener(listener);
-    DeviceManager.addDeviceValueListener(listener);    
+    deviceManager.addDeviceListener(listener);
+    deviceManager.addDeviceValueListener(listener);    
 
     // register a rocker switch
-    DeviceManager.registerDevice("2BD5EE", "F60201");
+    deviceManager.registerDevice("2BD5EE", "F60201");
     
     // create the connection layer
-    Connection connection = new Connection(linkLayer);
+    Connection connection = new Connection(linkLayer, deviceManager);
     
     // connect the link
     linkLayer.connect();        

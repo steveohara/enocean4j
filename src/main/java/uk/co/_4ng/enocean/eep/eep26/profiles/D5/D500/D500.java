@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.D5.D500;
 
-import uk.co._4ng.enocean.eep.eep26.profiles.InternalEEP;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import uk.co._4ng.enocean.eep.eep26.profiles.AbstractEEP;
 
 /**
  * A class representing the D5-00 Family of EnOcean profiles. In EEP26 only one
@@ -27,24 +24,6 @@ import java.util.concurrent.Executors;
  *
  * @author bonino
  */
-public abstract class D500 extends InternalEEP {
-
-    // Executor Thread Pool for handling attribute updates
-    volatile ExecutorService attributeNotificationWorker;
-
-    // -------------------------------------------------
-    // Parameters defined by this EEP, which
-    // might change depending on the network
-    // activity.
-    // --------------------------------------------------
-
-    // --------------------------------------------------
-
-    /**
-     */
-    public D500() {
-        // build the attribute dispatching worker
-        attributeNotificationWorker = Executors.newFixedThreadPool(1);
-    }
+abstract class D500 extends AbstractEEP {
 
 }

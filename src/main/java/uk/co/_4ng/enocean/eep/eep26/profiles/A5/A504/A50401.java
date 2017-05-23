@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,9 @@ public class A50401 extends A504 {
     public A50401() {
 
         // add attributes A50204 has operative range between 0.0 and 40 Celsius
-        addChannelAttribute(CHANNEL, new EEP26TemperatureLinear(0.0, 40.0));
+        addChannelAttribute(CHANNEL, new EEP26TemperatureLinear(250, 0.0, 40.0));
+
         // and between 0 and 100% humidity
-        addChannelAttribute(CHANNEL, new EEP26HumidityLinear(0.0, 100.0));
+        addChannelAttribute(CHANNEL, new EEP26HumidityLinear(250, 0.0, 100.0));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,87 +25,96 @@ import java.nio.ByteBuffer;
 public class EEP26TemperatureLinear extends EEPAttribute<Double> {
     // the EEPFunction name
     public static final String NAME = "Temperature";
-    public static final double MAX_VALID_RAW = 250.0;
-    // the allowed range
-    private double minT;
-    private double maxT;
+
+    int maxRawValue = 255;
+    double min = -273.0;
+    double max = 273.0;
 
     /**
      * A linear temperature probe
      */
-    public EEP26TemperatureLinear() {
+    EEP26TemperatureLinear() {
         super(NAME);
-
-        // default value= -273 °C
-        value = -273.0;
+        value = min;
         unit = "Celsius";
-        minT = -273.0;
-        maxT = Double.MAX_VALUE;
-    }
-
-    public EEP26TemperatureLinear(Double value, String unit) {
-        super(NAME);
-
-        if (unit != null && value != null && !unit.isEmpty() && (unit.equalsIgnoreCase("Celsius") || unit.equalsIgnoreCase("°C") || unit.equalsIgnoreCase("C"))) {
-            // store the value
-            this.value = value;
-
-            // store the unit
-            this.unit = unit;
-
-            // set the maximum range
-            minT = -273.0;
-            maxT = Double.MAX_VALUE;
-        }
-
-        else {
-            throw new NumberFormatException("Wrong unit or null value for temperature in Celsius degrees");
-        }
-
-    }
-
-    public EEP26TemperatureLinear(Double minT, Double maxT) {
-        super(NAME);
-
-        // default value= -273 °C
-        value = -273.0;
-        unit = "Celsius";
-        this.minT = minT;
-        this.maxT = maxT;
     }
 
     /**
-     * Returns the minimum temperature
+     * Creates an attribute with the max/min and range
      *
-     * @return the minT
+     * @param min        Minimum scaled temperature
+     * @param max        Mximum scaled temperature
      */
-    public double getMinT() {
-        return minT;
+    public EEP26TemperatureLinear(Double min, Double max) {
+        this(255, min, max);
     }
 
     /**
-     * Sets the minimum temperature
+     * Creates an attribute with the max/min and range
      *
-     * @param minT the minT to set
+     * @param maxRawValue Maximum unscaled value
+     * @param min        Minimum scaled temperature
+     * @param max        Mximum scaled temperature
      */
-    public void setMinT(double minT) {
-        this.minT = minT;
+    public EEP26TemperatureLinear(int maxRawValue, Double min, Double max) {
+        this();
+        this.maxRawValue = maxRawValue;
+        this.min = min;
+        this.max = max;
     }
 
     /**
-     * Gets the maximum temperature
+     * Returns the minimum scaled value
      *
-     * @return the maxT
+     * @return the min
      */
-    public double getMaxT() {
-        return maxT;
+    public double getMin() {
+        return min;
     }
 
     /**
-     * @param maxT the maxT to set
+     * Sets the minimum scaled value
+     *
+     * @param min the min to set
      */
-    public void setMaxT(double maxT) {
-        this.maxT = maxT;
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    /**
+     * Gets the maximum scaled value
+     *
+     * @return the max
+     */
+    public double getMax() {
+        return max;
+    }
+
+    /**
+     * Sets the maximum scaled value
+     *
+     * @param max the max to set
+     */
+    public void setMax(double max) {
+        this.max = max;
+    }
+
+    /**
+     * Returns the maximum raw value possible for this attribute
+     *
+     * @return Maximum unscaled value
+     */
+    public int getMaxRawValue() {
+        return maxRawValue;
+    }
+
+    /**
+     * Sets the maximum unscaled value of this attribute
+     *
+     * @param maxRawValue Maximum unscaled value
+     */
+    public void setMaxRawValue(int maxRawValue) {
+        this.maxRawValue = maxRawValue;
     }
 
     @Override
@@ -140,10 +149,9 @@ public class EEP26TemperatureLinear extends EEPAttribute<Double> {
         return valueAsBytes.array();
     }
 
+    @Override
     public void setRawValue(int value) {
-        // perform the scaling
-        // TODO check conversion
-        this.value = (maxT - minT) * (double) value / MAX_VALID_RAW + minT;
+        this.value = (max - min) * (double) value / maxRawValue + min;
     }
 
     /**
@@ -153,7 +161,7 @@ public class EEP26TemperatureLinear extends EEPAttribute<Double> {
      * @return True if the value is valid
      */
     public boolean isValid() {
-        return value >= minT && value <= maxT;
+        return value >= min && value <= max;
     }
 
 }

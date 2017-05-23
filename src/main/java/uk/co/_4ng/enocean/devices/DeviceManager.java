@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import uk.co._4ng.enocean.communication.tasks.DeviceChangeJob;
 import uk.co._4ng.enocean.eep.EEP;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 import uk.co._4ng.enocean.eep.EEPIdentifier;
-import uk.co._4ng.enocean.eep.Rorg;
 import uk.co._4ng.enocean.eep.eep26.EEPRegistry;
 
 import java.util.*;
@@ -43,28 +42,21 @@ public class DeviceManager {
     private static final Logger logger = LoggerFactory.getLogger(DeviceManager.class);
 
     // the set of device listeners to keep updated about device events
-    private static Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
+    private Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
 
     // the set of device listeners to keep updated about device value changes
-    private static Set<DeviceValueListener> deviceValueListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceValueListener, Boolean>());
-
-    // The EEP eepRegistry
-    private static EEPRegistry eepRegistry = new EEPRegistry();
+    private Set<DeviceValueListener> deviceValueListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceValueListener, Boolean>());
 
     // Initialize the update delivery executor thread pool
-    private static ExecutorService deviceUpdateDeliveryExecutor = Executors.newCachedThreadPool();
+    private ExecutorService deviceUpdateDeliveryExecutor = Executors.newCachedThreadPool();
 
     // The set of known devices
-    private static PersistentDeviceSet knownDevices;
-
-    static {
-        initialise();
-    }
+    private PersistentDeviceSet knownDevices;
 
     /**
      * Initialises the DeviceManager
      */
-    public static synchronized void initialise() {
+    public DeviceManager() {
 
         // Clear the listeners
 
@@ -79,7 +71,7 @@ public class DeviceManager {
         // Initialise the device eepRegistry from the passed file if necessary
 
         knownDevices = new PersistentDeviceSet();
-        logger.info("Initialised EnOcean device manager - {} EEP profiles", eepRegistry.getProfiles().size());
+        logger.info("Initialised EnOcean device manager - {} EEP profiles", EEPRegistry.getProfiles().size());
     }
 
     /**
@@ -88,7 +80,7 @@ public class DeviceManager {
      *
      * @param listener The {@link DeviceListener} to notify to.
      */
-    public static void addDeviceListener(DeviceListener listener) {
+    public void addDeviceListener(DeviceListener listener) {
         // Store the listener in the set of currently active listeners
 
         deviceListeners.add(listener);
@@ -107,7 +99,7 @@ public class DeviceManager {
      * @param listener The {@link DeviceListener} to remove.
      * @return true if removal was successful, false, otherwise.
      */
-    public static boolean removeDeviceListener(DeviceListener listener) {
+    public boolean removeDeviceListener(DeviceListener listener) {
         return deviceListeners.remove(listener);
     }
 
@@ -117,7 +109,7 @@ public class DeviceManager {
      *
      * @param listener The {@link DeviceListener} to notify to.
      */
-    public static void addDeviceValueListener(DeviceValueListener listener) {
+    public void addDeviceValueListener(DeviceValueListener listener) {
         deviceValueListeners.add(listener);
     }
 
@@ -128,7 +120,7 @@ public class DeviceManager {
      * @param listener The {@link DeviceListener} to remove.
      * @return true if removal was successful, false, otherwise.
      */
-    public static boolean removeDeviceValueListener(DeviceValueListener listener) {
+    public boolean removeDeviceValueListener(DeviceValueListener listener) {
         return deviceValueListeners.remove(listener);
     }
 
@@ -139,7 +131,7 @@ public class DeviceManager {
      * @param eep              The equipment profile for this device
      * @return EnOceanDevice
      */
-    public static EnOceanDevice registerDevice(String hexDeviceAddress, String eep) {
+    public EnOceanDevice registerDevice(String hexDeviceAddress, String eep) {
         byte deviceAddress[] = EnOceanDevice.parseAddress(hexDeviceAddress);
         EEPIdentifier eepId = EEPIdentifier.parse(eep);
 
@@ -163,12 +155,30 @@ public class DeviceManager {
      * @param eep            The equipment profile for this device
      * @return EnOceanDevice
      */
-    public static EnOceanDevice registerDevice(byte address[], byte manufacturerId[], EEPIdentifier eep) {
+    public EnOceanDevice registerDevice(byte[] address, byte[] manufacturerId, EEPIdentifier eep) {
+        EnOceanDevice device = createDevice(address, manufacturerId, eep);
+        if (device != null) {
+            return registerDevice(device);
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Creates a device that can be communicated with but doesn't register it
+     *
+     * @param address        Address expressed as a series of bytes as received in a telegram
+     * @param manufacturerId The unique manufacturer ID if known
+     * @param eep            The equipment profile for this device
+     * @return EnOceanDevice
+     */
+    public static EnOceanDevice createDevice(byte address[], byte manufacturerId[], EEPIdentifier eep) {
         EnOceanDevice device = new EnOceanDevice(address, manufacturerId);
-        EEP deviceEEP = eepRegistry.getEEP(eep);
+        EEP deviceEEP = EEPRegistry.getEEP(eep);
         if (deviceEEP != null) {
             device.setEEP(deviceEEP);
-            return registerDevice(device);
+            return device;
         }
         return null;
     }
@@ -179,7 +189,7 @@ public class DeviceManager {
      * @param device Enocean device to register
      * @return EnOceanDevice
      */
-    public static EnOceanDevice registerDevice(EnOceanDevice device) {
+    public EnOceanDevice registerDevice(EnOceanDevice device) {
         // notify listeners
         notifyDeviceValueListeners(device, DeviceChangeType.CREATED);
 
@@ -191,7 +201,7 @@ public class DeviceManager {
     /**
      * Clear all the registered devices
      */
-    public static void clearRegistry() {
+    public void clearRegistry() {
         knownDevices.clear();
     }
 
@@ -200,7 +210,7 @@ public class DeviceManager {
      *
      * @param device Enocean device to unregister
      */
-    public static void unRegisterDevice(EnOceanDevice device) {
+    public void unRegisterDevice(EnOceanDevice device) {
         if (knownDevices.getByUID(device.getAddressInt()) != null) {
 
             // notify listeners
@@ -216,7 +226,7 @@ public class DeviceManager {
      *
      * @return the knownDevices
      */
-    public static Collection<EnOceanDevice> getDevices() {
+    public Collection<EnOceanDevice> getDevices() {
         return knownDevices.values();
     }
 
@@ -227,7 +237,7 @@ public class DeviceManager {
      * @param deviceUID Return the device using its decimal ID
      * @return EnOceanDevice or null if the device is not registered
      */
-    public static EnOceanDevice getDevice(int deviceUID) {
+    public EnOceanDevice getDevice(int deviceUID) {
         return knownDevices.getByUID(deviceUID);
     }
 
@@ -237,7 +247,7 @@ public class DeviceManager {
      * @param address Address in byte array format
      * @return Device or null if not registered
      */
-    public static EnOceanDevice getDevice(byte[] address) {
+    public EnOceanDevice getDevice(byte[] address) {
         return knownDevices.getByAddress(address);
     }
 
@@ -247,8 +257,8 @@ public class DeviceManager {
      * @param eep EEP identifier to check
      * @return True if this EEP is supported by enocean4j
      */
-    public static boolean isEEPSupported(EEPIdentifier eep) {
-        return eepRegistry.isEEPSupported(eep);
+    public boolean isEEPSupported(EEPIdentifier eep) {
+        return EEPRegistry.isEEPSupported(eep);
     }
 
     /**
@@ -257,11 +267,16 @@ public class DeviceManager {
      * @param device     Device being actioned
      * @param changeType Type of the change occurring
      */
-    public static void notifyDeviceValueListeners(EnOceanDevice device, DeviceChangeType changeType) {
+    public void notifyDeviceValueListeners(EnOceanDevice device, DeviceChangeType changeType) {
         deviceUpdateDeliveryExecutor.execute(new DeviceChangeJob(device, changeType, deviceListeners));
     }
 
-    public static void notifyDeviceValueListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
+    /**
+     * Notify all the registered listeners that an event on a device has occurred
+     *
+     * @param eepAttributeChangeJob Attribute change values
+     */
+    public void notifyDeviceValueListeners(EEPAttributeChangeJob eepAttributeChangeJob) {
         for (DeviceValueListener listener : deviceValueListeners) {
             listener.deviceAttributeChange(eepAttributeChangeJob);
         }
@@ -272,64 +287,8 @@ public class DeviceManager {
      *
      * @return Map of supported EEP profiles
      */
-    public static Map<EEPIdentifier, EEP> getProfiles() {
-        return new HashMap<>(eepRegistry.getProfiles());
+    public Map<EEPIdentifier, EEP> getProfiles() {
+        return new HashMap<>(EEPRegistry.getProfiles());
     }
-
-    /**
-     * Returns a reference to all the supported profiles for the given RORG
-     *
-     * @param rorg Rorg to get profiles for
-     * @return Map of supported EEP profiles
-     */
-    public static Map<EEPIdentifier, EEP> getProfiles(int rorg) {
-        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
-        for (EEP eep : eepRegistry.getProfiles().values()) {
-            if (eep.getRorg().getRorgValue() == rorg) {
-                returnValue.put(eep.getIdentifier(), eep);
-            }
-        }
-        return returnValue;
-    }
-
-    /**
-     * Returns a reference to all the supported profiles for the given RORG and function
-     *
-     * @param rorg     Rorg to get profiles for
-     * @param function Function to match
-     * @return Map of supported EEP profiles
-     */
-    public static Map<EEPIdentifier, EEP> getProfiles(int rorg, int function) {
-        Map<EEPIdentifier, EEP> returnValue = new HashMap<>();
-        for (EEP eep : eepRegistry.getProfiles().values()) {
-            if (eep.getRorg().getRorgValue() == rorg && eep.getFunction() == function) {
-                returnValue.put(eep.getIdentifier(), eep);
-            }
-        }
-        return returnValue;
-    }
-
-    /**
-     * Get the EEP profile for the given EEP identifier
-     *
-     * @param eep EEP identifier
-     * @return EEP profile or null if not supported
-     */
-    public static EEP getEEP(EEPIdentifier eep) {
-        return eepRegistry.getEEP(eep);
-    }
-
-    /**
-     * Get the EEP profile for the given EEP identifier
-     *
-     * @param rorg     Rorg to get profiles for
-     * @param function Function to match
-     * @param type Type to match
-     * @return EEP profile or null if not supported
-     */
-    public static EEP getEEP(Rorg rorg, byte function, byte type) {
-        return getEEP(new EEPIdentifier(rorg, function, type));
-    }
-
 
 }

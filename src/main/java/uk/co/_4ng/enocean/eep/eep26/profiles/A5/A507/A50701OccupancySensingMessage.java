@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.A5.A507;
  *
  * @author bonino
  */
-public class A50701OccupancySensingMessage {
+class A50701OccupancySensingMessage {
     // the supply voltage level, if available
     private int supplyVoltage;
 
@@ -44,7 +44,7 @@ public class A50701OccupancySensingMessage {
      *
      * @param data the 4BS telegram payload as an array of byte.
      */
-    public A50701OccupancySensingMessage(byte data[]) {
+    A50701OccupancySensingMessage(byte data[]) {
         // initially not valid
         valid = false;
 
@@ -71,10 +71,7 @@ public class A50701OccupancySensingMessage {
 
             // decode the teach-in flag
             // get the teach-in flag (offset 28, 4th bit of the 4th byte)
-            byte teachIn = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
-
-            // check the corresponding boolean value
-            this.teachIn = teachIn == 0;
+            teachIn = (data[3] & 0x8) == 0;
 
             // everything fine....
             // TODO: check if it is better to check the values of instance
@@ -86,35 +83,35 @@ public class A50701OccupancySensingMessage {
     /**
      * @return the supplyVoltage
      */
-    public int getSupplyVoltage() {
+    int getSupplyVoltage() {
         return supplyVoltage;
     }
 
     /**
      * @return the supplyVoltageAvailable
      */
-    public boolean isSupplyVoltageAvailable() {
+    boolean isSupplyVoltageAvailable() {
         return supplyVoltageAvailable;
     }
 
     /**
      * @return the motionDetected
      */
-    public boolean isMotionDetected() {
+    boolean isMotionDetected() {
         return motionDetected;
     }
 
     /**
      * @return the teachIn
      */
-    public boolean isTeachIn() {
+    boolean isTeachIn() {
         return teachIn;
     }
 
     /**
      * @return the valid
      */
-    public boolean isValid() {
+    boolean isValid() {
         return valid;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.D5.D500;
 /**
  * @author bonino
  */
-public class D50001ContactSwitchMessage {
+class D50001ContactSwitchMessage {
     private boolean contactClosed;
     private boolean teachIn;
     private boolean valid;
@@ -26,7 +26,7 @@ public class D50001ContactSwitchMessage {
     /**
      *
      */
-    public D50001ContactSwitchMessage(byte data[]) {
+    D50001ContactSwitchMessage(byte data[]) {
         // initially not valid
         valid = false;
 
@@ -54,21 +54,21 @@ public class D50001ContactSwitchMessage {
     /**
      * @return the contactClosed
      */
-    public boolean isContactClosed() {
+    boolean isContactClosed() {
         return contactClosed;
     }
 
     /**
      * @return the teachIn
      */
-    public boolean isTeachIn() {
+    boolean isTeachIn() {
         return teachIn;
     }
 
     /**
      * @return the valid
      */
-    public boolean isValid() {
+    boolean isValid() {
         return valid;
     }
 

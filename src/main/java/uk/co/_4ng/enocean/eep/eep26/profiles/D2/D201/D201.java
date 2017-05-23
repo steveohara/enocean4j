@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 package uk.co._4ng.enocean.eep.eep26.profiles.D2.D201;
 
 import uk.co._4ng.enocean.communication.Connection;
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttribute;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 import uk.co._4ng.enocean.eep.eep26.attributes.*;
-import uk.co._4ng.enocean.eep.eep26.profiles.InternalEEP;
+import uk.co._4ng.enocean.eep.eep26.profiles.AbstractEEP;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import uk.co._4ng.enocean.eep.eep26.telegram.VLDTelegram;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * A class representing the D2-01 family of EnOcean Equipment Profiles. Cannot
@@ -36,26 +35,7 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class D201 extends InternalEEP {
-
-    // func must be defined by extending classes
-
-    // Executor Thread Pool for handling attribute updates
-    private volatile ExecutorService attributeNotificationWorker;
-
-    // -------------------------------------------------
-    // Parameters defined by this EEP, which
-    // might change depending on the network
-    // activity.
-    // --------------------------------------------------
-
-    // -------------------------------------------------
-
-    // the class constructor
-    public D201() {
-        // build the attribute dispatching worker
-        attributeNotificationWorker = Executors.newFixedThreadPool(1);
-    }
+public abstract class D201 extends AbstractEEP {
 
     /**
      * D2.01 CMD 0x1 Implements the CMD 0x1 of the D2.01 EnOcean Equipment
@@ -369,7 +349,7 @@ public abstract class D201 extends InternalEEP {
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;
         // handle the telegram, as first cast it at the right type (or fail)
         if (telegram.getTelegramType() == EEP26TelegramType.VLD) {
@@ -431,7 +411,7 @@ public abstract class D201 extends InternalEEP {
 
             if (!changedAttributes.isEmpty() && channelId >= 0) {
                 // build the dispatching task
-                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(changedAttributes, channelId, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, changedAttributes, channelId, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

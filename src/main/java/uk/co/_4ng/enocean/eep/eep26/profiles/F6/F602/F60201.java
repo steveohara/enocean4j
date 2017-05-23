@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.F6.F602;
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttribute;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
@@ -51,7 +52,7 @@ public class F60201 extends F602 {
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;
 
         // handle the telegram, as first cast it at the right type (or fail)
@@ -106,7 +107,7 @@ public class F60201 extends F602 {
                 }
 
                 // Send the data to the listeners
-                diapatchJobs(attrs, telegram, device);
+                diapatchJobs(deviceManager, attrs, telegram, device);
 
                 //if comes here everything is fine
                 success = true;
@@ -137,11 +138,11 @@ public class F60201 extends F602 {
      * @param telegram Telegram
      * @param device   Device
      */
-    private void diapatchJobs(Map<Integer, List<EEPAttribute<?>>> attrs, EEP26Telegram telegram, EnOceanDevice device) {
+    private void diapatchJobs(DeviceManager deviceManager, Map<Integer, List<EEPAttribute<?>>> attrs, EEP26Telegram telegram, EnOceanDevice device) {
         for (Integer channel : attrs.keySet()) {
 
             // build the dispatching task
-            EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(attrs.get(channel), channel, telegram, device);
+            EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, attrs.get(channel), channel, telegram, device);
 
             // submit the task for execution
             attributeNotificationWorker.submit(dispatcherTask);

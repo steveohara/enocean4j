@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.A5.A502;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public class A502TemperatureMessage {
+class A502TemperatureMessage {
     int temperature;
     boolean teachIn;
 
@@ -36,17 +36,10 @@ public class A502TemperatureMessage {
      */
     A502TemperatureMessage(byte data[]) {
         // temperature data has offset 16 (3rd byte)
-        byte temperature = data[2];
+        temperature = 0x00FF & data[2];
 
-        // transform into a positive integer
-        this.temperature = 0x00FF & temperature; // TODO: check if the
-        // conversion is right
-
-        // get the teach-in flag (offset 28, 4th bit of the 4th byte)
-        byte teachIn = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
-
-        // check the corresponding boolean value
-        this.teachIn = teachIn == 0;
+        // teach-n is DB0.3
+        teachIn = (data[3] & 0x8) == 0;
     }
 
     /**
@@ -54,7 +47,7 @@ public class A502TemperatureMessage {
      *
      * @return the temperature as an integer, between 0 and 255
      */
-    public int getTemperature() {
+    int getTemperature() {
         return temperature;
     }
 
@@ -63,7 +56,7 @@ public class A502TemperatureMessage {
      *
      * @return the teachIn, true if teach-in is active, false otherwise.
      */
-    public boolean isTeachIn() {
+    boolean isTeachIn() {
         return teachIn;
     }
 

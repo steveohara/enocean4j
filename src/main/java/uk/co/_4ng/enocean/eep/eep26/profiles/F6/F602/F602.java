@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.F6.F602;
 
-import uk.co._4ng.enocean.eep.eep26.profiles.InternalEEP;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import uk.co._4ng.enocean.eep.eep26.profiles.AbstractEEP;
 
 /**
  * A class representing the F6-02 family of EnOcean Equipment Profiles (Rocker
@@ -26,25 +23,6 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class F602 extends InternalEEP {
+abstract class F602 extends AbstractEEP {
 
-    // func must be defined by extending classes
-
-    // Executor Thread Pool for handling attribute updates
-    protected transient ExecutorService attributeNotificationWorker;
-
-    // -------------------------------------------------
-    // Parameters defined by this EEP, which
-    // might change depending on the network
-    // activity.
-    // --------------------------------------------------
-
-    // --------------------------------------------------
-
-    // the class constructor
-    public F602() {
-
-        // build the attribute dispatching worker
-        attributeNotificationWorker = Executors.newFixedThreadPool(1);
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.A5.A507;
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttribute;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
@@ -44,7 +45,7 @@ public class A50701 extends A507 {
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;
         // handle the telegram, as first cast it at the right type (or fail)
         if (telegram.getTelegramType() == EEP26TelegramType.FourBS) {
@@ -105,7 +106,7 @@ public class A50701 extends A507 {
                 // if some attribute changed, notify it to listeners
                 if (!changedAttributes.isEmpty()) {
                     // build the dispatching task
-                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(changedAttributes, CHANNEL, telegram, device);
+                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, changedAttributes, CHANNEL, telegram, device);
 
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);

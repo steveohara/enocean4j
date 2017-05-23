@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.D2.D201;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public class D201ActuatorStatusResponse {
+class D201ActuatorStatusResponse {
     // the power failure enabled flag
     private boolean powerFailureEnabled;
 
@@ -75,7 +75,7 @@ public class D201ActuatorStatusResponse {
      * @param localControl          Local control
      * @param outputValue           Output value
      */
-    public D201ActuatorStatusResponse(byte powerFailure, byte powerFailureDetection, byte commandId, byte overCurrentSwitchOff, byte errorLevel, byte channelId, byte localControl, byte outputValue) {
+    D201ActuatorStatusResponse(byte powerFailure, byte powerFailureDetection, byte commandId, byte overCurrentSwitchOff, byte errorLevel, byte channelId, byte localControl, byte outputValue) {
         // store the power failure attribute
         powerFailureEnabled = powerFailure != 0;
 
@@ -125,7 +125,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the powerFailureEnabled
      */
-    public boolean isPowerFailureEnabled() {
+    boolean isPowerFailureEnabled() {
         return powerFailureEnabled;
     }
 
@@ -135,7 +135,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the powerFailureDetected
      */
-    public boolean isPowerFailureDetected() {
+    boolean isPowerFailureDetected() {
         return powerFailureDetected;
     }
 
@@ -154,7 +154,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the overCurrentSwitchOffExecuted
      */
-    public boolean isOverCurrentSwitchOffExecuted() {
+    boolean isOverCurrentSwitchOffExecuted() {
         return overCurrentSwitchOffExecuted;
     }
 
@@ -164,7 +164,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the errorLevel
      */
-    public D201ErrorLevel getErrorLevel() {
+    D201ErrorLevel getErrorLevel() {
         return errorLevel;
     }
 
@@ -174,7 +174,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the channelId
      */
-    public int getChannelId() {
+    int getChannelId() {
         return channelId;
     }
 
@@ -183,7 +183,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the output, true if the channel is an output, false otherwise
      */
-    public boolean isOutput() {
+    boolean isOutput() {
         return output;
     }
 
@@ -192,7 +192,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the localControlEnabled
      */
-    public boolean isLocalControlEnabled() {
+    boolean isLocalControlEnabled() {
         return localControlEnabled;
     }
 
@@ -202,7 +202,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the outputValue
      */
-    public int getOutputValue() {
+    int getOutputValue() {
         return outputValue;
     }
 
@@ -211,7 +211,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return the validOutputValue
      */
-    public boolean isValidOutputValue() {
+    boolean isValidOutputValue() {
         return validOutputValue;
     }
 
@@ -221,7 +221,7 @@ public class D201ActuatorStatusResponse {
      *
      * @return true if the output value is > 1%, false otherwise.
      */
-    public boolean isOn() {
+    boolean isOn() {
         return validOutputValue && outputValue > 0;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 /**
  * @author bonino
  */
-public class D201ActuatorMeasurementResponse {
+class D201ActuatorMeasurementResponse {
     // the command id, always 7
     private int commandId;
 
@@ -36,7 +36,7 @@ public class D201ActuatorMeasurementResponse {
     // the measure unit
     private D201UnitOfMeasure unit;
 
-    public D201ActuatorMeasurementResponse(byte commandId, byte channelId, byte[] measureValue, byte unit) {
+    D201ActuatorMeasurementResponse(byte commandId, byte channelId, byte[] measureValue, byte unit) {
         // store the command id
         this.commandId = (int) commandId;
 
@@ -54,41 +54,40 @@ public class D201ActuatorMeasurementResponse {
 
         // store the unit of measure
         this.unit = D201UnitOfMeasure.valueOf(unit);
-
     }
 
     /**
      * @return the commandId
      */
-    public int getCommandId() {
+    int getCommandId() {
         return commandId;
     }
 
     /**
      * @return the channelId
      */
-    public int getChannelId() {
+    int getChannelId() {
         return channelId;
     }
 
     /**
      * @return the output
      */
-    public boolean isOutput() {
+    boolean isOutput() {
         return output;
     }
 
     /**
      * @return the measure
      */
-    public byte[] getMeasure() {
+    byte[] getMeasure() {
         return measure;
     }
 
     /**
      * @return the unit
      */
-    public D201UnitOfMeasure getUnit() {
+    D201UnitOfMeasure getUnit() {
         return unit;
     }
 
@@ -98,7 +97,7 @@ public class D201ActuatorMeasurementResponse {
      *
      * @return Returns the value as a Double
      */
-    public double getMeasureAsDouble() {
+    double getMeasureAsDouble() {
         ByteBuffer buffer = ByteBuffer.wrap(measure);
         return (double) buffer.getInt();
     }
@@ -108,7 +107,7 @@ public class D201ActuatorMeasurementResponse {
      *
      * @return Returns the value as an int
      */
-    public int getMeasureAsInt() {
+    int getMeasureAsInt() {
         ByteBuffer buffer = ByteBuffer.wrap(measure);
         return buffer.getInt();
     }

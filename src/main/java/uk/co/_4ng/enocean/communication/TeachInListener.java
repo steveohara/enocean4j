@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,31 @@
  */
 package uk.co._4ng.enocean.communication;
 
+import uk.co._4ng.enocean.devices.EnOceanDevice;
+
 /**
  * @author bonino
  */
 public interface TeachInListener {
     /**
-     * Notifies when teach in is enabled and if teach-in is in smart mode
-     *
-     * @param smart
+     * Notifies when teach in is enabled
      */
-    void teachInEnabled(boolean smart);
+    void teachInEnabled();
 
     /**
      * Notifies when teach-in is disabled
      */
     void teachInDisabled();
+
+    /**
+     * Called by the system when a new device has been detected during teach-in
+     * @param device New device
+     */
+    void foundNewDevice(EnOceanDevice device);
+
+    /**
+     * Called by the system when an existing device has been detected during teach-in
+     * @param device Registered device
+     */
+    void foundRegisteredDevice(EnOceanDevice device);
 }

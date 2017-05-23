@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co._4ng.enocean.communication.DeviceListener;
 import uk.co._4ng.enocean.communication.DeviceValueListener;
+import uk.co._4ng.enocean.communication.TeachInListener;
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttribute;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
@@ -26,9 +28,14 @@ import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 /**
  * @author bonino
  */
-public class SimpleDeviceListener implements DeviceListener,DeviceValueListener {
+public class SimpleDeviceListener implements DeviceListener,DeviceValueListener,TeachInListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
+    private DeviceManager deviceManager;
+
+    public SimpleDeviceListener(DeviceManager deviceManager) {
+        this.deviceManager = deviceManager;
+    }
 
     @Override
     public void addedEnOceanDevice(EnOceanDevice device) {
@@ -50,5 +57,26 @@ public class SimpleDeviceListener implements DeviceListener,DeviceValueListener 
         for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
             logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
         }
+    }
+
+    @Override
+    public void teachInEnabled() {
+        logger.info("Teach-in enabled");
+    }
+
+    @Override
+    public void teachInDisabled() {
+        logger.info("Teach-in disabled");
+    }
+
+    @Override
+    public void foundNewDevice(EnOceanDevice device) {
+        logger.info("Teach-in found: {} registering", device);
+        deviceManager.registerDevice(device);
+    }
+
+    @Override
+    public void foundRegisteredDevice(EnOceanDevice device) {
+        logger.info("Teach-in found: {} already registered", device);
     }
 }

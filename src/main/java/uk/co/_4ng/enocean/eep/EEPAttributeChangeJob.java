@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,16 +31,19 @@ public class EEPAttributeChangeJob implements Runnable {
     private int channelId;
     private EEP26Telegram telegram;
     private EnOceanDevice device;
+    private DeviceManager deviceManager;
 
     /**
      * Creates a list of attributes that need to be notified for the specific device and channel
      *
+     * @param deviceManager    Device manager to use
      * @param changedAttributes List of attributes that have changed
      * @param channelId         The channel
      * @param telegram          The originating telegram
      * @param device            The target device
      */
-    public EEPAttributeChangeJob(List<EEPAttribute<?>> changedAttributes, int channelId, EEP26Telegram telegram, EnOceanDevice device) {
+    public EEPAttributeChangeJob(DeviceManager deviceManager, List<EEPAttribute<?>> changedAttributes, int channelId, EEP26Telegram telegram, EnOceanDevice device) {
+        this.deviceManager = deviceManager;
         this.changedAttributes = new ArrayList<>(changedAttributes);
         this.channelId = channelId;
         this.telegram = telegram;
@@ -50,12 +53,14 @@ public class EEPAttributeChangeJob implements Runnable {
     /**
      * Creates a list of attributes that need to be notified for the specific device and channel
      *
+     * @param deviceManager    Device manager to use
      * @param changedAttribute Attributes that has changed
      * @param channelId        The channel
      * @param telegram         The originating telegram
      * @param device           The target device
      */
-    public EEPAttributeChangeJob(EEPAttribute<?> changedAttribute, int channelId, EEP26Telegram telegram, EnOceanDevice device) {
+    public EEPAttributeChangeJob(DeviceManager deviceManager, EEPAttribute<?> changedAttribute, int channelId, EEP26Telegram telegram, EnOceanDevice device) {
+        this.deviceManager = deviceManager;
         changedAttributes = new ArrayList<>();
         changedAttributes.add(changedAttribute);
         this.channelId = channelId;
@@ -84,6 +89,6 @@ public class EEPAttributeChangeJob implements Runnable {
         for (EEPAttribute<?> attribute : changedAttributes) {
             attribute.notifyAttributeListeners(channelId, telegram, device);
         }
-        DeviceManager.notifyDeviceValueListeners(this);
+        deviceManager.notifyDeviceValueListeners(this);
     }
 }

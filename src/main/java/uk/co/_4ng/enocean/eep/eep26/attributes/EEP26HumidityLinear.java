@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,82 +25,86 @@ import java.nio.ByteBuffer;
 public class EEP26HumidityLinear extends EEPAttribute<Double> {
     // the EEPFunction name
     public static final String NAME = "RelativeHumidity";
-    public static final double MAX_VALID_RAW = 250.0;
 
-    // the allowed range
-    private double minH;
-    private double maxH;
+    int maxRawValue = 200;
+    double min = 0.0;
+    double max = 100.0;
 
     /**
-     * Linear humidity sensor
+     * A linear temperature probe
      */
-    public EEP26HumidityLinear() {
+    EEP26HumidityLinear() {
         super(NAME);
-
-        // default value= -273 °C
-        value = 0.0;
-        unit = "%";
-        minH = 0.0;
-        maxH = Double.MAX_VALUE;
-    }
-
-    public EEP26HumidityLinear(Double value, String unit) {
-        super(NAME);
-
-        if (unit != null && value != null && !unit.isEmpty() && unit.equalsIgnoreCase("%")) {
-            // store the value
-            this.value = value;
-
-            // store the unit
-            this.unit = unit;
-
-            // set the maximum range
-            minH = 0.0;
-            maxH = Double.MAX_VALUE;
-        }
-
-        else {
-            throw new NumberFormatException("Wrong unit or null value for relative humidity expressed in %");
-        }
-
-    }
-
-    public EEP26HumidityLinear(Double minH, Double maxH) {
-        super(NAME);
-
-        // default value= -273 °C
-        value = 0.0;
-        unit = "%";
-        this.minH = minH;
-        this.maxH = maxH;
+        value = min;
+        unit = "Celsius";
     }
 
     /**
-     * @return the minH
+     * Creates an attribute with the max/min and range
+     *
+     * @param maxRawValue Maximum unscaled value
+     * @param min        Minimum scaled temperature
+     * @param max        Mximum scaled temperature
      */
-    public double getMinH() {
-        return minH;
+    public EEP26HumidityLinear(int maxRawValue, Double min, Double max) {
+        this();
+        this.maxRawValue = maxRawValue;
+        this.min = min;
+        this.max = max;
     }
 
     /**
-     * @param minH the minH to set
+     * Returns the minimum scaled value
+     *
+     * @return the min
      */
-    public void setMinH(double minH) {
-        this.minH = minH;
+    public double getMin() {
+        return min;
     }
 
     /**
-     * @return the maxH
+     * Sets the minimum scaled value
+     *
+     * @param min the min to set
      */
-    public double getMaxH() {
-        return maxH;
+    public void setMin(double min) {
+        this.min = min;
     }
 
     /**
-     * @param maxH the maxH to set
+     * Gets the maximum scaled value
+     *
+     * @return the max
      */
-    public void setMaxH(double maxH) {
-        this.maxH = maxH;
+    public double getMax() {
+        return max;
+    }
+
+    /**
+     * Sets the maximum scaled value
+     *
+     * @param max the max to set
+     */
+    public void setMax(double max) {
+        this.max = max;
+    }
+
+    /**
+     * Returns the maximum raw value possible for this attribute
+     *
+     * @return Maximum unscaled value
+     */
+    public int getMaxRawValue() {
+        return maxRawValue;
+    }
+
+    /**
+     * Sets the maximum unscaled value of this attribute
+     *
+     * @param maxRawValue Maximum unscaled value
+     */
+    public void setMaxRawValue(int maxRawValue) {
+        this.maxRawValue = maxRawValue;
     }
 
     @Override
@@ -135,10 +139,9 @@ public class EEP26HumidityLinear extends EEPAttribute<Double> {
         return valueAsBytes.array();
     }
 
+    @Override
     public void setRawValue(int value) {
-        // perform the scaling
-        // TODO check conversion
-        this.value = (maxH - minH) * (double) value / MAX_VALID_RAW + minH;
+        this.value = (max - min) * (double) value / maxRawValue + min;
     }
 
     /**
@@ -148,7 +151,8 @@ public class EEP26HumidityLinear extends EEPAttribute<Double> {
      * @return True if the value is valid
      */
     public boolean isValid() {
-        return value >= minH && value <= maxH;
+        return value >= min && value <= max;
     }
+
 
 }

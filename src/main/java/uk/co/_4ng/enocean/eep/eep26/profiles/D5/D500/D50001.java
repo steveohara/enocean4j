@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package uk.co._4ng.enocean.eep.eep26.profiles.D5.D500;
 
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26Switching;
@@ -39,7 +40,7 @@ public class D50001 extends D500 {
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         boolean success = false;
 
         // handle the telegram, as first cast it at the right type (or fail)
@@ -62,7 +63,7 @@ public class D50001 extends D500 {
                 switchingAttribute.setValue(message.isContactClosed());
 
                 // build the dispatching task
-                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(switchingAttribute, CHANNEL, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, switchingAttribute, CHANNEL, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

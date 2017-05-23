@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.co._4ng.enocean.eep.eep26.telegram;
 import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
 
 /**
- * A factory class for genetaring proper {@link EEP26Telegram} instances given a
+ * A factory class for generating proper {@link EEP26Telegram} instances given a
  * low level {@link ESP3Packet} containing a telegram as payload. While it
  * currently works only on the fixed set of telegrams defined in the eEP2.6
  * specification, it will be extended to automatically include newly added
@@ -66,6 +66,11 @@ public class EEP26TelegramFactory {
         // handle 4BS telegrams
         else if (FourBSTelegram.is4BSPacket(pkt)) {
             telegram = new FourBSTelegram(pkt);
+
+            // handle 4BS teach in telegrams
+            if (FourBSTeachInTelegram.isTeachIn((FourBSTelegram) telegram)) {
+                telegram = new FourBSTeachInTelegram((FourBSTelegram) telegram);
+            }
         }
 
         return telegram;

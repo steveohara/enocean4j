@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,8 @@ public class UTETeachInTelegram extends EEP26Telegram {
         // bitwise AND with the 00000111 mask.
         manId[0] = (byte) (payload[3] & 0x07);
         manId[1] = payload[4];
+
+        isTeachIn = true;
 
         // build the rorg
         rorg = new Rorg(payload[0]);

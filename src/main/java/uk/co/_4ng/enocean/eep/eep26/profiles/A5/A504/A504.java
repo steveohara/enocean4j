@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,14 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.A5.A504;
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
-import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26HumidityLinear;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26TemperatureLinear;
-import uk.co._4ng.enocean.eep.eep26.profiles.InternalEEP;
+import uk.co._4ng.enocean.eep.eep26.profiles.AbstractEEP;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import uk.co._4ng.enocean.eep.eep26.telegram.FourBSTelegram;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * A class representing the A5-04 family of EnOcean Equipment Profiles
@@ -33,28 +30,10 @@ import java.util.concurrent.Executors;
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  */
-public abstract class A504 extends InternalEEP {
-    // Executor Thread Pool for handling attribute updates
-    private volatile ExecutorService attributeNotificationWorker;
-
-    // -------------------------------------------------
-    // Parameters defined by this EEP, which
-    // might change depending on the network
-    // activity.
-    // --------------------------------------------------
-
-    // -------------------------------------------------
-
-    /**
-     * The class constructor
-     */
-    public A504() {
-        // build the attribute dispatching worker
-        attributeNotificationWorker = Executors.newFixedThreadPool(1);
-    }
+public abstract class A504 extends AbstractEEP {
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         // success flag, initially false
         boolean success = false;
 
@@ -67,54 +46,12 @@ public abstract class A504 extends InternalEEP {
             byte[] payload = profileUpdate.getPayload();
 
             // wrap the payload as a temperature and humidity message
-            A504TemperatureAndHumidityMessage msg = new A504TemperatureAndHumidityMessage(payload);
+            A504TemperatureAndHumidityMessage msg = new A504TemperatureAndHumidityMessage(payload, getClass());
 
-            // ----- handle temperature values
+            // ----- handle the attributes
 
-            // update the value of the attribute
-            EEP26TemperatureLinear tLinear = (EEP26TemperatureLinear) getChannelAttribute(0, EEP26TemperatureLinear.NAME);
-
-            // check not null
-            if (tLinear != null) {
-                int rawT = msg.getTemperature();
-
-                // check range
-                if (rawT >= 0 && rawT <= EEP26TemperatureLinear.MAX_VALID_RAW) {
-                    // update the attribute value
-                    tLinear.setRawValue(rawT);
-
-                    // build the dispatching task
-                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(tLinear, 1, telegram, device);
-
-                    // submit the task for execution
-                    attributeNotificationWorker.submit(dispatcherTask);
-
-                    // update the success flag
-                    success = true;
-                }
-            }
-
-            // ----- handle temperature values
-
-            // update the value of the attribute
-            EEP26HumidityLinear hLinear = (EEP26HumidityLinear) getChannelAttribute(0, EEP26HumidityLinear.NAME);
-
-            // check not null
-            if (hLinear != null) {
-                int rawH = msg.getHumidity();
-
-                // check range
-                if (rawH >= 0 && rawH <= EEP26HumidityLinear.MAX_VALID_RAW) {
-                    // update the attribute value
-                    hLinear.setRawValue(rawH);
-
-                    // build the dispatching task
-                    EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(hLinear, 1, telegram, device);
-
-                    // submit the task for execution
-                    attributeNotificationWorker.submit(dispatcherTask);
-
-                    // update the success flag
+            if (fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureLinear.NAME), 0, telegram, device, msg.getTemperature())) {
+                if (fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26HumidityLinear.NAME), 0, telegram, device, msg.getHumidity())) {
                     success = true;
                 }
             }

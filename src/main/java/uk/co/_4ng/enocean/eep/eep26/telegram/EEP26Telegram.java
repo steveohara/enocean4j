@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ public abstract class EEP26Telegram {
     protected byte status;
     // the packet Rorg
     protected Rorg rorg;
+    // true if a teach type
+    protected boolean isTeachIn = false;
     // the raw (link layer) packet wrapped by this instance
     ESP3Packet rawPacket;
     // the telegram type
@@ -94,6 +96,14 @@ public abstract class EEP26Telegram {
      */
     public Rorg getRorg() {
         return rorg;
+    }
+
+    /**
+     * Returns true if this is a teach-in telegram
+     * @return True if teach-in type
+     */
+    public boolean isTeachIn() {
+        return isTeachIn;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.co._4ng.enocean.eep.eep26.profiles.F6.F610;
 
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26HandleRotation;
@@ -40,7 +41,7 @@ public class F61000 extends F610 {
     }
 
     @Override
-    public boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         // the success flag, if true the update has been succesful, otherwise it
         // is set at false.
         boolean success = false;
@@ -65,7 +66,7 @@ public class F61000 extends F610 {
                 rotationAttribute.setValue(message.getPosition());
 
                 // build the dispatching task
-                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(rotationAttribute, CHANNEL, telegram, device);
+                EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, rotationAttribute, CHANNEL, telegram, device);
 
                 // submit the task for execution
                 attributeNotificationWorker.submit(dispatcherTask);

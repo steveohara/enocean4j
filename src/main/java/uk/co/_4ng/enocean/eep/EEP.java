@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package uk.co._4ng.enocean.eep;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 
@@ -271,9 +272,9 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * Handles the profile data update, must be specifically implemented by each
      * profile class
      */
-    public boolean handleUpdate(EEP26Telegram telegram, EnOceanDevice device) {
+    public boolean handleUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device) {
         logger.debug("Handling telegram: {} for device: {}", getIdentifier(), device);
-        return handleProfileUpdate(telegram, device);
+        return handleProfileUpdate(deviceManager, telegram, device);
     }
 
     /**
@@ -302,5 +303,5 @@ public abstract class EEP implements EEPAttributeChangePublisher {
      * Handles the profile data update, must be specifically implemented by each
      * profile class
      */
-    protected abstract boolean handleProfileUpdate(EEP26Telegram telegram, EnOceanDevice device);
+    protected abstract boolean handleProfileUpdate(DeviceManager deviceManager, EEP26Telegram telegram, EnOceanDevice device);
 }

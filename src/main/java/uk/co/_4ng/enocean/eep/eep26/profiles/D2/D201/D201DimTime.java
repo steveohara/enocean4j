@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public enum D201DimTime {
 
     private final byte code;
 
-    private D201DimTime(byte modCode) {
+    D201DimTime(byte modCode) {
         code = modCode;
     }
 

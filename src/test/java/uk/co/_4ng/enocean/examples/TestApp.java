@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,15 +53,17 @@ public class TestApp {
             try {
                 // create the lowest link layer
                 LinkLayer linkLayer = new LinkLayer(opt.getValue('p'));
+                DeviceManager deviceManager = new DeviceManager();
 
                 // create a device listener for handling device updates and value changes
-                SimpleDeviceListener listener = new SimpleDeviceListener();
-                DeviceManager.addDeviceListener(listener);
-                DeviceManager.addDeviceValueListener(listener);
+                SimpleDeviceListener listener = new SimpleDeviceListener(deviceManager);
+                deviceManager.addDeviceListener(listener);
+                deviceManager.addDeviceValueListener(listener);
 
                 // register a couple of known devices
-                DeviceManager.registerDevice("2BD5EE", "F60201");
-                DeviceManager.registerDevice("1A4829C", "A50205");
+                deviceManager.registerDevice("2BD5EE", "F60201");
+                deviceManager.registerDevice("1A4829C", "A50205");
+                deviceManager.registerDevice("0185b451", "A50904");
 
                 // available comms ports
                 for (String port : LinkLayer.getCommsPorts()) {
@@ -69,7 +71,8 @@ public class TestApp {
                 }
 
                 // create the connection layer
-                Connection connection = new Connection(linkLayer);
+                Connection connection = new Connection(linkLayer, deviceManager);
+                connection.getTeachIn().addTeachInListener(listener);
 
                 // connect the link
                 linkLayer.connect();
@@ -128,18 +131,13 @@ public class TestApp {
 
         // ---------- Smart teach-in -------------
 
-        // teach-in for 2s
-        connection.setSmartTeachIn(true);
-        connection.enableTeachIn(5000);
+        connection.getTeachIn().enableTeachIn(5000);
         Thread.sleep(5500);
-
-        connection.setSmartTeachIn(false);
-        Thread.sleep(2000);
 
         // ----------- actuation test ------------
 
         // get the device by high-level uid
-        EnOceanDevice device = DeviceManager.getDevice(25673502);
+        EnOceanDevice device = connection.getDeviceManager().getDevice(25673502);
 
         // check not null
         if (device != null) {

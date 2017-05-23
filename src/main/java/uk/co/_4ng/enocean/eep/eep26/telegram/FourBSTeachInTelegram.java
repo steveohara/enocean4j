@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package uk.co._4ng.enocean.eep.eep26.telegram;
 
-import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
-
 /**
  * @author bonino
  */
@@ -28,35 +26,12 @@ public class FourBSTeachInTelegram extends FourBSTelegram {
     private boolean withEEP;
 
     /**
-     * @param pkt
+     * Create a teach-in version of this telegram from a standard one
+     * @param telegram Standard 4BS telegram
      */
-    public FourBSTeachInTelegram(ESP3Packet pkt) {
-        super(pkt);
-        init();
-    }
-
     public FourBSTeachInTelegram(FourBSTelegram telegram) {
         super(telegram.rawPacket);
-        init();
-    }
 
-    public static boolean isTeachIn(FourBSTelegram telegram) {
-        boolean teachIn = false;
-        // get the payload
-        byte data[] = telegram.getPayload();
-
-        // get the teach-in flag (offset 28, 4th bit of the 4th byte)
-        byte teachInByte = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
-
-        // check the corresponding boolean value
-        if (teachInByte == 0) {
-            teachIn = true;
-        }
-
-        return teachIn;
-    }
-
-    private void init() {
         // get the function byte
         func = (byte) (payload[0] >> 2 & (byte) 0x3F);
 
@@ -75,9 +50,19 @@ public class FourBSTeachInTelegram extends FourBSTelegram {
 
         // get the learn type
         byte learnTypeByte = (byte) (payload[3] & (byte) 0x80);
+        isTeachIn = true;
 
         withEEP = learnTypeByte != 0;
+    }
 
+    /**
+     * Returns true if the 4BS telegram is a teach-in type
+     * @param telegram 4BS telegram
+     * @return True if it is teach-in type
+     */
+    public static boolean isTeachIn(FourBSTelegram telegram) {
+        // get the teach-in flag (offset 28, 4th bit of the 4th byte)
+        return (telegram.getPayload()[3] & 0x8) == 0;
     }
 
     /**

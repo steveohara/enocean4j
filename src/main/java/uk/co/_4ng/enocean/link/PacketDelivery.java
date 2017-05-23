@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class PacketDelivery implements Runnable {
      * delivery time (i.e.,
      * <code>Packetdelivery.DEFAULT_PACKET_DELIVERY_TIME</code>).
      */
-    public PacketDelivery(ConcurrentLinkedQueue<PacketQueueItem> queue) {
+    PacketDelivery(ConcurrentLinkedQueue<PacketQueueItem> queue) {
         // store a reference to the queue from which events must be delivered
         theQueue = queue;
 
@@ -75,7 +75,7 @@ public class PacketDelivery implements Runnable {
      *
      * @param listener The listener to add.
      */
-    public void addPacketListener(PacketListener listener) {
+    void addPacketListener(PacketListener listener) {
         if (listeners != null) {
             listeners.add(listener);
         }
@@ -87,7 +87,7 @@ public class PacketDelivery implements Runnable {
      *
      * @param listener The listener to remove
      */
-    public void removePacketListener(PacketListener listener) {
+    void removePacketListener(PacketListener listener) {
         if (listeners != null) {
             listeners.remove(listener);
         }
@@ -110,7 +110,7 @@ public class PacketDelivery implements Runnable {
      *                 (setting the runnable flag at false is the suggested method
      *                 for stopping the packet delivery process).
      */
-    public void setRunnable(boolean runnable) {
+    void setRunnable(boolean runnable) {
         this.runnable = runnable;
     }
 

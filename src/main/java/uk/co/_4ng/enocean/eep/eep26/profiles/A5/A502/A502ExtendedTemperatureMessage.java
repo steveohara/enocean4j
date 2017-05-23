@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,7 @@ class A502ExtendedTemperatureMessage extends A502TemperatureMessage {
         temperature = temperatureHigh << 8 | 0x00FF & temperatureLow; // TODO: check if the conversion is right
 
         // get the teach-in flag (offset 28, 4th bit of the 4th byte)
-        byte teachIn = (byte) ((byte) (data[3] & (byte) 0x08) >> 3);
-
-        // check the corresponding boolean value
-        this.teachIn = teachIn == 0;
+        teachIn = (data[3] & 0x8) == 0;
     }
 
 }

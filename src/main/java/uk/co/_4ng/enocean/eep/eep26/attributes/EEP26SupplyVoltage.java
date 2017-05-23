@@ -1,5 +1,5 @@
 /*
- * Copyright $DateInfo.year enocean4j development teams
+ * Copyright 2017 enocean4j development teams
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,8 +137,8 @@ public class EEP26SupplyVoltage extends EEPAttribute<Double> {
         return valueAsBytes.array();
     }
 
+    @Override
     public void setRawValue(int value) {
-        // perform scaling (value should be between 0 and 250 included
         if (value >= 0 && value <= 250) {
             this.value = (maxV - minV) * (double) value / 250.0 + minV;
         }
