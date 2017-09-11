@@ -33,9 +33,9 @@ import java.util.concurrent.Executors;
 
 /**
  * This class is the connection independent device management class.
- * This is static, there is only one of these per VM and it manages the communications
- * of attribute and device changes to the rest of the system, irrespective of the communications
- * type or channel in which the change was detected
+ * A DeviceManager is registered with one or more Connection classes. It is possible to have more than
+ * one DeviceManager but not a likely scenario. Most applications will want to register their devices
+ * with a single manager.
  */
 public class DeviceManager {
 

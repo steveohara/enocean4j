@@ -30,6 +30,9 @@ import uk.co._4ng.enocean.eep.eep26.profiles.A5.A509.A50904;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D20108;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D20109;
 import uk.co._4ng.enocean.eep.eep26.profiles.D2.D201.D2010A;
+import uk.co._4ng.enocean.eep.eep26.profiles.D2.D232.D23200;
+import uk.co._4ng.enocean.eep.eep26.profiles.D2.D232.D23201;
+import uk.co._4ng.enocean.eep.eep26.profiles.D2.D232.D23202;
 import uk.co._4ng.enocean.eep.eep26.profiles.D5.D500.D50001;
 import uk.co._4ng.enocean.eep.eep26.profiles.F6.F602.F60201;
 import uk.co._4ng.enocean.eep.eep26.profiles.F6.F602.F60202;
@@ -91,6 +94,10 @@ public class EEPRegistry {
         addProfile(D20108.class);
         addProfile(D20109.class);
         addProfile(D2010A.class);
+
+        addProfile(D23200.class);
+        addProfile(D23201.class);
+        addProfile(D23202.class);
 
         addProfile(D50001.class);
 

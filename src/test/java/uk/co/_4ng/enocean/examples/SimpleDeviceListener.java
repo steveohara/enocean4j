@@ -22,7 +22,6 @@ import uk.co._4ng.enocean.communication.DeviceValueListener;
 import uk.co._4ng.enocean.communication.TeachInListener;
 import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
-import uk.co._4ng.enocean.eep.EEPAttribute;
 import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 
 /**
@@ -54,8 +53,8 @@ public class SimpleDeviceListener implements DeviceListener,DeviceValueListener,
 
     @Override
     public void deviceAttributeChange(EEPAttributeChangeJob eepAttributeChangeJob) {
-        for (EEPAttribute attr : eepAttributeChangeJob.getChangedAttributes()) {
-            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", eepAttributeChangeJob.getDevice().getAddressHex(), eepAttributeChangeJob.getChannelId(), attr.getName(), attr.getValue());
+        for (EEPAttributeChangeJob.EEPAttributeChange attr : eepAttributeChangeJob.getChanges()) {
+            logger.info("Device: {} Channel: {} Attribute: {} Value: {}", attr.getDevice().getAddressHex(), attr.getChannelId(), attr.getAttribute().getName(), attr.getAttribute().getValue());
         }
     }
 

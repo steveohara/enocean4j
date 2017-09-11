@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 /**
  * A class representing the D2-01 family of EnOcean Equipment Profiles. Cannot
- * be directly istantiated, instead specific classes matching the real device
+ * be directly instantiated, instead specific classes matching the real device
  * EEP must be used.
  *
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>

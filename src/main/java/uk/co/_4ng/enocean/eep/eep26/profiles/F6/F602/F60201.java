@@ -139,13 +139,18 @@ public class F60201 extends F602 {
      * @param device   Device
      */
     private void diapatchJobs(DeviceManager deviceManager, Map<Integer, List<EEPAttribute<?>>> attrs, EEP26Telegram telegram, EnOceanDevice device) {
+
+        EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager);
+
         for (Integer channel : attrs.keySet()) {
 
             // build the dispatching task
-            EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager, attrs.get(channel), channel, telegram, device);
-
-            // submit the task for execution
-            attributeNotificationWorker.submit(dispatcherTask);
+            for (EEPAttribute<?> attr : attrs.get(channel)) {
+                dispatcherTask.addChangedAttribute(attr, channel, telegram, device);
+            }
         }
+
+        // submit the task for execution
+        attributeNotificationWorker.submit(dispatcherTask);
     }
 }

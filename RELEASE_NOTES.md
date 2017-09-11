@@ -14,3 +14,6 @@
 * Refactored the DeviceManager to make it useable across multiple connections
 * Made the EEPRegistry static which makes sense
 * Tidied up the teach-in logic so that the system will only respond to teach-in requests when it is set to teach-in mode
+
+## Version 1.1.1
+* Added support for D2-32-XX CT Clamp devices

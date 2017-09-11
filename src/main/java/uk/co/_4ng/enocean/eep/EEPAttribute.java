@@ -49,6 +49,9 @@ public abstract class EEPAttribute<T> {
     // The set of attribute listeners to notify
     protected Set<EEPAttributeChangeListener> registeredListeners;
 
+    // Indicates that this attribute hasn't received a value before
+    protected boolean virginal = true;
+
     /**
      * The class constructor, initializes the data structures shared between all
      * EEPFunctions, i.e., the name and the set of supported EEPs (storing their
@@ -101,6 +104,7 @@ public abstract class EEPAttribute<T> {
      */
     public void setValue(T value) {
         this.value = value;
+        virginal = false;
     }
 
     /**
@@ -108,6 +112,7 @@ public abstract class EEPAttribute<T> {
      * @param value Integer value to scale
      */
     public void setRawValue(int value) {
+        virginal = false;
     }
 
     /**
@@ -172,6 +177,14 @@ public abstract class EEPAttribute<T> {
      */
     public void notifyAttributeListeners(EEP26Telegram telegram, EnOceanDevice device) {
         notifyAttributeListeners(DEFAULT_CHANNEL, telegram, device);
+    }
+
+    /**
+     * Returns true if the attribute has never received a value
+     * @return True if virginal
+     */
+    public boolean isVirginal() {
+        return virginal;
     }
 
     /**
