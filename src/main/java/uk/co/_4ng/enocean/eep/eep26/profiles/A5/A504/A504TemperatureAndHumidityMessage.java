@@ -34,15 +34,16 @@ class A504TemperatureAndHumidityMessage {
      */
     A504TemperatureAndHumidityMessage(byte data[], Class clazz) {
 
-        // humidity data has offset 0
-        humidity = 0x00FF & data[0];
-
         if (clazz.equals(A50403.class)) {
             // temperature data has offset 14 and is 10 bits
             int temperature = ((data[1] & 0xc0) << 2) + data[2];
             this.temperature = temperature & 0x3ff;
+            // humidity data has offset 0
+            humidity = 0x00FF & data[0];
         }
         else {
+            // humidity data has offset 1
+            humidity = 0x00FF & data[1];
             // transform into a positive integer
             temperature = 0x00FF & data[2];
         }
