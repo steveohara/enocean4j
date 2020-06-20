@@ -25,9 +25,9 @@ import java.util.Set;
  * @author bonino
  */
 public class DeviceChangeJob implements Runnable {
-    private EnOceanDevice changedDevice;
-    private DeviceChangeType typeOfChange;
-    private Set<DeviceListener> listeners;
+    private final EnOceanDevice changedDevice;
+    private final DeviceChangeType typeOfChange;
+    private final Set<DeviceListener> listeners;
 
     /**
      * Builds a device update delivery task having as subject the given

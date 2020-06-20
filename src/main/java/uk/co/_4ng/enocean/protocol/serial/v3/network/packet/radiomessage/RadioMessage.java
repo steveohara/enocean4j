@@ -39,8 +39,7 @@ public class RadioMessage extends ESP3Packet {
      * @param dBm           : Send case: 0xFF
      *                      Receive case: Best RSSI value of all received sub telegrams (value decimal without minus)
      */
-    //public RadioMessage(byte messageRorg, byte mexData[], int destinationId, int sourceId, byte dBm){
-    public RadioMessage(byte messageRorg, byte mexData[], byte[] destinationId, byte[] sourceId, byte dBm) {
+    public RadioMessage(byte messageRorg, byte[] mexData, byte[] destinationId, byte[] sourceId, byte dBm) {
         packetType = RADIO_MESSAGE;
         data = new byte[1 + mexData.length];
         data[0] = messageRorg;
@@ -56,17 +55,6 @@ public class RadioMessage extends ESP3Packet {
         optData[6] = sourceId[2];
         optData[7] = sourceId[3];
 
-		/*
-        this.optData[0] = (byte) (destinationId & 0xff);
-		this.optData[1] = (byte) ((destinationId & 0xff00)>>8);
-		this.optData[2] = (byte) ((destinationId & 0xff0000)>>16);
-		this.optData[3] = (byte) ((destinationId & 0xff000000)>>32);
-		this.optData[4] = (byte) (sourceId & 0xff);
-		this.optData[5] = (byte) ((sourceId & 0xff00)>>8);
-		this.optData[6] = (byte) ((sourceId & 0xff0000)>>16);
-		this.optData[7] = (byte) ((sourceId & 0xff000000)>>32);
-		this.optData[8] = dBm;
-		*/
         buildPacket();
     }
 }

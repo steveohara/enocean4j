@@ -54,7 +54,7 @@ public abstract class D201 extends AbstractEEP {
      */
     public void actuatorSetOutput(Connection connection, byte[] deviceAddress, byte dimValue, byte ioChannel, byte outputValue) {
         // prepare the data payload to host "desired" values
-        byte dataByte[] = new byte[4];
+        byte[] dataByte = new byte[4];
 
         // add the packet rorg
         dataByte[0] = rorg.getRorgValue();
@@ -63,7 +63,7 @@ public abstract class D201 extends AbstractEEP {
         dataByte[1] = (byte) 0x01;
 
         // Dim value: bit 7 to 5 - IO channel: bit 4 to 0
-        dataByte[2] = (byte) ((dimValue << 5) + ioChannel);
+        dataByte[2] = (byte) ((dimValue << 5) + (ioChannel & 0xff));
 
         // Output value bit 6 to 0
         dataByte[3] = outputValue;
@@ -103,7 +103,7 @@ public abstract class D201 extends AbstractEEP {
      */
     public void actuatorSetLocal(Connection connection, byte[] deviceAddress, byte channelId, byte localControl, byte overCurrentShutDown, byte resetOverCurrentShutDown, byte userInterfaceIndication, byte powerFailure, byte defaultState, D201DimTime dimTime1, D201DimTime dimTime2, D201DimTime dimTime3) {
         // prepare the data payload to host received configuration values
-        byte dataByte[] = new byte[5];
+        byte[] dataByte = new byte[5];
 
         // add the packet rorg
         dataByte[0] = rorg.getRorgValue();
@@ -123,7 +123,7 @@ public abstract class D201 extends AbstractEEP {
         dataByte[2] = (byte) ((overCurrentShutDown << 7) + (resetOverCurrentShutDown << 6) + (localControl << 5) + channelId);
 
         // first 4 bits, dim timer 2, remaining 4 bits, dim timer 3
-        dataByte[3] = (byte) ((dimTime2.getCode() << 4) + dimTime3.getCode());
+        dataByte[3] = (byte) ((dimTime2.getCode() << 4) + (dimTime3.getCode() & 0xff));
 
         // bit 7 -> user interface mode
         // bit 6 -> power failure
@@ -152,7 +152,7 @@ public abstract class D201 extends AbstractEEP {
      * @param channelId     The id of the channel to be queried.
      */
     public void actuatorStatusQuery(Connection connection, byte[] deviceAddress, byte channelId) {
-        byte dataByte[] = new byte[3];
+        byte[] dataByte = new byte[3];
 
         // add the packet rorg
         dataByte[0] = rorg.getRorgValue();
@@ -190,9 +190,9 @@ public abstract class D201 extends AbstractEEP {
      *                            (10-2550s).
      * @param mit                 Minimum time between to subsequent actuator messages (0-255s).
      */
-    public void actuatorSetMeasurement(Connection connection, byte deviceAddress[], byte reportMeasurement, byte resetMeasurement, byte measurementMode, byte channelId, byte measurementDeltaLSB, byte unit, byte measurementDeltaMSB, byte mat, byte mit) {
+    public void actuatorSetMeasurement(Connection connection, byte[] deviceAddress, byte reportMeasurement, byte resetMeasurement, byte measurementMode, byte channelId, byte measurementDeltaLSB, byte unit, byte measurementDeltaMSB, byte mat, byte mit) {
         // the array of bytes containing the data payload
-        byte dataByte[] = new byte[7];
+        byte[] dataByte = new byte[7];
 
         // add the packet rorg
         dataByte[0] = rorg.getRorgValue();
@@ -211,7 +211,7 @@ public abstract class D201 extends AbstractEEP {
         // first 4 bits -> measurementDeltaLSB
         // 5th bit -> not used
         // last 3 bits -> unit of measure
-        dataByte[3] = (byte) ((measurementDeltaLSB << 4) + unit);
+        dataByte[3] = (byte) ((measurementDeltaLSB << 4) + (unit & 0xff));
 
         // fourth byte
         // 8 bit of measurementDeltaMSB
@@ -241,9 +241,9 @@ public abstract class D201 extends AbstractEEP {
      * @param queryType     The query type (0b0 Energy, 0b1 Power).
      * @param channelId     The id of the actuator channel to be queried.
      */
-    public void actuatorMeasurementQuery(Connection connection, byte deviceAddress[], byte queryType, byte channelId) {
+    public void actuatorMeasurementQuery(Connection connection, byte[] deviceAddress, byte queryType, byte channelId) {
         // the array of bytes containing the data payload
-        byte dataByte[] = new byte[3];
+        byte[] dataByte = new byte[3];
 
         // add the packet rorg
         dataByte[0] = rorg.getRorgValue();
@@ -252,10 +252,10 @@ public abstract class D201 extends AbstractEEP {
         dataByte[1] = 0x06;
 
         // second byte
-        // first 2 bits are not used;
+        // first 2 bits are not used
         // third bit -> query mode (0b0 pEnergy, 0b1 Power)
         // last 5 bits -> channelId
-        dataByte[2] = (byte) (((0x01 & queryType) << 5) + channelId);
+        dataByte[2] = (byte) (((0x01 & queryType) << 5) + (channelId & 0xff));
 
         // send the radio packet
         connection.sendRadioCommand(deviceAddress, dataByte);
@@ -339,7 +339,7 @@ public abstract class D201 extends AbstractEEP {
         // 0x1F -> input channel (from mains supply)
         byte channelId = (byte) (dataPayload[1] & (byte) 0x1F);
 
-        byte measureValue[] = new byte[4];
+        byte[] measureValue = new byte[4];
         measureValue[0] = dataPayload[2];
         measureValue[1] = dataPayload[3];
         measureValue[2] = dataPayload[4];
@@ -361,7 +361,7 @@ public abstract class D201 extends AbstractEEP {
 
             // check the telegram type:actuator status response (CMD_ID = 0x04),
             // Actuator Measurement Response (CMD_ID = 0x07)
-            byte dataPayload[] = profileUpdate.getPayload();
+            byte[] dataPayload = profileUpdate.getPayload();
 
             // get the command id
             byte commandId = (byte) (dataPayload[0] & (byte) 0x0F);
@@ -417,8 +417,7 @@ public abstract class D201 extends AbstractEEP {
                 attributeNotificationWorker.submit(dispatcherTask);
 
                 // set success at true
-                // TODO check what to do if nothing changes, i.e., with success
-                // equal to false.
+                // TODO check what to do if nothing changes, i.e., with success equal to false.
                 success = true;
             }
         }
@@ -432,73 +431,60 @@ public abstract class D201 extends AbstractEEP {
         // -------- update the power failure settings
         EEP26PowerFailure powerFailureAttribute = (EEP26PowerFailure) getChannelAttribute(response.getChannelId(), EEP26PowerFailure.NAME);
 
-        // check not null
-        if (powerFailureAttribute != null) {
-            if (powerFailureAttribute.getValue() != response.isPowerFailureEnabled()) {
-                // update the attribute
-                powerFailureAttribute.setValue(response.isPowerFailureEnabled());
+        if (powerFailureAttribute != null && powerFailureAttribute.getValue() != response.isPowerFailureEnabled()) {
+            // update the attribute
+            powerFailureAttribute.setValue(response.isPowerFailureEnabled());
 
-                // add the attribute to the set of changed ones
-                changedAttributes.add(powerFailureAttribute);
-            }
+            // add the attribute to the set of changed ones
+            changedAttributes.add(powerFailureAttribute);
         }
 
         // -------- update the power failure detection status
         EEP26PowerFailureDetection powerFailureDetectionAttribute = (EEP26PowerFailureDetection) getChannelAttribute(response.getChannelId(), EEP26PowerFailureDetection.NAME);
 
         // check not null
-        if (powerFailureDetectionAttribute != null) {
-            if (powerFailureDetectionAttribute.getValue() != response.isPowerFailureDetected()) {
-                // update the attribute
-                powerFailureDetectionAttribute.setValue(response.isPowerFailureDetected());
+        if (powerFailureDetectionAttribute != null && powerFailureDetectionAttribute.getValue() != response.isPowerFailureDetected()) {
+            // update the attribute
+            powerFailureDetectionAttribute.setValue(response.isPowerFailureDetected());
 
-                // add the attribute to the set of changed attributes
-                changedAttributes.add(powerFailureDetectionAttribute);
-            }
+            // add the attribute to the set of changed attributes
+            changedAttributes.add(powerFailureDetectionAttribute);
         }
 
         // ------ update the overcurrent switch-off attribute
         EEP26OverCurrentSwitchOff overCurrentSwitchOffAttribute = (EEP26OverCurrentSwitchOff) getChannelAttribute(response.getChannelId(), EEP26OverCurrentSwitchOff.NAME);
 
         // check not null
-        if (overCurrentSwitchOffAttribute != null) {
-            if (overCurrentSwitchOffAttribute.getValue() != response.isOverCurrentSwitchOffExecuted()) {
-                // update the attribute
-                overCurrentSwitchOffAttribute.setValue(response.isOverCurrentSwitchOffExecuted());
+        if (overCurrentSwitchOffAttribute != null && overCurrentSwitchOffAttribute.getValue() != response.isOverCurrentSwitchOffExecuted()) {
+            // update the attribute
+            overCurrentSwitchOffAttribute.setValue(response.isOverCurrentSwitchOffExecuted());
 
-                // add the attribute to the set of changed attributes
-                changedAttributes.add(overCurrentSwitchOffAttribute);
-            }
+            // add the attribute to the set of changed attributes
+            changedAttributes.add(overCurrentSwitchOffAttribute);
         }
 
         // ----- update the error level attribute
         EEP26ErrorLevel errorLevelAttribute = (EEP26ErrorLevel) getChannelAttribute(response.getChannelId(), EEP26ErrorLevel.NAME);
 
         // check not null (attribute exists)
-        if (errorLevelAttribute != null) {
-            // check for a new value
-            if (errorLevelAttribute.getValue() != response.getErrorLevel()) {
-                // update the attribute
-                errorLevelAttribute.setValue(response.getErrorLevel());
+        if (errorLevelAttribute != null && errorLevelAttribute.getValue() != response.getErrorLevel()) {
+            // update the attribute
+            errorLevelAttribute.setValue(response.getErrorLevel());
 
-                // add the attribute to the set of changed attributes
-                changedAttributes.add(errorLevelAttribute);
-            }
+            // add the attribute to the set of changed attributes
+            changedAttributes.add(errorLevelAttribute);
         }
 
         // ----- update the local control value
         EEP26LocalControl localControlAttribute = (EEP26LocalControl) getChannelAttribute(response.getChannelId(), EEP26LocalControl.NAME);
 
         // check not null
-        if (localControlAttribute != null) {
-            // check for a new value
-            if (localControlAttribute.getValue() != response.isLocalControlEnabled()) {
-                // update the attribute
-                localControlAttribute.setValue(response.isLocalControlEnabled());
+        if (localControlAttribute != null && localControlAttribute.getValue() != response.isLocalControlEnabled()) {
+            // update the attribute
+            localControlAttribute.setValue(response.isLocalControlEnabled());
 
-                // add the attribute to the set of changed attributes
-                changedAttributes.add(localControlAttribute);
-            }
+            // add the attribute to the set of changed attributes
+            changedAttributes.add(localControlAttribute);
         }
 
         // ------ update the ouput level value

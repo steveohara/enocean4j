@@ -87,7 +87,7 @@ public class EnOceanDevice implements Serializable {
         hexDeviceAddress = "00000000".substring(hexDeviceAddress.length() > 8 ? 8 : hexDeviceAddress.length()) + hexDeviceAddress;
 
         // prepare the byte[] for hosting the address
-        byte address[] = new byte[4];
+        byte[] address = new byte[4];
 
         // parse the address
         if (hexDeviceAddress.length() == 8) {

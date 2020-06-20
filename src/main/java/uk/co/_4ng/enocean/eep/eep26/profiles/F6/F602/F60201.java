@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
@@ -141,12 +142,11 @@ public class F60201 extends F602 {
     private void diapatchJobs(DeviceManager deviceManager, Map<Integer, List<EEPAttribute<?>>> attrs, EEP26Telegram telegram, EnOceanDevice device) {
 
         EEPAttributeChangeJob dispatcherTask = new EEPAttributeChangeJob(deviceManager);
-
-        for (Integer channel : attrs.keySet()) {
+        for (Entry<Integer, List<EEPAttribute<?>>> channel : attrs.entrySet()) {
 
             // build the dispatching task
-            for (EEPAttribute<?> attr : attrs.get(channel)) {
-                dispatcherTask.addChangedAttribute(attr, channel, telegram, device);
+            for (EEPAttribute<?> attr : channel.getValue()) {
+                dispatcherTask.addChangedAttribute(attr, channel.getKey(), telegram, device);
             }
         }
 

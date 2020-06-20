@@ -18,6 +18,7 @@ package uk.co._4ng.enocean.eep.eep26.profiles.A5.A502;
 import uk.co._4ng.enocean.devices.DeviceManager;
 import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.eep26.attributes.EEP26TemperatureInverseLinear;
+import uk.co._4ng.enocean.eep.eep26.attributes.EEP26TemperatureLinear;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26TelegramType;
 import uk.co._4ng.enocean.eep.eep26.telegram.FourBSTelegram;
@@ -55,7 +56,7 @@ public class A50230 extends A502 {
             A502TemperatureMessage msg = new A502ExtendedTemperatureMessage(payload);
 
             //update the value of the attribute
-            success = fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureInverseLinear.NAME), 0, telegram, device, msg.getTemperature());
+            success = fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureLinear.NAME), 0, telegram, device, msg.getTemperature());
         }
         return success;
     }

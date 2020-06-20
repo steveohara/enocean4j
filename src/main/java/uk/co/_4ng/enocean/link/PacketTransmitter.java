@@ -22,7 +22,7 @@ import uk.co._4ng.enocean.util.EnOceanUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -39,25 +39,27 @@ public class PacketTransmitter implements Runnable {
 
     // the transmission timeout, in milliseconds
     public static final int TIMEOUT_TX = 500;
+
     // the transmission sleep time
     // should be able to transmit 10 high priority messages within the timeout
     // of a single low priority packet
     // TODO: there was a warning on a minimum timeout of 200ms to avoid multiple
-    // transmissions, check if such a minimum exists and, in case, if there are
-    // references to such a value in the ESP3 documentation.
+    // TODO: transmissions, check if such a minimum exists and, in case, if there are
+    // TODO: references to such a value in the ESP3 documentation.
     public static final int MIN_TX_TIME = 50;
     private static final Logger logger = LoggerFactory.getLogger(PacketTransmitter.class);
+
     // the high priority transmission queue
-    private ConcurrentLinkedQueue<PacketQueueItem> highPriorityTxQueue;
+    private final Queue<PacketQueueItem> highPriorityTxQueue;
 
     // the low priority transmission queue
-    private ConcurrentLinkedQueue<PacketQueueItem> lowPriorityTxQueue;
+    private final Queue<PacketQueueItem> lowPriorityTxQueue;
 
     // Serial port
-    private SerialPort serialPort;
+    private final SerialPort serialPort;
 
     // the expected response semaphore
-    private Semaphore expectedResponse;
+    private final Semaphore expectedResponse;
 
     // the run enabling flag
     private boolean runnable;
@@ -74,7 +76,7 @@ public class PacketTransmitter implements Runnable {
      *                            physical transceiver.
      * @param expectedResponse    The expected response semphore.
      */
-    public PacketTransmitter(ConcurrentLinkedQueue<PacketQueueItem> highPriorityTxQueue, ConcurrentLinkedQueue<PacketQueueItem> lowPriorityTxQueue, SerialPort serialPort, Semaphore expectedResponse) {
+    public PacketTransmitter(Queue<PacketQueueItem> highPriorityTxQueue, Queue<PacketQueueItem> lowPriorityTxQueue, SerialPort serialPort, Semaphore expectedResponse) {
 
         // store a reference to the high priority transmission queue
         this.highPriorityTxQueue = highPriorityTxQueue;
@@ -134,7 +136,7 @@ public class PacketTransmitter implements Runnable {
                     currentMessage = highPriorityTxQueue.poll();
 
                     // send the packet
-                    byte packetBytes[] = currentMessage.getPkt().getPacketAsBytes();
+                    byte[] packetBytes = currentMessage.getPkt().getPacketAsBytes();
                     logger.debug("Sending: {}", EnOceanUtils.toHexString(packetBytes));
                     serialOut.write(packetBytes);
 
@@ -180,7 +182,7 @@ public class PacketTransmitter implements Runnable {
                                     time = System.currentTimeMillis();
 
                                     // transmit the packet
-                                    byte packetBytes[] = currentMessage.getPkt().getPacketAsBytes();
+                                    byte[] packetBytes = currentMessage.getPkt().getPacketAsBytes();
                                     logger.debug("Sending: {}", EnOceanUtils.toHexString(packetBytes));
                                     serialOut.write(packetBytes);
 
@@ -188,7 +190,7 @@ public class PacketTransmitter implements Runnable {
                                     currentMessage.decreaseRetransmissionCounter();
                                 }
                                 catch (InterruptedException e) {
-                                    logger.error("Error while acquiring the expected response semaphore: " + e);
+                                    logger.error("Error while acquiring the expected response semaphore", e);
                                 }
                             }
                         }
@@ -208,7 +210,7 @@ public class PacketTransmitter implements Runnable {
                             currentMessage = lowPriorityTxQueue.peek();
 
                             // check if re-transmission is enabled
-                            if (currentMessage.getRetransmissionCounter() > 0) {
+                            if (currentMessage != null && currentMessage.getRetransmissionCounter() > 0) {
                                 // set the transmission time
                                 time = System.currentTimeMillis();
 
@@ -236,9 +238,7 @@ public class PacketTransmitter implements Runnable {
 
                 // sleep
                 Thread.sleep(MIN_TX_TIME);
-
             }
-
         }
         catch (IOException | InterruptedException e) {
             logger.error("Problem", e);

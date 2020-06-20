@@ -30,7 +30,7 @@ public class RadioAdvanced extends ESP3Packet {
      * @param subTelNum : Number of sub telegram; Send: 3 / receive: 1 ... y
      * @param dBm       : Send case: FF Receive case: best RSSI value of all received sub telegrams (value decimal without minus)
      */
-    public RadioAdvanced(byte rawData[], byte subTelNum, byte dBm) {
+    public RadioAdvanced(byte[] rawData, byte subTelNum, byte dBm) {
         packetType = RADIO_ADVANCED;
         data = rawData;
         optData[0] = subTelNum;

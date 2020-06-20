@@ -25,13 +25,13 @@ class D232Message {
     private boolean powerfailed;
     private boolean divisor;
     private boolean valid;
-    private boolean teachIn;
+    private final boolean teachIn;
     private double[] phases;
 
     /**
      * Parse the message for the common stuff
      */
-    D232Message(byte data[], int channels) {
+    D232Message(byte[] data, int channels) {
 
         valid = false;
 

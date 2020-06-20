@@ -55,18 +55,10 @@ public class UTETeachInTelegram extends EEP26Telegram {
     public static final byte BIDIRECTIONAL_TEACH_IN_DELETION_ACCEPTED = (byte) 0xa1;
     // the response flag
     protected boolean response;
-    // the raw (link layer) packet wrapped by this instance
-    private ESP3Packet rawPacket;
-    // the data payload
-    private byte payload[];
-    // the device address
-    private byte address[];
     // the manufacturer id
-    private byte manId[];
-    // the packet RORG
-    private Rorg rorg;
+    private final byte[] manId;
     // the packet EEP
-    private EEPIdentifier eep;
+    private final EEPIdentifier eep;
 
     /**
      * Class constructor, builds an instance of {@link UTETeachInTelegram} given
@@ -90,7 +82,7 @@ public class UTETeachInTelegram extends EEP26Telegram {
         // fill the payload
 
         // get the raw, un-interpreted data payload
-        byte rawData[] = rawPacket.getData();
+        byte[] rawData = rawPacket.getData();
 
         // get the actual payload
         int startingOffset = 1;
@@ -161,7 +153,7 @@ public class UTETeachInTelegram extends EEP26Telegram {
      * @return true if it is a teach-in deletion request, false otherwise
      */
     public boolean isTeachInDeletionRequest() {
-        return (payload[6] & 1 << TEACHIN_DELECTION_REQUEST) > 0;
+        return ((payload[6] & 0xff) & 1 << TEACHIN_DELECTION_REQUEST) > 0;
     }
 
     /**
@@ -171,7 +163,7 @@ public class UTETeachInTelegram extends EEP26Telegram {
      * @return true if it is a not-specified teach-in packet, false otherwise.
      */
     public boolean isNotSpecifiedTeachIn() {
-        return (payload[6] & 1 << TEACHIN_NOT_SPECIFIED) > 0;
+        return ((payload[6] & 0xff) & 1 << TEACHIN_NOT_SPECIFIED) > 0;
     }
 
     /**
@@ -305,10 +297,10 @@ public class UTETeachInTelegram extends EEP26Telegram {
         // optional data
         byte[] opt = new byte[7];
         opt[0] = (byte) 0x03;
-        opt[1] = address[0];//(byte) 0x00;
-        opt[2] = address[1];//(byte) 0x81;
-        opt[3] = address[2];//(byte) 0x2A;
-        opt[4] = address[3];//(byte) 0x90;
+        opt[1] = address[0];//(byte) 0x00
+        opt[2] = address[1];//(byte) 0x81
+        opt[3] = address[2];//(byte) 0x2A
+        opt[4] = address[3];//(byte) 0x90
         opt[5] = (byte) 0xFF;
         opt[6] = (byte) 0x00;
 

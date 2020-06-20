@@ -27,7 +27,7 @@ import java.util.Set;
 public class PersistentDeviceSet implements Map<Integer, EnOceanDevice>, Serializable {
 
     private static final long serialVersionUID = 4702253423427228802L;
-    private Map<Integer, EnOceanDevice> theSet = new HashMap<>();
+    private final Map<Integer, EnOceanDevice> theSet = new HashMap<>();
 
     @Override
     public int size() {

@@ -50,11 +50,8 @@ public abstract class A504 extends AbstractEEP {
 
             // ----- handle the attributes
 
-            if (fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureLinear.NAME), 0, telegram, device, msg.getTemperature())) {
-                if (fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26HumidityLinear.NAME), 0, telegram, device, msg.getHumidity())) {
-                    success = true;
-                }
-            }
+            success = fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26TemperatureLinear.NAME), 0, telegram, device, msg.getTemperature()) &&
+                      fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26HumidityLinear.NAME), 0, telegram, device, msg.getHumidity());
         }
         return success;
     }

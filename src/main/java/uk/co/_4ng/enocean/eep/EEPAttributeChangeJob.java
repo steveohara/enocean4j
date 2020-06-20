@@ -29,8 +29,8 @@ import java.util.List;
  */
 public class EEPAttributeChangeJob implements Runnable {
 
-    private DeviceManager deviceManager;
-    private List<EEPAttributeChange> changes = new ArrayList<>();
+    private final DeviceManager deviceManager;
+    private final List<EEPAttributeChange> changes = new ArrayList<>();
 
     /**
      * Creates an empty list of attributes that need to be notified for the specific device and channel
@@ -103,10 +103,10 @@ public class EEPAttributeChangeJob implements Runnable {
      * A class that encapsulates the attribute change
      */
     public class EEPAttributeChange {
-        private EEPAttribute<?> changedAttribute;
-        private int channelId;
-        private EEP26Telegram telegram;
-        private EnOceanDevice device;
+        private final EEPAttribute<?> changedAttribute;
+        private final int channelId;
+        private final EEP26Telegram telegram;
+        private final EnOceanDevice device;
 
         /**
          * Constructs an attribute change with all the required bits

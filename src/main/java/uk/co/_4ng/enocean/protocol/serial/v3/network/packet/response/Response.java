@@ -17,6 +17,7 @@
 package uk.co._4ng.enocean.protocol.serial.v3.network.packet.response;
 
 import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import uk.co._4ng.enocean.util.EnOceanException;
 import uk.co._4ng.enocean.util.EnOceanUtils;
 
 /**
@@ -31,13 +32,25 @@ public class Response extends ESP3Packet {
     public static final byte RET_WRONG_PARAM = 3;
     public static final byte RET_OPERATION_DENIED = 4;
 
+    /**
+     * Constructs a response using the response code
+     * @param respCode Response code
+     */
     public Response(byte respCode) {
         packetType = RESPONSE;
         data[0] = respCode;
         buildPacket();
     }
 
-    public Response(ESP3Packet pkt) throws Exception {
+    /**
+     * Constructs a response from the request packet
+     * @param pkt Reuquest packet
+     * @throws EnOceanException If the packet is invalid
+     */
+    public Response(ESP3Packet pkt) throws EnOceanException {
+        if (pkt == null) {
+            throw new EnOceanException("Packet is null");
+        }
         if (pkt.isResponse()) {
             syncByte = pkt.getSyncByte();
             packetType = pkt.getPacketType();
@@ -46,7 +59,7 @@ public class Response extends ESP3Packet {
             buildPacket();
         }
         else {
-            throw new Exception("Uncompatible packet type");
+            throw new EnOceanException("Incompatible packet type (not a Response): {}", pkt.getPacketType());
         }
     }
 

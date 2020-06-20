@@ -54,9 +54,9 @@ public class Connection implements PacketListener {
     private static final Logger logger = LoggerFactory.getLogger(Connection.class);
 
     // the wrapped link layer
-    private LinkLayer linkLayer;
-    private TeachInHandler teachIn;
-    private DeviceManager deviceManager;
+    private final LinkLayer linkLayer;
+    private final TeachInHandler teachIn;
+    private final DeviceManager deviceManager;
 
     /**
      * Build a connection layer instance on top of the given link layer
@@ -91,7 +91,7 @@ public class Connection implements PacketListener {
      */
     public void sendRadioCommand(byte[] address, byte[] payload) {
         // add sender address and status
-        byte actualPayload[] = new byte[payload.length + 5];
+        byte[] actualPayload = new byte[payload.length + 5];
 
         // copy the payload
         System.arraycopy(payload, 0, actualPayload, 0, payload.length);
@@ -128,7 +128,7 @@ public class Connection implements PacketListener {
             }
         }
         catch (Exception e) {
-            logger.warn("Error while handling received packet" + e);
+            logger.warn("Error while handling received packet", e);
         }
     }
 
@@ -145,7 +145,7 @@ public class Connection implements PacketListener {
 
             // We should only handle teach-in requests when in teach-in mode and if we don't
             // already have the device registered
-            byte address[] = telegram.getAddress();
+            byte[] address = telegram.getAddress();
             EnOceanDevice device = deviceManager.getDevice(address);
 
             // Is this a teach-in request

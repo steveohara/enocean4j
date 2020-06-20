@@ -16,6 +16,7 @@
 package uk.co._4ng.enocean.link.serial;
 
 import com.fazecast.jSerialComm.SerialPort;
+import uk.co._4ng.enocean.util.EnOceanException;
 
 /**
  * A utility factory for getting a reference to the serial port used for
@@ -28,22 +29,27 @@ import com.fazecast.jSerialComm.SerialPort;
 public class SerialPortFactory {
 
     /**
+     * Prevent instantiation
+     */
+    private SerialPortFactory() {
+    }
+
+    /**
      * Provides a correctly configured serial port connection, given a port
      * identifier and a transmission timeout.
      *
-     * @param portName The name of the port to connect to (e.g., COM1, /dev/tty0,
-     *                 ...)
-     * @param timeout  The connection timeout
+     * @param portName The name of the port to connect to (e.g., COM1, /dev/tty0,...)
      * @return a {@link SerialPort} instance representing the port identified by
      * the given data, if existing, or null otherwise.
      *
-     * @throws Exception
+     * @throws EnOceanException If the port cannot be retrieved
      */
-    public static SerialPort getPort(String portName, int timeout) throws Exception {
+    public static SerialPort getPort(String portName) throws EnOceanException {
+
         // the serial port reference, initially null
         SerialPort serialPort = SerialPort.getCommPort(portName);
         if (serialPort.getSystemPortName().equalsIgnoreCase("Bad Port")) {
-            throw new Exception("Error: Unrecognised port name " + portName);
+            throw new EnOceanException("Error: Unrecognised port name " + portName);
         }
         serialPort.setComPortParameters(57600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);

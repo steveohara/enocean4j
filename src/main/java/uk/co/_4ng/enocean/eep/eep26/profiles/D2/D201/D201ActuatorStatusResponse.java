@@ -33,28 +33,28 @@ package uk.co._4ng.enocean.eep.eep26.profiles.D2.D201;
  */
 class D201ActuatorStatusResponse {
     // the power failure enabled flag
-    private boolean powerFailureEnabled;
+    private final boolean powerFailureEnabled;
 
     // the power failure detection flag
-    private boolean powerFailureDetected;
+    private final boolean powerFailureDetected;
 
     // the id of the command, should be 4
-    private int commandId;
+    private final int commandId;
 
     // the flag signalling overcurrent switch-off execution
-    private boolean overCurrentSwitchOffExecuted;
+    private final boolean overCurrentSwitchOffExecuted;
 
     // the actuator error state, if any
-    private D201ErrorLevel errorLevel;
+    private final D201ErrorLevel errorLevel;
 
     // the channel to which the response is referred
-    private int channelId;
+    private final int channelId;
 
     // the input / output flag
-    private boolean output;
+    private final boolean output;
 
     // the local control enabled flag
-    private boolean localControlEnabled;
+    private final boolean localControlEnabled;
 
     // the current output value
     private int outputValue;

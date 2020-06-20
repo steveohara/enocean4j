@@ -30,9 +30,9 @@ import uk.co._4ng.enocean.util.EnOceanUtils;
  */
 public abstract class EEP26Telegram {
     // the data payload
-    protected byte payload[];
+    protected byte[] payload;
     // the device address
-    protected byte address[];
+    protected byte[] address;
     // the status byte
     protected byte status;
     // the packet Rorg
@@ -42,7 +42,7 @@ public abstract class EEP26Telegram {
     // the raw (link layer) packet wrapped by this instance
     ESP3Packet rawPacket;
     // the telegram type
-    private EEP26TelegramType type;
+    private final EEP26TelegramType type;
 
     /**
      * Create a new {@link EEP26Telegram} of the given {@link EEP26TelegramType}
@@ -60,13 +60,6 @@ public abstract class EEP26Telegram {
      * @return The telegram type as {@link EEP26TelegramType}.
      */
     public EEP26TelegramType getTelegramType() {
-        return type;
-    }
-
-    /**
-     * @return the type
-     */
-    public EEP26TelegramType getType() {
         return type;
     }
 

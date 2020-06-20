@@ -39,10 +39,10 @@ public class PacketDelivery implements Runnable {
     private static final int DEFAULT_PACKET_DELIVERY_TIME = 10;
 
     // a reference to the queue from which extracting Packets to deliver
-    private ConcurrentLinkedQueue<PacketQueueItem> theQueue;
+    private final ConcurrentLinkedQueue<PacketQueueItem> theQueue;
 
     // the set of listeners registered with the link layer
-    private HashSet<PacketListener> listeners;
+    private final HashSet<PacketListener> listeners;
 
     // the instance-level delivery time
     private int deliveryTime;
@@ -143,19 +143,17 @@ public class PacketDelivery implements Runnable {
         // 2) always poll data from the queue
         while (runnable) {
             // check that there are listeners registered for the packet delivery
-            if (listeners != null && !listeners.isEmpty()) {
-                if (theQueue.size() > 0) {
-                    // poll the current queue item
-                    ESP3Packet pkt = theQueue.poll().getPkt();
+            if (listeners != null && !listeners.isEmpty() && theQueue.size() > 0) {
+                // poll the current queue item
+                ESP3Packet pkt = theQueue.poll().getPkt();
 
-                    // deliver the current packet to the set of registered
-                    // listeners
-                    // this migh be improved using a thread pool of executors if
-                    // timing becomes critical
-                    for (PacketListener listener : listeners) {
-                        // deliver the packet
-                        listener.handlePacket(pkt);
-                    }
+                // deliver the current packet to the set of registered
+                // listeners
+                // this migh be improved using a thread pool of executors if
+                // timing becomes critical
+                for (PacketListener listener : listeners) {
+                    // deliver the packet
+                    listener.handlePacket(pkt);
                 }
             }
 

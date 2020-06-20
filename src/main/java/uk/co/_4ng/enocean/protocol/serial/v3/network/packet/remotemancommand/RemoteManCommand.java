@@ -36,7 +36,7 @@ public class RemoteManCommand extends ESP3Packet {
      * @param sendWithDelay  : 1: if the first message has to be sent with random delay. When answering to broadcast message this has to be 1, otherwise 0. Default: 0
      */
 
-    public RemoteManCommand(int functionNumber, int manufacturerId, byte mexData[], int destinationId, int sourceId, byte dBm, byte sendWithDelay) {
+    public RemoteManCommand(int functionNumber, int manufacturerId, byte[] mexData, int destinationId, int sourceId, byte dBm, byte sendWithDelay) {
         packetType = REMOTE_MAN_COMMAND;
         data[0] = (byte) (functionNumber & 0xff);
         data[1] = (byte) ((functionNumber & 0xff00) >> 8);

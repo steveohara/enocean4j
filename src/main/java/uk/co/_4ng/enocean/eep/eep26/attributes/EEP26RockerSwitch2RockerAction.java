@@ -53,7 +53,6 @@ public class EEP26RockerSwitch2RockerAction extends EEPAttribute<Boolean[]> {
 
     @Override
     public byte[] byteValue() {
-        // TODO Auto-generated method stub
         // not used for rocker switches
         return null;
     }

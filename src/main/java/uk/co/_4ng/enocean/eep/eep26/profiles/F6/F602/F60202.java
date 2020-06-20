@@ -25,12 +25,9 @@ package uk.co._4ng.enocean.eep.eep26.profiles.F6.F602;
 public class F60202 extends F60201 {
     // register the type in the EEPProfile even if no instance of this class is
     // created.
-    /*
-     * static { EEPRegistry.getInstance().addProfile( new
-	 * EEPIdentifier(F602.rorg, F602.func, F60202.type), F60202.class); }
-	 */
 
     public F60202() {
+        // Nothing to do
     }
 
 }

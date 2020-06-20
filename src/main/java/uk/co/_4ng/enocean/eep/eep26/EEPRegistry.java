@@ -38,7 +38,6 @@ import uk.co._4ng.enocean.eep.eep26.profiles.F6.F602.F60201;
 import uk.co._4ng.enocean.eep.eep26.profiles.F6.F602.F60202;
 import uk.co._4ng.enocean.eep.eep26.profiles.F6.F610.F61000;
 import uk.co._4ng.enocean.eep.eep26.profiles.F6.F610.F61001;
-import uk.co._4ng.enocean.link.PacketDelivery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,10 +48,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EEPRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(PacketDelivery.class);
+    private static final Logger logger = LoggerFactory.getLogger(EEPRegistry.class);
 
     // the set of supported profiles
-    private static Map<EEPIdentifier, EEP> supportedProfiles = new ConcurrentHashMap<>();
+    private static final Map<EEPIdentifier, EEP>  supportedProfiles = new ConcurrentHashMap<>();
 
     static {
 

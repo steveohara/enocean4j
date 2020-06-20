@@ -28,18 +28,18 @@ class A509CO2TemperatureAndHumidityMessage {
 
     private static final Logger logger = LoggerFactory.getLogger(A509CO2TemperatureAndHumidityMessage.class);
 
-    private int temperature;
-    private int humidity;
-    private int concentration;
-    private boolean teachIn;
-    private boolean  humidityAvailable;
-    private boolean temperatureAvailable;
+    private final int temperature;
+    private final int humidity;
+    private final int concentration;
+    private final boolean teachIn;
+    private final boolean  humidityAvailable;
+    private final boolean temperatureAvailable;
 
     /**
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    A509CO2TemperatureAndHumidityMessage(byte data[]) {
+    A509CO2TemperatureAndHumidityMessage(byte[] data) {
 
         humidity = 0x00FF & data[0];
         concentration = 0x00FF & data[1];

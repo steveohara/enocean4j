@@ -53,19 +53,15 @@ public abstract class A509 extends AbstractEEP {
 
             // Figure out if we can use the temperature and humidity values
 
-            EEPAttribute attrHumidity = getChannelAttribute(0, EEP26HumidityLinear.NAME);
+            EEPAttribute<?> attrHumidity = getChannelAttribute(0, EEP26HumidityLinear.NAME);
             Integer humidity = msg.isHumidityAvailable() ? msg.getHumidity() : null;
 
-            EEPAttribute attrTemp = getChannelAttribute(0, EEP26TemperatureLinear.NAME);
+            EEPAttribute<?> attrTemp = getChannelAttribute(0, EEP26TemperatureLinear.NAME);
             Integer temp = msg.isHumidityAvailable() ? msg.getTemperature() : null;
 
-            if (fireAttributeEvent(deviceManager, attrTemp, 0, telegram, device, temp)) {
-                if (fireAttributeEvent(deviceManager, attrHumidity, 0, telegram, device, humidity)) {
-                    if (fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26ConcentrationLinear.NAME), 0, telegram, device, msg.getConcentration())) {
-                        success = true;
-                    }
-                }
-            }
+            success = fireAttributeEvent(deviceManager, attrTemp, 0, telegram, device, temp) &&
+                      fireAttributeEvent(deviceManager, attrHumidity, 0, telegram, device, humidity) &&
+                      fireAttributeEvent(deviceManager, getChannelAttribute(0, EEP26ConcentrationLinear.NAME), 0, telegram, device, msg.getConcentration());
         }
         return success;
     }

@@ -111,10 +111,8 @@ public class A50701 extends A507 {
                     // submit the task for execution
                     attributeNotificationWorker.submit(dispatcherTask);
 
-                    // set success at true
-                    // TODO check what to do if nothing changes, i.e., with
-                    // success
-                    // equal to false.
+                    // set success true
+                    // TODO check what to do if nothing changes, i.e., with success equal to false.
                     success = true;
                 }
             }

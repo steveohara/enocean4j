@@ -29,14 +29,14 @@ class A502ExtendedTemperatureMessage extends A502TemperatureMessage {
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    A502ExtendedTemperatureMessage(byte data[]) {
+    A502ExtendedTemperatureMessage(byte[] data) {
         // temperature data takes 10bits and has offset 14 (2nd+3rd byte)
         byte temperatureHigh = (byte) (data[1] & (byte) 0x03);
         byte temperatureLow = data[2];
 
         // transform into a positive integer
         // uses logic or as shift towards left fills number with 0s
-        temperature = temperatureHigh << 8 | 0x00FF & temperatureLow; // TODO: check if the conversion is right
+        temperature = temperatureHigh << 8 | 0x00FF & temperatureLow;
 
         // get the teach-in flag (offset 28, 4th bit of the 4th byte)
         teachIn = (data[3] & 0x8) == 0;

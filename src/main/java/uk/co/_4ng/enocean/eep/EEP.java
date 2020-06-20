@@ -22,6 +22,7 @@ import uk.co._4ng.enocean.devices.EnOceanDevice;
 import uk.co._4ng.enocean.eep.eep26.telegram.EEP26Telegram;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author bonino
@@ -33,11 +34,13 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     // the set of attributes associated to single channels defined by this
     // profile: the key is the channel id. If the EEP has only one channel id
     // the implementing classes might encode all attributes as device-wide
-    private Map<Integer, Map<String, EEPAttribute<?>>> channelAttributes;
+    private final Map<Integer, Map<String, EEPAttribute<?>>> channelAttributes;
+
     // the set of EEPWide attributes
-    private Map<String, EEPAttribute<?>> eepAttributes;
+    private final Map<String, EEPAttribute<?>> eepAttributes;
+
     // the EnOcean Equipment Profile version
-    private String version;
+    private final String version;
 
     // Convenience storage for the EEP identifier components
     protected Rorg rorg;
@@ -134,9 +137,9 @@ public abstract class EEP implements EEPAttributeChangePublisher {
             }
         }
         else {
-            for (Integer channel : channelAttributes.keySet()) {
-                for (String key : channelAttributes.get(channel).keySet()) {
-                    returnValue.add(String.format("%s (channel %d)", key, channel));
+            for (Entry<Integer, Map<String, EEPAttribute<?>>> channel : channelAttributes.entrySet()) {
+                for (String key : channel.getValue().keySet()) {
+                    returnValue.add(String.format("%s (channel %d)", key, channel.getKey()));
                 }
             }
         }
@@ -153,20 +156,20 @@ public abstract class EEP implements EEPAttributeChangePublisher {
     public void addChannelAttribute(Integer channelId, EEPAttribute<?> attribute) {
 
         // the channel-specific attribute map
-        Map<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> channelAttrs = this.channelAttributes.get(channelId);
 
         // check not null, if null the channel does not exist and must be
         // created
-        if (channelAttributes == null) {
+        if (channelAttrs == null) {
             // create the channel attributes map
-            channelAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            channelAttrs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
             // store the map
-            this.channelAttributes.put(channelId, channelAttributes);
+            this.channelAttributes.put(channelId, channelAttrs);
         }
 
         // check if the insertion was successful
-        channelAttributes.put(attribute.getName(), attribute);
+        channelAttrs.put(attribute.getName(), attribute);
     }
 
     /**
@@ -182,13 +185,13 @@ public abstract class EEP implements EEPAttributeChangePublisher {
         EEPAttribute<?> attribute = null;
 
         // get the channel-specific attributes
-        Map<String, EEPAttribute<?>> channelAttributes = this.channelAttributes.get(channelId);
+        Map<String, EEPAttribute<?>> channelAttrs = this.channelAttributes.get(channelId);
 
         // if channel-specific attributes are available
-        if (channelAttributes != null)
+        if (channelAttrs != null)
         // store the requested attribute, if present
         {
-            attribute = channelAttributes.get(attributeName);
+            attribute = channelAttrs.get(attributeName);
         }
 
         // return the extracted attribute, will be null if the attribute does
@@ -265,7 +268,13 @@ public abstract class EEP implements EEPAttributeChangePublisher {
 
     @Override
     public String toString() {
-        return "EEP{" + "channelAttributes=" + channelAttributes.size() + ", eepAttributes=" + eepAttributes.size() + ", version='" + version + '\'' + '}';
+        return "EEP{" + "channelAttributes=" + channelAttributes.size() +
+                ", eepAttributes=" + eepAttributes.size() +
+                ", version='" + version + '\'' +
+                ", rorg=" + rorg +
+                ", type=" + type +
+                ", function=" + function +
+                '}';
     }
 
     /**

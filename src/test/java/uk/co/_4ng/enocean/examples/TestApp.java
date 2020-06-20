@@ -61,11 +61,12 @@ public class TestApp {
                 deviceManager.addDeviceValueListener(listener);
 
                 // register a couple of known devices
-                deviceManager.registerDevice("019bd76c", "F60201");
                 deviceManager.registerDevice("2BD5EE", "F60201");
                 deviceManager.registerDevice("1A4829C", "A50205");
                 deviceManager.registerDevice("0185b451", "A50904");
                 deviceManager.registerDevice("0503d615", "D23202");
+                deviceManager.registerDevice("002bd5f3", "F60201");
+                deviceManager.registerDevice("019bd76c", "D50001");
 
                 // available comms ports
                 for (String port : LinkLayer.getCommsPorts()) {

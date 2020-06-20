@@ -61,7 +61,7 @@ public class EEPIdentifier implements Serializable {
 
         // allowed format for EEPIdentifier is with or without dashes
         if (eepIdentifierAsString.contains("-")) {
-            eepIdentifierAsString = eepIdentifierAsString.replaceAll("-", "");
+            eepIdentifierAsString = eepIdentifierAsString.replace("-", "");
         }
 
         // trim leading and trailing spaces

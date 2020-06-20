@@ -32,7 +32,7 @@ public class OneBSTelegram extends EEP26Telegram {
         // get the raw, un-interpreted data payload,
         // for VLD packets the payload may have a variable length
         // therefore data shall be accessed accordingly
-        byte rawData[] = rawPacket.getData();
+        byte[] rawData = rawPacket.getData();
 
         // one byte payload for all RPS messages
         payload = new byte[]{rawData[1]};

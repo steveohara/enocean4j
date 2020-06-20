@@ -17,6 +17,7 @@
 package uk.co._4ng.enocean.protocol.serial.v3.network.packet.event;
 
 import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import uk.co._4ng.enocean.util.EnOceanException;
 import uk.co._4ng.enocean.util.EnOceanUtils;
 
 /**
@@ -29,10 +30,6 @@ import uk.co._4ng.enocean.util.EnOceanUtils;
  */
 public class Event extends ESP3Packet {
 
-	/*
-     * ATTENZIONE IL PACCHETTO EVENT PUO SOLO ESSERE RICEVUTO PER CUI CREDO NON SERVA A NULLA IL COSTRUTTORE
-	 */
-
     // --------- CONSTANT FIELD ----------
     public static final int SA_RECLAIM_NOT_SUCCESSFUL = 1;
     public static final int SA_CONFIRM_LEARN = 2;
@@ -40,13 +37,27 @@ public class Event extends ESP3Packet {
     public static final int CO_READY = 4;
     public static final int CO_EVENT_SECUREDEVICE = 5;
 
+    /**
+     * Constructs an event with the specified response code
+     *
+     * @param respCode Response code
+     */
     public Event(byte respCode) {
         packetType = 0x04;
         data[0] = respCode;
         buildPacket();
     }
 
-    public Event(ESP3Packet pkt) throws Exception {
+    /**
+     * Constructs an event from the specific request packet
+     *
+     * @param pkt Request packer
+     * @throws EnOceanException If the packet is invalid
+     */
+    public Event(ESP3Packet pkt) throws EnOceanException {
+        if (pkt == null) {
+            throw new EnOceanException("Packet is null");
+        }
         if (pkt.isEvent()) {
             syncByte = pkt.getSyncByte();
             packetType = pkt.getPacketType();
@@ -55,7 +66,7 @@ public class Event extends ESP3Packet {
             buildPacket();
         }
         else {
-            throw new Exception("Uncompatible packet type");
+            throw new EnOceanException("Incompatible packet type (not an Event): {}", pkt.getPacketType());
         }
     }
 

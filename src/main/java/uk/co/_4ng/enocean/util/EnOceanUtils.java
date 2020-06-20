@@ -24,14 +24,20 @@ package uk.co._4ng.enocean.util;
 public class EnOceanUtils {
 
     /**
-     * Given a byte array provides back the corresponding string representation
+     * Prevent instantiation
+     */
+    private EnOceanUtils() {
+    }
+
+    /**
+     * Given a byte array returns the corresponding string representation
      * as 0xHHHH. the byte order is assumed to be little endian, i.e., LSB
      * located at higher positions in the array.
      *
-     * @param byteArray
+     * @param byteArray Bytes to convert
      * @return The {@link String} representation of the given byte array.
      */
-    public static String toHexString(byte byteArray[]) {
+    public static String toHexString(byte[] byteArray) {
         if (byteArray == null || byteArray.length == 0) {
             return "<empty>";
         }

@@ -37,7 +37,7 @@ public class RadioSubTel extends ESP3Packet {
      * @param dBmSubTel     : RSSI value of each subtelegram
      * @param statusSubTel  : Telegram control bits of each subtelegram - used in case of repeating, switch telegram encapsulation, checksum type identification
      */
-    public RadioSubTel(byte data[], byte subTelNum, int destinationId, byte dBm, byte securityLevel, byte timeStamp, byte tickSubTel, byte dBmSubTel, byte statusSubTel) {
+    public RadioSubTel(byte[] data, byte subTelNum, int destinationId, byte dBm, byte securityLevel, byte timeStamp, byte tickSubTel, byte dBmSubTel, byte statusSubTel) {
         packetType = RADIO_SUB_TEL;
         optData[0] = subTelNum;
         optData[1] = (byte) (destinationId & 0xff);

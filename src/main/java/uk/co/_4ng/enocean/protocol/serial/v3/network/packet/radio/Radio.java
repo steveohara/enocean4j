@@ -17,21 +17,18 @@
 package uk.co._4ng.enocean.protocol.serial.v3.network.packet.radio;
 
 import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import uk.co._4ng.enocean.util.EnOceanException;
 import uk.co._4ng.enocean.util.EnOceanUtils;
 
 /**
  * @author Andrea Biasi <biasiandrea04@gmail.com>
  */
 public class Radio extends ESP3Packet {
-    /**
-     * Optional data: Byte vector which contain all optional data passed with
-     * the constructor
-     */
 
     /**
      * Constructor to initialize data and optional data in the radio packet
      *
-     * @param data          : data to sent, in a byte vector
+     * @param data          : Optional data: Byte vector which contain all optional data
      * @param subTelNum     : number of subtelegram; Send: 3 / receive: 1 ... y
      * @param destinationId : Broadcast radio: FF FF FF FF ADT radio: Destination ID
      *                      (=address)
@@ -40,22 +37,12 @@ public class Radio extends ESP3Packet {
      * @param securityLevel : 0 = telegram unencrypted n = type of encryption (not
      *                      supported any more)
      */
-    // public Radio(byte data[], byte subTelNum, int destinationId , byte dBm,
-    // byte securityLevel){
-    public Radio(byte data[], byte subTelNum, byte[] destinationId, byte dBm, byte securityLevel) {
+    public Radio(byte[] data, byte subTelNum, byte[] destinationId, byte dBm, byte securityLevel) {
 
         packetType = RADIO;
-        //this.data = new byte[data.length];
         this.data = data;
         optData = new byte[7];
         optData[0] = subTelNum;
-
-		/*
-         * Destination ID intero this.optData[1] = (byte) (destinationId &
-		 * 0xff); this.optData[2] = (byte) ((destinationId & 0xff00)>>8);
-		 * this.optData[3] = (byte) ((destinationId & 0xff0000)>>16);
-		 * this.optData[4] = (byte) ((destinationId & 0xff000000)>>32);
-		 */
 
         // Indirizzo del dispositivo di destinazione, dal piu significativo al
         // meno significativo
@@ -72,14 +59,27 @@ public class Radio extends ESP3Packet {
 
     }
 
-    public Radio(byte data[]) {
+    /**
+     * Constructs a Radio packet using the specified optional data
+     * @param data Byte data
+     */
+    public Radio(byte[] data) {
         packetType = RADIO;
         this.data = data;
         optData = new byte[0];
         buildPacket();
     }
 
-    public Radio(ESP3Packet pkt) throws Exception {
+    /**
+     * Constructs a Radio packet from the request packet
+     *
+     * @param pkt Request packet
+     * @throws EnOceanException If the packet is invalid
+     */
+    public Radio(ESP3Packet pkt) throws EnOceanException {
+        if (pkt == null) {
+            throw new EnOceanException("Packet is null");
+        }
         if (pkt.isRadio()) {
             syncByte = pkt.getSyncByte();
             packetType = pkt.getPacketType();
@@ -88,7 +88,7 @@ public class Radio extends ESP3Packet {
             buildPacket();
         }
         else {
-            throw new Exception("Incompatible packet type");
+            throw new EnOceanException("Incompatible packet type (not a Radio): {}", pkt.getPacketType());
         }
     }
 
@@ -108,7 +108,7 @@ public class Radio extends ESP3Packet {
         // dBm, byte securityLevel)
         // subtel number is set to 0x3 when sending
         // dBm is set to (0xFF) in communications between the EnJApi and the
-        // physical device. TODO: check if it works, was 0x00
+        // physical device.
         // the security level (CRC8) is ignored in the advanced radio
         // composition 0 (disabled)
         if (send) {

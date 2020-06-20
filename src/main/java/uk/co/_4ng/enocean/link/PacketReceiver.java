@@ -26,7 +26,7 @@ import uk.co._4ng.enocean.util.EnOceanUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -43,25 +43,25 @@ public class PacketReceiver implements SerialPortDataListener {
     private static final Logger logger = LoggerFactory.getLogger(PacketReceiver.class);
 
     // The serial port from which packets are received (i.e., read)
-    private SerialPort serialPort;
+    private final SerialPort serialPort;
 
     // HighPriority message queue, will hold incoming messages who need
     // response.
-    // within a maximum time frame of 500ms. TODO check the actual time frame on
-    // the ESP3 specs
-    private ConcurrentLinkedQueue<PacketQueueItem> highPriorityRxQueue;
+    // within a maximum time frame of 500ms.
+    // TODO check the actual time frame on the ESP3 specs
+    private final Queue<PacketQueueItem> highPriorityRxQueue;
 
     // LowPriority message queue, holds messages not needing any response.
-    private ConcurrentLinkedQueue<PacketQueueItem> lowPriorityRxQueue;
+    private final Queue<PacketQueueItem> lowPriorityRxQueue;
 
     // Semaphore for "waiting" responses for those packets needing a response
     // from the transceiver. Typically, a message is sent by the
     // PacketTransmitter over the serial connection and no other operations
     // could be performed until a response is received.
-    private Semaphore expectedResponse;
+    private final Semaphore expectedResponse;
 
     // the data buffer
-    private ArrayList<Byte> buffer;
+    private final ArrayList<Byte> buffer;
 
     // the current packet length
     private int packetLength;
@@ -77,7 +77,7 @@ public class PacketReceiver implements SerialPortDataListener {
      *                            messages.
      * @param expectedResponse    The semaphore signaling if a response is needed.
      */
-    public PacketReceiver(ConcurrentLinkedQueue<PacketQueueItem> highPriorityRxQueue, ConcurrentLinkedQueue<PacketQueueItem> lowPriorityRxQueue, SerialPort serialPort, Semaphore expectedResponse) {
+    public PacketReceiver(Queue<PacketQueueItem> highPriorityRxQueue, Queue<PacketQueueItem> lowPriorityRxQueue, SerialPort serialPort, Semaphore expectedResponse) {
 
         // store the serial port
         this.serialPort = serialPort;
@@ -142,7 +142,7 @@ public class PacketReceiver implements SerialPortDataListener {
                     if (buffer.size() == 4) {
                         // create a new byte array of the size of the read
                         // buffer
-                        byte receivedBytes[] = new byte[buffer.size()];
+                        byte[] receivedBytes = new byte[buffer.size()];
 
                         // fill the byte array
                         for (int i = 0; i < buffer.size(); i++) {
@@ -188,7 +188,7 @@ public class PacketReceiver implements SerialPortDataListener {
     private ESP3Packet parsePacket(ArrayList<Byte> buffer) {
         ESP3Packet pkt = null;
 
-        if (buffer.size() > 0) {
+        if (!buffer.isEmpty()) {
             // Input byte buffer to use for packet construction
             byte[] receivedBytes;
 
@@ -224,10 +224,9 @@ public class PacketReceiver implements SerialPortDataListener {
         }
         else {
             // if the packet requires a response, than specific timings must be
-            // respected (response in less than 500ms, TODO check the actual
-            // time frame on the ESP3 specs), and therefore the packet should be
-            // inserted into an
-            // high priority message queue.
+            // respected (response in less than 500ms,
+            // TODO check the actual time frame on the ESP3 specs), and therefore the packet should be
+            // TODO inserted into an high priority message queue.
             if (pkt.requiresResponse()) {
                 highPriorityRxQueue.add(new PacketQueueItem(pkt));
             }

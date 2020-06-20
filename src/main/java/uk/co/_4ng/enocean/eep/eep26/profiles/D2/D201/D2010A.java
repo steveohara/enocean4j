@@ -32,9 +32,9 @@ public class D2010A extends D201 {
     // the used channel
     public static final int CHANNEL = 0;
     // the ON state / command
-    public static boolean ON = true;
+    public static final boolean ON = true;
     // the OFF state / command
-    public static boolean OFF = false;
+    public static final boolean OFF = false;
 
     // the "data" fields accessible through this eep (and updated upon network
     // data reception)

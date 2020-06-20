@@ -41,7 +41,7 @@ public class FourBSTelegram extends EEP26Telegram {
 
         // get the raw, un-interpreted data payload,
         // for 4BS packets the payload length is 4 bytes
-        byte rawData[] = rawPacket.getData();
+        byte[] rawData = rawPacket.getData();
 
         // 4 byte payload for all 4BS messages
         payload = new byte[4];

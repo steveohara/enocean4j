@@ -20,10 +20,10 @@ package uk.co._4ng.enocean.eep.eep26.telegram;
  */
 public class FourBSTeachInTelegram extends FourBSTelegram {
 
-    private byte func;
-    private byte type;
-    private byte[] manId;
-    private boolean withEEP;
+    private final byte func;
+    private final byte type;
+    private final byte[] manId;
+    private final boolean withEEP;
 
     /**
      * Create a teach-in version of this telegram from a standard one
@@ -33,12 +33,12 @@ public class FourBSTeachInTelegram extends FourBSTelegram {
         super(telegram.rawPacket);
 
         // get the function byte
-        func = (byte) (payload[0] >> 2 & (byte) 0x3F);
+        func = (byte) ((payload[0] % 0xff) >> 2 & (byte) 0x3F);
 
         // get the type byte (spans across 2 bytes of the payload)
         byte hiBits = (byte) (payload[0] & (byte) 0x03);
-        byte loBits = (byte) (payload[1] >> 3 & (byte) 0x1F);
-        type = (byte) (hiBits << 5 | loBits);
+        byte loBits = (byte) ((payload[1] & 0xff) >> 3 & (byte) 0x1F);
+        type = (byte) ((hiBits & 0xff) << 5 | loBits);
 
         // get the manufacturer id
         manId = new byte[2];

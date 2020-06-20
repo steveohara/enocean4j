@@ -60,7 +60,7 @@ public class EEP26DefaultState extends EEPAttribute<D201DefaultStateValue> {
         // ----- map the byte value to the right enum entry
 
         // get all supported value
-        D201DefaultStateValue supportedValues[] = D201DefaultStateValue.values();
+        D201DefaultStateValue[] supportedValues = D201DefaultStateValue.values();
 
         // the value found flag
         boolean found = false;

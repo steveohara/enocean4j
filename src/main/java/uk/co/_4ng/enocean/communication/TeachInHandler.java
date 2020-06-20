@@ -38,16 +38,16 @@ public class TeachInHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(TeachInHandler.class);
 
-    private LinkLayer linkLayer;
+    private final LinkLayer linkLayer;
 
     // the set of device listeners to keep updated about device events
-    private Set<TeachInListener> teachInListeners;
+    private final Set<TeachInListener> teachInListeners;
 
     // the teach-in flag
     private boolean teachInEnabled;
 
     // the teach in timer
-    private Timer teachInTimer;
+    private final Timer teachInTimer;
 
     /**
      * Build a connection layer instance on top of the given link layer
@@ -295,7 +295,7 @@ public class TeachInHandler {
                 for (int i = 0; i < 4; i++) {
                     msg.append(String.format("%02x", bs4TeachInTelegram.getAddress()[i]));
                 }
-                logger.debug("Device address:" + msg);
+                logger.debug("Device address: {}", msg);
             }
         }
     }
@@ -341,7 +341,9 @@ public class TeachInHandler {
             }
         }
         else {
-            logger.debug("Ignoring teach-in request for device {} already registered", device.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Ignoring teach-in request for device {} already registered", device.toString());
+            }
             informRegisteredDeviceFound(device);
         }
     }

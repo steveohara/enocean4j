@@ -26,7 +26,7 @@ class D50001ContactSwitchMessage {
     /**
      *
      */
-    D50001ContactSwitchMessage(byte data[]) {
+    D50001ContactSwitchMessage(byte[] data) {
         // initially not valid
         valid = false;
 

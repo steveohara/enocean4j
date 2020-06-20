@@ -42,16 +42,16 @@ public class DeviceManager {
     private static final Logger logger = LoggerFactory.getLogger(DeviceManager.class);
 
     // the set of device listeners to keep updated about device events
-    private Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
+    private final Set<DeviceListener> deviceListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceListener, Boolean>());
 
     // the set of device listeners to keep updated about device value changes
-    private Set<DeviceValueListener> deviceValueListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceValueListener, Boolean>());
+    private final Set<DeviceValueListener> deviceValueListeners = Collections.newSetFromMap(new ConcurrentHashMap<DeviceValueListener, Boolean>());
 
     // Initialize the update delivery executor thread pool
     private ExecutorService deviceUpdateDeliveryExecutor = Executors.newCachedThreadPool();
 
     // The set of known devices
-    private PersistentDeviceSet knownDevices;
+    private final PersistentDeviceSet knownDevices;
 
     /**
      * Initialises the DeviceManager
@@ -132,7 +132,7 @@ public class DeviceManager {
      * @return EnOceanDevice
      */
     public EnOceanDevice registerDevice(String hexDeviceAddress, String eep) {
-        byte deviceAddress[] = EnOceanDevice.parseAddress(hexDeviceAddress);
+        byte[] deviceAddress = EnOceanDevice.parseAddress(hexDeviceAddress);
         EEPIdentifier eepId = EEPIdentifier.parse(eep);
 
         // check if the device is already known
@@ -173,7 +173,7 @@ public class DeviceManager {
      * @param eep            The equipment profile for this device
      * @return EnOceanDevice
      */
-    public static EnOceanDevice createDevice(byte address[], byte manufacturerId[], EEPIdentifier eep) {
+    public static EnOceanDevice createDevice(byte[] address, byte[] manufacturerId, EEPIdentifier eep) {
         EnOceanDevice device = new EnOceanDevice(address, manufacturerId);
         EEP deviceEEP = EEPRegistry.getEEP(eep);
         if (deviceEEP != null) {

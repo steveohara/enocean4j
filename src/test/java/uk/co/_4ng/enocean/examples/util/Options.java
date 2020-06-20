@@ -32,17 +32,17 @@ import java.util.StringTokenizer;
 
 public class Options {
 
-    private int nspecs;        // number of specs, equals size of arrays:
-    private String[] key;    // specification keys
-    private String[] var;    // variable names; null for non-valued
-    private String[] dflt;    // defaults; null if not specified
-    private String[] descr;    // descriptions
+    private final int nspecs;        // number of specs, equals size of arrays:
+    private final String[] key;    // specification keys
+    private final String[] var;    // variable names; null for non-valued
+    private final String[] dflt;    // defaults; null if not specified
+    private final String[] descr;    // descriptions
     private String[] value;    // specified value
 
     private String header;    // header for usage message
     private String footer;    // footer for usage message.
 
-    private StringBuffer seen;    // option letters seen during parsing
+    private final StringBuffer seen;    // option letters seen during parsing
     private int firstpos;    // index of first positional argument
 
 
@@ -162,7 +162,7 @@ public class Options {
      * @param args arguments passed to the Option class to be managed.
      */
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         String cmdname = "java OptionsTester";
         String[] speclist = new String[]{"-d", "delete afterwards", "-f ifile", "read input from ifile", "-n nproc 1", "use N parallel processes",    // 1 is default

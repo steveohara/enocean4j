@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co._4ng.enocean.link.serial.SerialPortFactory;
 import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
+import uk.co._4ng.enocean.util.EnOceanException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,19 +37,16 @@ public class LinkLayer {
 
     private static final Logger logger = LoggerFactory.getLogger(LinkLayer.class);
 
-    // The default serial port timeout
-    private static final int SERIAL_TIMEOUT = 1000;
-
     // The serial port to which the link layer is attached
-    private SerialPort serialPort;
+    private final SerialPort serialPort;
 
     // The high priority RX and TX queues used by the link layer
-    private ConcurrentLinkedQueue<PacketQueueItem> highPriorityTxQueue;
-    private ConcurrentLinkedQueue<PacketQueueItem> highPriorityRxQueue;
+    private final ConcurrentLinkedQueue<PacketQueueItem> highPriorityTxQueue;
+    private final ConcurrentLinkedQueue<PacketQueueItem> highPriorityRxQueue;
 
     // The low priority RX and TX queues used by the link layer
-    private ConcurrentLinkedQueue<PacketQueueItem> lowPriorityTxQueue;
-    private ConcurrentLinkedQueue<PacketQueueItem> lowPriorityRxQueue;
+    private final ConcurrentLinkedQueue<PacketQueueItem> lowPriorityTxQueue;
+    private final ConcurrentLinkedQueue<PacketQueueItem> lowPriorityRxQueue;
 
     // the transmitter
     private PacketTransmitter transmitter;
@@ -64,11 +62,10 @@ public class LinkLayer {
      * communication with any physical transceiver connected to the serial port
      * identified by given serial port id.
      */
-    public LinkLayer(String serialPortId) throws Exception {
+    public LinkLayer(String serialPortId) throws EnOceanException {
 
         // build transmission and reception queues
-        // TODO: check if it is better to adopt circular buffers in order to
-        // avoid possible memory leaks.
+        // TODO: check if it is better to adopt circular buffers in order to avoid possible memory leaks.
         highPriorityRxQueue = new ConcurrentLinkedQueue<>();
         highPriorityTxQueue = new ConcurrentLinkedQueue<>();
         lowPriorityRxQueue = new ConcurrentLinkedQueue<>();
@@ -78,19 +75,16 @@ public class LinkLayer {
         Semaphore expectedResponse = new Semaphore(1);
 
         // get the serial port
-        serialPort = SerialPortFactory.getPort(serialPortId, SERIAL_TIMEOUT);
+        serialPort = SerialPortFactory.getPort(serialPortId);
 
-        // check not null
-        if (serialPort != null) {
-            // build the packet transmitter
-            transmitter = new PacketTransmitter(highPriorityTxQueue, lowPriorityTxQueue, serialPort, expectedResponse);
+        // build the packet transmitter
+        transmitter = new PacketTransmitter(highPriorityTxQueue, lowPriorityTxQueue, serialPort, expectedResponse);
 
-            // build (and start) the packet receiver
-            receiver = new PacketReceiver(highPriorityRxQueue, lowPriorityRxQueue, serialPort, expectedResponse);
+        // build (and start) the packet receiver
+        receiver = new PacketReceiver(highPriorityRxQueue, lowPriorityRxQueue, serialPort, expectedResponse);
 
-            // build the packet delivery process
-            pktDeliveryProcess = new PacketDelivery(lowPriorityRxQueue);
-        }
+        // build the packet delivery process
+        pktDeliveryProcess = new PacketDelivery(lowPriorityRxQueue);
     }
 
     /**
@@ -215,8 +209,6 @@ public class LinkLayer {
         if (!lowPriorityRxQueue.isEmpty()) {
             pkt = lowPriorityRxQueue.poll().getPkt();
         }
-
-        // return the read packet or null;
         return pkt;
     }
 

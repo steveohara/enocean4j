@@ -30,7 +30,7 @@ import uk.co._4ng.enocean.eep.EEPAttributeChangeJob;
 public class SimpleDeviceListener implements DeviceListener,DeviceValueListener,TeachInListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleDeviceListener.class);
-    private DeviceManager deviceManager;
+    private final DeviceManager deviceManager;
 
     public SimpleDeviceListener(DeviceManager deviceManager) {
         this.deviceManager = deviceManager;

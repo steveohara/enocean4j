@@ -33,7 +33,7 @@ public class F610WindowHandleMessage {
      * Builds a WindowHandle message biven the byte payload of the corresponding
      * radio message (RPS)
      */
-    public F610WindowHandleMessage(byte data[]) {
+    public F610WindowHandleMessage(byte[] data) {
         // initially valid
         valid = true;
 

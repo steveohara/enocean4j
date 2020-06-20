@@ -59,7 +59,7 @@ public class ESP3Packet {
     // additional data extending the data payload (OPTIONAL_DATA)
     protected byte[] optData;
     // number of bytes in the data part of the packet (DATA_LENGTH)
-    private byte dataLength[] = new byte[2]; // 2 byte
+    private byte[] dataLength = new byte[2]; // 2 byte
     // number of bytes of optional data (OPTIONAL_LENGTH)
     private byte optLength;
     // checksum for bytes DATA_LENGTH, OPTIONAL_LENGTH and TYPE
@@ -95,8 +95,8 @@ public class ESP3Packet {
      * @param partialBuffer Buffer to interrogate
      * @return packet length
      */
-    public static int getPacketLength(byte partialBuffer[]) {
-        byte dataLength[] = new byte[2];
+    public static int getPacketLength(byte[] partialBuffer) {
+        byte[] dataLength = new byte[2];
         dataLength[0] = partialBuffer[1];
         dataLength[1] = partialBuffer[2];
         byte optLength = partialBuffer[3];
@@ -117,14 +117,14 @@ public class ESP3Packet {
         // dei due
         // byte
         optLength = (byte) (optData.length & 0x00ff);
-        byte header[] = new byte[4];
+        byte[] header = new byte[4];
         header[0] = dataLength[0];
         header[1] = dataLength[1];
         header[2] = optLength;
         header[3] = packetType;
 
         crc8h = Crc8.calc(header);
-        byte vectData[] = new byte[data.length + optData.length];
+        byte[] vectData = new byte[data.length + optData.length];
         System.arraycopy(data, 0, vectData, 0, data.length);
         // Se non ho dati opzionali non metto piu nulla nel vettore
         if (optLength != 0) {
@@ -247,14 +247,14 @@ public class ESP3Packet {
 
     public byte[] getPacketAsBytes() {
         // byte to unsigned int conversion
-        int optLength = this.optLength & 0x00FF;
+        int byteLen = this.optLength & 0x00FF;
 
         // byte array to unsigned int conversion
-        int dataLength = (this.dataLength[0] << 8 & 0xff00) + (this.dataLength[1] & 0x00ff);
+        int dataLen = (this.dataLength[0] << 8 & 0xff00) + (this.dataLength[1] & 0x00ff);
 
         // 1 syncByte + 2 dataLength + 1 optLength + 1 packetType + 1 crcr8h +
         // 1crc8d + dataLength + optDataLength
-        int packetLengthInBytes = 7 + dataLength + optLength;
+        int packetLengthInBytes = 7 + dataLen + byteLen;
 
         byte[] packetAsBytes = new byte[packetLengthInBytes];
 
@@ -267,15 +267,15 @@ public class ESP3Packet {
         packetAsBytes[4] = packetType;
         packetAsBytes[5] = crc8h;
 
-        System.arraycopy(data, 0, packetAsBytes, 6, dataLength);
+        System.arraycopy(data, 0, packetAsBytes, 6, dataLen);
 
-        if (optLength > 0) {
-            for (int i = 0; i < optLength; i++) {
-                packetAsBytes[6 + dataLength + i] = optData[i];
+        if (byteLen > 0) {
+            for (int i = 0; i < byteLen; i++) {
+                packetAsBytes[6 + dataLen + i] = optData[i];
             }
         }
 
-        packetAsBytes[6 + dataLength + optLength] = crc8d;
+        packetAsBytes[6 + dataLen + byteLen] = crc8d;
 
         // return the packet as byte array
         return packetAsBytes;
@@ -303,23 +303,23 @@ public class ESP3Packet {
         crc8h = buffer[5];
 
         // byte array to unsigned int conversion
-        int dataLength = (this.dataLength[0] << 8 & 0xff00) + (this.dataLength[1] & 0xff);
+        int dataLen = (this.dataLength[0] << 8 & 0xff00) + (this.dataLength[1] & 0xff);
 
         // byte to unsigned int conversion
-        int optLength = this.optLength & 0xFF;
+        int optLen = this.optLength & 0xFF;
 
         // Inizializzo il vettore dei dati alla lunghezza effettiva
-        data = new byte[dataLength];
+        data = new byte[dataLen];
 
-        System.arraycopy(buffer, 6, data, 0, dataLength);
+        System.arraycopy(buffer, 6, data, 0, dataLen);
 
         // Inizializzo il vettore dati opzionali alla lunghezza effettiva
-        optData = new byte[optLength];
+        optData = new byte[optLen];
 
-        for (int i = 0; i < optLength; i++) {
-            optData[i] = buffer[6 + dataLength + i];
+        for (int i = 0; i < optLen; i++) {
+            optData[i] = buffer[6 + dataLen + i];
         }
-        crc8d = buffer[6 + dataLength + optLength];
+        crc8d = buffer[6 + dataLen + optLen];
 
     } // Fine parsePacket
 

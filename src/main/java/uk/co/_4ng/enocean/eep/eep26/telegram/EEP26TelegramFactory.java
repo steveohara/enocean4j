@@ -27,9 +27,16 @@ import uk.co._4ng.enocean.protocol.serial.v3.network.packet.ESP3Packet;
  * @author <a href="mailto:dario.bonino@gmail.com">Dario Bonino</a>
  *         <p>
  *         TODO: exploit reflection or static registration to support other
- *         classes (the Reflections library might be a good candidate)
+ *         TODO: classes (the Reflections library might be a good candidate)
  */
 public class EEP26TelegramFactory {
+
+    /**
+     * Prevent instantiation
+     */
+    private EEP26TelegramFactory() {
+    }
+
     /**
      * Provides the right instance of {@link EEP26Telegram} given an
      * {@link ESP3Packet} containing the telegram as payload.

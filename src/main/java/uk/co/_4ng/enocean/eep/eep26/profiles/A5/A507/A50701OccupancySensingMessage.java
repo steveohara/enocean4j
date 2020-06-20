@@ -44,7 +44,7 @@ class A50701OccupancySensingMessage {
      *
      * @param data the 4BS telegram payload as an array of byte.
      */
-    A50701OccupancySensingMessage(byte data[]) {
+    A50701OccupancySensingMessage(byte[] data) {
         // initially not valid
         valid = false;
 

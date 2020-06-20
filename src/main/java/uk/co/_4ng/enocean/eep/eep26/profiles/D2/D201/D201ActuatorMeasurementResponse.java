@@ -22,19 +22,19 @@ import java.nio.ByteBuffer;
  */
 class D201ActuatorMeasurementResponse {
     // the command id, always 7
-    private int commandId;
+    private final int commandId;
 
     // the channel id
-    private int channelId;
+    private final int channelId;
 
     // the input / output flag
-    private boolean output;
+    private final boolean output;
 
     // the measure
-    private byte measure[];
+    private final byte[] measure;
 
     // the measure unit
-    private D201UnitOfMeasure unit;
+    private final D201UnitOfMeasure unit;
 
     D201ActuatorMeasurementResponse(byte commandId, byte channelId, byte[] measureValue, byte unit) {
         // store the command id

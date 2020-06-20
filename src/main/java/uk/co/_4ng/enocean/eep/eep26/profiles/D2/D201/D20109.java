@@ -31,9 +31,9 @@ public class D20109 extends D2010A {
     // the used channel
     public static final int CHANNEL = 0;
     // the ON state / command
-    public static boolean ON = true;
+    public static final boolean ON = true;
     // the OFF state / command
-    public static boolean OFF = false;
+    public static final boolean OFF = false;
 
     // the "data" fields accessible through this eep (and updated upon network
     // data reception)
@@ -56,12 +56,13 @@ public class D20109 extends D2010A {
         addChannelAttribute(CHANNEL, new EEP26ErrorLevel());
     }
 
-    // execution commands
+    @Override
     public void actuatorSetOuput(Connection connection, byte[] deviceAddress, boolean command) {
         // exec the command by using the D201 general purpose implementation
         actuatorSetOutput(connection, deviceAddress, D201DimMode.SWITCH_TO_NEW_OUTPUT_VALUE.getCode(), ALL_OUTPUT_CHANNEL, command ? ON_BYTE : OFF_BYTE);
     }
 
+    @Override
     public void actuatorSetOuput(Connection connection, byte[] deviceAddress, int dimValue, D201DimMode dimMode) {
         // check limits
         if (dimValue < 0) {
@@ -73,6 +74,19 @@ public class D20109 extends D2010A {
         actuatorSetOutput(connection, deviceAddress, dimMode.getCode(), ALL_OUTPUT_CHANNEL, (byte) dimValue);
     }
 
+    /**
+     *
+     * @param connection Connection to device
+     * @param deviceAddress Address of the device
+     * @param autoReportMesurement
+     * @param signalResetMeasurement
+     * @param powerMode
+     * @param channelId
+     * @param measurementDeltaToBeReported
+     * @param unitOfMeasure
+     * @param maximumTimeBetweenActuatorMessages
+     * @param minimumTimeBetweenActuatorMessages
+     */
     public void actuatorSetMeasurement(Connection connection, byte[] deviceAddress, boolean autoReportMesurement, boolean signalResetMeasurement, boolean powerMode, int channelId, int measurementDeltaToBeReported, D201UnitOfMeasure unitOfMeasure, int maximumTimeBetweenActuatorMessages, int minimumTimeBetweenActuatorMessages) {
         if (maximumTimeBetweenActuatorMessages >= 0 && minimumTimeBetweenActuatorMessages >= 0) {
             byte reportMeasurementAsByte = autoReportMesurement ? (byte) 0x01 : (byte) 0x00;
@@ -101,10 +115,10 @@ public class D20109 extends D2010A {
      * Asks for the current power or energy measurement on a given channel Id of
      * a given EnOcean actuator
      *
-     * @param connection
-     * @param deviceAddress
-     * @param powerMode
-     * @param channelId
+     * @param connection Connection to device
+     * @param deviceAddress Address of the device
+     * @param powerMode Power mode
+     * @param channelId Channel
      */
     public void actuatorMeasurementQuery(Connection connection, byte[] deviceAddress, boolean powerMode, int channelId) {
         // get the measurement mode as a byte value

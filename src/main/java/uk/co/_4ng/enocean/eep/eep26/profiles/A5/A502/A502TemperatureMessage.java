@@ -34,7 +34,7 @@ class A502TemperatureMessage {
      * Class constructor, builds a message instance given the raw byte payload
      * of the corresponding 4BS telegram.
      */
-    A502TemperatureMessage(byte data[]) {
+    A502TemperatureMessage(byte[] data) {
         // temperature data has offset 16 (3rd byte)
         temperature = 0x00FF & data[2];
 

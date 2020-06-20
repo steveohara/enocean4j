@@ -48,7 +48,7 @@ public class EEP26Switching extends EEPAttribute<Boolean> {
      * Constructor, builds a new {@link EEP26Switching} instance with the given
      * value (true == on, false == off).
      *
-     * @param value
+     * @param value Value to set
      */
     public EEP26Switching(boolean value) {
         // call the super class constructor

@@ -35,7 +35,7 @@ public class VLDTelegram extends EEP26Telegram {
         // get the raw, un-interpreted data payload,
         // for VLD packets the payload may have a variable length
         // therefore data shall be accessed accordingly
-        byte rawData[] = rawPacket.getData();
+        byte[] rawData = rawPacket.getData();
 
         // compute the payload length: data.length - 1byte RORG - 4 byte
         // senderId - 1 byte status

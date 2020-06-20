@@ -3,7 +3,7 @@ enocean4j is a fork of the [EnJ-Library](https://github.com/dog-gateway/enj-libr
 The codebase has been re-factored considerably to bring it into line with common patterns.
 
 Some of the changes are listed below;
-
+p
 * Introduction of wide-scale logging using SL4J
 * Large number of re-factors to improve code performance and bring it into line with standard Maven structure
 * Hundreds of bug-fixes for static code issues and code correctness
